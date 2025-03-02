@@ -3,9 +3,10 @@ url: >-
   https://raw.githubusercontent.com/api-evangelist/dolby/refs/heads/main/apis.yml
 apis:
   - aid: dolby:dolby
-    name: Dolby
+    name: Dolby API
     tags:
-      - API
+      - Audio
+      - Video
     humanURL: ' https://docs.dolby.io/'
     properties:
       - url: ' https://docs.dolby.io/'

@@ -87,6 +87,10 @@ apis:
       - type: Documentation
         url: https://optiview.dolby.com/docs/ad-engine/
 common:
+  - type: GitHubOrganization
+    url: https://github.com/dolbylaboratories
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/dolby-laboratories
   - type: Website
     url: https://dolby.io
   - type: Documentation

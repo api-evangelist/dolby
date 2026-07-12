@@ -1,0 +1,27 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: dolby.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 25 10:57:17 2026 GMT
+  hsts: false
+- host: optiview.dolby.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep  2 21:41:38 2026 GMT
+  hsts: false
+domains:
+- domain: dolby.io
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
+- domain: dolby.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: none

@@ -87,6 +87,8 @@ apis:
       - type: Documentation
         url: https://optiview.dolby.com/docs/ad-engine/
 common:
+  - type: DomainSecurity
+    url: security/dolby-domain-security.yml
   - type: GitHubOrganization
     url: https://github.com/dolbylaboratories
   - type: LinkedIn
@@ -99,6 +101,8 @@ common:
     url: https://www.dolby.com
   - type: Developer
     url: https://dolby.io/developers/
+  - url: https://optiview.dolby.com/feed/
+    type: Blog
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

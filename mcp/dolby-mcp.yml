@@ -1,0 +1,126 @@
+generated: '2026-09-06'
+method: derived
+status: candidate
+source: 'Derived from the first-party OpenAPI documents in openapi/. NO Dolby MCP server exists: the 1,355-page
+  Dolby OptiView docs sitemap contains zero pages matching mcp or agent, the public documentation source
+  repo github.com/THEOplayer/documentation contains no MCP reference, and the served https://optiview.dolby.com/llms.txt
+  lists no tools and no MCP endpoint.'
+provider: Dolby
+providerId: dolby
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+note: 'No hosted, remote or stdio MCP server is published for any Dolby OptiView API. No endpoint URL
+  is asserted here, and none was guessed. ONE NEAR MISS worth recording so it is not mistaken for a product
+  MCP server: three Model Context Protocol servers ARE published under Dolby''s own npm scope by the Millicast
+  team - @millicast/trino-iceberg-mcp (1.0.6, 2026-08-19), @millicast/imply-druid-mcp (1.0.0, 2026-06-02)
+  and @millicast/influxdb-v1-mcp (1.0.0, 2026-06-01). All three are read-only stdio servers for THIRD-PARTY
+  data stores (Apache Iceberg via Trino, Apache Druid / Imply, InfluxDB v1) used internally for analytics.
+  None of them exposes a Dolby API. They are first-party engineering output, not an agent surface for
+  the Dolby OptiView platform, and they must not be counted as one.'
+candidate_tools:
+- name: list_channels
+  api: Dolby OptiView Live
+  rest:
+  - get-channels
+  description: List OptiView Live channels with cursor pagination.
+- name: create_channel
+  api: Dolby OptiView Live
+  rest:
+  - create-channel
+  description: Create a live channel container.
+- name: start_channel
+  api: Dolby OptiView Live
+  rest:
+  - start-channel
+  description: Start a channel and all connected engines.
+- name: stop_channel
+  api: Dolby OptiView Live
+  rest:
+  - stop-channel
+  description: Stop a channel and all connected engines. Reverses start_channel.
+- name: get_channel_monitoring
+  api: Dolby OptiView Live
+  rest:
+  - get-channel-monitoring
+  description: Read live health and monitoring state for a channel.
+- name: list_publish_tokens
+  api: Millicast API
+  rest:
+  - PublishTokenV1_ListTokens
+  description: List Millicast publishing tokens for the account.
+- name: create_publish_token
+  api: Millicast API
+  rest:
+  - PublishTokenV1_CreateToken
+  description: Create a Millicast publishing token for a stream.
+- name: disable_publish_tokens
+  api: Millicast API
+  rest:
+  - PublishTokenV1_DisableTokens
+  description: Disable publishing tokens. Reversible, unlike delete.
+- name: stop_stream
+  api: Millicast API
+  rest:
+  - Stream_StopStream
+  description: Stop an active Millicast stream.
+- name: list_media_assets
+  api: Millicast API
+  rest:
+  - MediaAssets_ListMediaAssets
+  description: List recordings and clips held as media assets.
+- name: create_media_asset
+  api: Millicast API
+  rest:
+  - MediaAssets_CreateMediaAsset
+  description: Create a clip from a live or recorded stream. The only Dolby operation that accepts an
+    Idempotency-Key header.
+- name: list_webhooks
+  api: Millicast API
+  rest:
+  - Webhooks_ListWebhooks
+  description: List configured Millicast webhooks.
+- name: test_webhook
+  api: Millicast API
+  rest:
+  - Webhooks_TestWebhook
+  description: Fire a synthetic webhook payload of a chosen type.
+- name: list_ad_channels
+  api: Dolby OptiView Ads
+  rest: []
+  description: List server-guided ad insertion channels.
+  rest_paths:
+  - GET /api/v1/channels
+  note: The OptiView Ads specification declares NO operationId on any of its 55 operations, so this candidate
+    binds by method+path.
+- name: list_ad_breaks
+  api: Dolby OptiView Ads
+  rest: []
+  description: List ad breaks scheduled on a channel.
+  rest_paths:
+  - GET /api/v1/channels/{channelId}/breaks
+  note: 'Bound by method+path: the OptiView Ads spec has no operationIds.'
+- name: conform_ad
+  api: Dolby OptiView Ad Engine
+  rest:
+  - conform-ad
+  description: Transform an ad master into a streaming format matching the content stream.
+- name: get_media_info
+  api: Dolby OptiView Ad Engine
+  rest:
+  - media-info
+  description: Inspect the technical characteristics of a media asset.
+gaps:
+- 'If Dolby did ship an MCP server, the surface is unusually well suited to it: 287 operations across
+  five REST APIs, all with per-operation schemas. The blocker is auth, not shape - three different credential
+  styles (Basic, Bearer, apiKey) across four products, with no OAuth and therefore no delegated-consent
+  story for an agent.'
+- The OptiView Ads OpenAPI declares no operationId on any of its 55 operations, so every tool binding
+  against it must be by method+path - a real obstacle to generating a stable tool surface.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

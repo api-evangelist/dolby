@@ -1,0 +1,187 @@
+generated: '2026-09-06'
+method: searched
+source: 'Dolby OptiView changelogs (https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/,
+  https://optiview.dolby.com/docs/theoplayer/changelog/), the THEOlive V1->V2 migration guide (https://optiview.dolby.com/docs/theolive/api/migration-from-v1/),
+  the status pages https://status.dolby.io and https://status.theo.live, and the deprecated: true flags
+  in openapi/dolby-millicast-api-openapi.yml.'
+provider: Dolby
+providerId: dolby
+versioning:
+  style: URL path, versioned independently per product
+  current:
+    Dolby OptiView Live (THEOlive): v2 (https://api.theo.live/v2)
+    Dolby OptiView Ads: product v2, served under an /api/v1 path prefix; legacy v1 monetized-stream signalling
+      contract still published
+    Millicast API: mixed /api/, /api/v2/, /api/v3/ prefixes within one specification
+    Millicast Director API: unversioned paths under /api/
+    Millicast Advanced Analytics API: /api/records and /api/v2/records
+    Dolby OptiView Ad Engine: unversioned paths; info.version 1.0.0
+  migration_guide: https://optiview.dolby.com/docs/theolive/api/migration-from-v1/
+deprecation_policy:
+  published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  detail: 'No written deprecation or sunset policy was found on any Dolby OptiView page, and no Sunset
+    or Deprecation response header appears in any of the seven specifications. Deprecation is communicated
+    only by the deprecated: true flag inside the Millicast OpenAPI and by dated changelog entries. An
+    agent has no runtime signal that an operation is going away.'
+  evidence: openapi/dolby-millicast-api-openapi.yml
+deprecated_operations:
+  count: 30
+  api: Millicast API
+  note: '30 of the Millicast API 129 operations are flagged deprecated in the live specification - nearly
+    a quarter of the surface. They cluster in two retired generations: the whole legacy /api/record_files/*
+    recording and clipping family (superseded by /api/v3/media/assets), and the older geo-restriction
+    and v1 token-update endpoints. No sunset date is published for any of them.'
+  operations:
+  - operationId: RecordFilesV2_ListMediaAssets
+    method: GET
+    path: /api/v2/record_files/list
+    summary: List Media Assets
+  - operationId: RecordFilesV2_ReadMediaAsset
+    method: GET
+    path: /api/v2/record_files/{mediaAssetId}
+    summary: Read Media Asset
+  - operationId: RecordFilesV2_DeleteMediaAssets
+    method: POST
+    path: /api/v2/record_files/delete
+    summary: Delete Media Assets
+  - operationId: Analytics_AccountGeo
+    method: GET
+    path: /api/analytics/account/geo
+    summary: Account Geo
+  - operationId: Analytics_StreamsGeo
+    method: GET
+    path: /api/analytics/streams/geo
+    summary: Streams Geo
+  - operationId: Account_GetGeoCascade
+    method: GET
+    path: /api/account/geo_cascade
+    summary: Read Account Geo Cascade Settings
+  - operationId: Account_UpdateGeoCascade
+    method: PUT
+    path: /api/account/geo_cascade
+    summary: Update Account Geo Cascade Settings
+  - operationId: Geo_Geo
+    method: GET
+    path: /api/geo/account
+    summary: Read Account Geo Restrictions
+  - operationId: Geo_UpdateGeo
+    method: POST
+    path: /api/geo/account
+    summary: Update Account Geo Restrictions
+  - operationId: PublishTokenV1_UpdateToken
+    method: PUT
+    path: /api/publish_token/{tokenId}
+    summary: Update Token
+  - operationId: RecordFiles_GetRecordFile
+    method: GET
+    path: /api/record_files/{recordFileId}
+    summary: Read File
+  - operationId: RecordFiles_DeleteRecordFile
+    method: DELETE
+    path: /api/record_files/{recordFileId}
+    summary: Delete File
+  - operationId: RecordFiles_DeleteRecordFiles
+    method: POST
+    path: /api/record_files/delete
+    summary: Delete Files
+  - operationId: RecordFiles_DeleteAllRecordFiles
+    method: POST
+    path: /api/record_files/delete/all
+    summary: Delete All Files
+  - operationId: RecordFiles_ListRecordFiles
+    method: GET
+    path: /api/record_files/list
+    summary: List Files
+  - operationId: RecordFiles_ListRecordFilesByToken
+    method: GET
+    path: /api/record_files/list_by_token
+    summary: List Files By Token
+  - operationId: RecordFiles_ListRecordFilesByStream
+    method: GET
+    path: /api/record_files/list_by_stream
+    summary: List Files By Stream
+  - operationId: RecordFiles_RecordFileUsage
+    method: GET
+    path: /api/record_files/usage
+    summary: Usage
+  - operationId: RecordFiles_RecordFileUsageBillable
+    method: GET
+    path: /api/record_files/usage_billing
+    summary: Usage Billable
+  - operationId: RecordFiles_CreateRecordClip
+    method: POST
+    path: /api/record_files/clip
+    summary: Create Clip
+  - operationId: RecordFiles_GetClipRequest
+    method: GET
+    path: /api/record_files/clip/{clipRequestId}
+    summary: Get Clip Request
+  - operationId: RecordFiles_DeleteClipRequestLive
+    method: DELETE
+    path: /api/record_files/clip/{clipRequestId}
+    summary: Delete Clip Request
+  - operationId: RecordFiles_ListClipRequests
+    method: GET
+    path: /api/record_files/clip/list
+    summary: List Clip Requests
+  - operationId: RecordFiles_ListAvailableClipSources
+    method: GET
+    path: /api/record_files/clip/sources
+    summary: List Available Clip Sources
+  - operationId: RecordFiles_ValidateStorageProfile
+    method: POST
+    path: /api/record_files/storage_profiles/validate
+    summary: Validate Third Party Storage Setup
+  - operationId: RecordFiles_UpdateExpiryRule
+    method: POST
+    path: /api/record_files/clip/sources/expiry
+    summary: Update Clip Source Expiry Rule
+  - operationId: RecordFiles_GetExpiryRule
+    method: GET
+    path: /api/record_files/clip/sources/expiry
+    summary: Get Clip Source Expiry Rule
+  - operationId: RecordFiles_DeleteExpiryRule
+    method: DELETE
+    path: /api/record_files/clip/sources/expiry
+    summary: Delete Clip Source Expiry Rule
+  - operationId: RecordFiles_DeleteClipSources
+    method: POST
+    path: /api/record_files/clip/sources/delete
+    summary: Delete Clip Sources
+  - operationId: SubscribeTokenV1_UpdateToken
+    method: PUT
+    path: /api/subscribe_token/{tokenId}
+    summary: Update Token
+status_pages:
+- name: Dolby.io Status
+  url: https://status.dolby.io
+  status: 200
+  note: Covers the Millicast / real-time streaming platform. status.millicast.com redirects here.
+- name: THEOlive Status
+  url: https://status.theo.live
+  status: 200
+  note: Covers the OptiView Live platform.
+sla:
+  published: false
+  detail: No public SLA document. The pricing page (https://optiview.dolby.com/plans/) offers "priority
+    support" and "assigned account representatives for a guaranteed response time" as a commercial commitment,
+    but publishes no availability target, no credit schedule and no numbers.
+changelogs:
+- name: Millicast REST APIs & Webhooks
+  url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  status: 200
+- name: Millicast Dashboard
+  url: https://optiview.dolby.com/docs/millicast/changelog/changelog-dolbyio-dashboard/
+- name: Millicast Platform / Media Server
+  url: https://optiview.dolby.com/docs/millicast/changelog/changelog-dolbyio-platform-media-server/
+- name: Millicast Native SDK
+  url: https://optiview.dolby.com/docs/millicast/changelog/changelog-native-sdk/
+- name: OptiView Player
+  url: https://optiview.dolby.com/docs/theoplayer/changelog/
+artifact_cross_reference: changelog/dolby-changelog.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

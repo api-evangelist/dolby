@@ -1,0 +1,120 @@
+generated: '2026-09-06'
+method: searched
+source: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+provider: Dolby
+providerId: dolby
+scheme: dated entries grouped by surface (REST APIs, Webhooks, Usage Reporting), newest first
+current_version: >-
+  No single product version is published. The REST APIs changelog is dated, not versioned;
+  the most recent entry read on 2026-09-06 is dated 2026-05-25.
+note: >-
+  Dolby OptiView publishes five separate changelogs (REST APIs & Webhooks, Dashboard, Platform /
+  Media Server, Native SDK, OptiView Player). Only the REST APIs one describes the contracts in
+  openapi/. Entries are categorised Features / Improvements / Fixes but are NOT marked breaking
+  vs additive, so an agent cannot tell from the changelog whether an entry requires a client
+  change; the 2025-05-30 publish-token entry below is a behaviour change with real consequences
+  and is filed under "Fixes".
+entries:
+  - date: '2026-05-25'
+    surface: REST APIs
+    breaking: false
+    additions:
+      - Ability to specify engine priority when creating HLS clips
+      - Deletion of all VOD-type media assets via Delete All Media Assets
+  - date: '2026-04-21'
+    surface: REST APIs
+    breaking: false
+    additions:
+      - Monitoring Summary endpoints providing abridged information about live streams
+  - date: '2026-03-20'
+    surface: REST APIs
+    breaking: false
+    additions:
+      - Live-to-VOD functionality, with expanded recording documentation
+  - date: '2026-03-12'
+    surface: REST APIs
+    breaking: false
+    additions:
+      - On-demand thumbnails
+      - Storage usage analytics for media type VOD
+    fixes:
+      - Fixed packet-loss calculation for RTMP streams
+      - Improved token validation on publishing and subscribing
+  - date: '2026-03-02'
+    surface: REST APIs
+    breaking: false
+    additions:
+      - Re-streaming supported for WebRTC ingests using H.264 and Opus codecs
+  - date: '2026-02-27'
+    surface: REST APIs
+    breaking: false
+    highlights:
+      - Improvements to data aggregation logic in the Advanced Reporting API
+      - Improvements to media assets functionality
+      - Fixed input validation for Update Transcoder
+  - date: '2026-02-26'
+    surface: Usage Reporting
+    breaking: false
+    highlights:
+      - Improved accuracy of firstRequest time in Millicast reports
+  - date: '2026-02-23'
+    surface: REST APIs
+    breaking: false
+    additions:
+      - Creation of multiple media distributions
+    highlights:
+      - >-
+        Staged migration to serve recording downloads from Dolby's CDN instead of S3
+        pre-signed URLs
+  - date: '2026-01-23'
+    surface: REST APIs
+    breaking: false
+    additions:
+      - >-
+        OBS Enhanced Broadcasting profile selection on the Millicast publishing token
+    highlights:
+      - >-
+        Advanced Analytics API data retention set to 1 year, effective 30 days after the entry
+  - date: '2025-05-30'
+    surface: REST APIs
+    breaking: true
+    breaking_note: >-
+      Filed by Dolby under "Fixes", but this is a behaviour change an integrator must plan for:
+      deleting a publish token now immediately terminates every live stream associated with it.
+      Previously those streams continued until the publishing client disconnected.
+    highlights:
+      - Publish-token deletion triggers immediate termination of all associated live streams
+  - date: '2025-04-10'
+    surface: REST APIs
+    breaking: false
+    additions:
+      - iFrameRate, bFrameRate and pFrameRate added to encoding details on Monitoring Stream Details
+  - date: '2025-03-19'
+    surface: REST APIs
+    breaking: false
+    additions:
+      - SRT output on the re-stream feature (Millicast as SRT caller / push)
+    fixes:
+      - >-
+        lowLatencyRtmp on Create Publish Token now defaults to true, matching the documented
+        behaviour. Applies to newly created tokens only.
+  - date: '2024-10-15'
+    surface: REST APIs & Webhooks
+    breaking: false
+    additions:
+      - Live clipping - capture a partial clip from an active stream, immediately available
+      - Media asset management for recordings and clips
+other_changelogs:
+  - name: Millicast Dashboard
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-dolbyio-dashboard/
+  - name: Millicast Platform / Media Server
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-dolbyio-platform-media-server/
+  - name: Millicast Native SDK
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-native-sdk/
+  - name: OBS WebRTC
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-obs-webrtc/
+  - name: OptiView Player
+    url: https://optiview.dolby.com/docs/theoplayer/changelog/
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

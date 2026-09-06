@@ -3,110 +3,77 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: Dolby
 providerId: dolby
+generated: '2026-09-06'
+method: searched
+source: >-
+  Dolby OptiView documentation (https://optiview.dolby.com/docs/, full sitemap of 1,355 pages
+  searched for rate limit / quota / throttle pages - none exist) and the 4xx responses declared
+  in the seven first-party OpenAPI documents in openapi/.
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+modified: '2026-09-06'
 tags:
-  - Audio
-  - Video
   - Streaming
-  - Media
   - Real-Time
   - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the Dolby API surface. Captures per-tier quotas,
-  burst behavior, response signaling, and recovery semantics. Defaults are scaffold values to be replaced
-  with published provider limits.
-headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
-  retryAfter: Retry-After
-  policy: RateLimit-Policy
+supersedes: >-
+  A scaffold written by the 2026-05-04 bulk sweep that asserted X-RateLimit-Limit /
+  X-RateLimit-Remaining / X-RateLimit-Reset / RateLimit-Policy response headers and free /
+  professional / enterprise limits of 10 / 100 / 1000 rpm. Dolby publishes none of those
+  headers and none of those numbers. Replaced with what the surface actually documents.
+limit_count: 1
+headers: []
+headers_note: >-
+  NO rate-limit response headers are documented anywhere: no RateLimit-*, no X-RateLimit-*, no
+  Retry-After. An agent that gets throttled has no machine-readable signal telling it how long
+  to wait. This is the most consequential runtime gap in the Dolby OptiView surface.
 responseCodes:
   throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
+  payloadTooLarge: 413
 limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - Dolby OptiView Player
-      - Dolby OptiView Live
-      - Dolby Real-time Streaming (Millicast)
-      - Dolby OptiView Ads
-      - Dolby OptiView Ad Engine
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - Dolby OptiView Player
-      - Dolby OptiView Live
-      - Dolby Real-time Streaming (Millicast)
-      - Dolby OptiView Ads
-      - Dolby OptiView Ad Engine
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Dolby OptiView Player
-      - Dolby OptiView Live
-      - Dolby Real-time Streaming (Millicast)
-      - Dolby OptiView Ads
-      - Dolby OptiView Ad Engine
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Dolby OptiView Player
-      - Dolby OptiView Live
-      - Dolby Real-time Streaming (Millicast)
-      - Dolby OptiView Ads
-      - Dolby OptiView Ad Engine
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Dolby OptiView Player
-      - Dolby OptiView Live
-      - Dolby Real-time Streaming (Millicast)
-      - Dolby OptiView Ads
-      - Dolby OptiView Ad Engine
+  - name: Per-channel in-stream metadata rate limit
+    api: Dolby OptiView Live (THEOlive)
+    operation: send-channel-instream-metadata
+    path: PUT /channels/{id}/instream-metadata/{uuid}
+    scope: per-channel
+    window: null
+    limit: null
+    burst: null
+    status_on_exhaustion: 429
+    documented_value: false
+    detail: >-
+      The only rate limit declared anywhere in the seven specifications. The 429 response
+      description reads "Too many requests: the per-channel instream metadata rate limit was
+      exceeded" - the limit exists and is enforced, but neither the number nor the window is
+      published, and no Retry-After is returned.
+    evidence: openapi/dolby-optiview-live-openapi.yml
+payload_limits:
+  - name: In-stream metadata payload size
+    api: Dolby OptiView Live (THEOlive)
+    operation: send-channel-instream-metadata
+    limit: 65536
+    unit: bytes
+    status_on_exhaustion: 413
+    detail: >-
+      "the instream metadata payload exceeds the configured maximum size (default 65536 bytes)" -
+      a real published number, and configurable per deployment.
+    evidence: openapi/dolby-optiview-live-openapi.yml
+undocumented:
+  - api: Dolby OptiView Ads
+    note: >-
+      No 429 declared and no limits documented. The spec declares only 200/201/204 responses.
+  - api: Millicast API
+    note: >-
+      No 429 declared, no limits page. The account surface exposes usage and billing endpoints
+      (/api/record_files/usage_billing, storage usage analytics) so consumption is metered
+      commercially, but no request-rate ceiling is published.
+  - api: Millicast Director API / Advanced Analytics API / Ad Engine
+    note: No 429, no headers, no documented limits.
 policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
+  - name: Data retention (Advanced Analytics)
+    description: >-
+      Not a rate limit, but the only published consumption ceiling of any kind: the 2026-01-23
+      changelog entry sets Advanced Analytics API data retention to 1 year.
+    source: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

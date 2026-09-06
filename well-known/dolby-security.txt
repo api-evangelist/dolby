@@ -1,0 +1,4 @@
+Contact: mailto:disclosures@dolby.com
+Contact: https://bugcrowd.com/c1afe99b-027c-4c6d-b642-f1b8dd08e417/external/report
+Expires: 2030-07-22T10:00:00.000Z
+Policy: https://www.dolby.com/about/legal/responsible-disclosure-policy/

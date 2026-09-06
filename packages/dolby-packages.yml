@@ -1,0 +1,227 @@
+generated: '2026-09-06'
+method: searched
+source: >-
+  registry.npmjs.org, pypi.org, api.nuget.org, search.maven.org, pub.dev and trunk.cocoapods.org
+  metadata endpoints, cross-checked against the Dolby OptiView SDK documentation
+  (https://optiview.dolby.com/docs/) and the first-party GitHub organizations
+  github.com/THEOplayer, github.com/millicast and github.com/DolbyIO.
+provider: Dolby
+providerId: dolby
+note: >-
+  Dolby OptiView is the merged surface of three acquisitions - THEO Technologies (THEOplayer,
+  THEOlive, THEOads), Millicast (real-time streaming) and the original dolby.io platform - so the
+  first-party SDKs are published under three different registry scopes: @theoplayer/*, @millicast/*
+  and @dolbyio/*. npm maintainer accounts confirm first-party ownership: theotechnologies-admin,
+  fabien-dolbyio, dolbyio_sa, cjohnsto.
+  CURRENCY FINDING: the REST-API client libraries have decayed unevenly. The Node client
+  (@dolbyio/dolbyio-rest-apis-client 6.3.1, 2026-07-14) is current; the Python client last shipped
+  2024-08-20 and the .NET client 2023-06-19, both more than a year behind the APIs they wrap, and
+  the Millicast REST API changed enough in that window that 30 of its operations are now marked
+  deprecated in the live spec.
+packages:
+  - name: theoplayer
+    registry: npm
+    url: https://www.npmjs.com/package/theoplayer
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Player
+    version: 11.10.2
+    published: '2026-09-04'
+    description: THEOplayer Web SDK (Dolby OptiView Player) - universal HTML5 video player.
+  - name: '@theoplayer/extended'
+    registry: npm
+    url: https://www.npmjs.com/package/@theoplayer/extended
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Player
+    version: 11.10.2
+    published: '2026-09-04'
+    description: Extended feature build of the THEOplayer Web SDK.
+  - name: '@theoplayer/theoads'
+    registry: npm
+    url: https://www.npmjs.com/package/@theoplayer/theoads
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Ads
+    version: 11.10.2
+    published: '2026-09-04'
+    description: THEOplayer Web SDK build with the THEOads / OptiView Ads server-guided ad insertion feature.
+  - name: '@theoplayer/web-ui'
+    registry: npm
+    url: https://www.npmjs.com/package/@theoplayer/web-ui
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Player
+    version: 2.3.3
+    published: '2026-09-03'
+    description: Open Video UI for Web - open-source web components for building a THEOplayer UI.
+  - name: '@theoplayer/react-ui'
+    registry: npm
+    url: https://www.npmjs.com/package/@theoplayer/react-ui
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Player
+    version: 2.3.3
+    published: '2026-09-03'
+    description: React component library for the THEOplayer Web SDK.
+  - name: react-native-theoplayer
+    registry: npm
+    url: https://www.npmjs.com/package/react-native-theoplayer
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Player
+    version: 11.6.0
+    published: '2026-08-06'
+    description: React Native THEOplayerView component.
+  - name: '@theoplayer/react-native-ui'
+    registry: npm
+    url: https://www.npmjs.com/package/@theoplayer/react-native-ui
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Player
+    version: 0.23.3
+    published: '2026-07-03'
+    description: Open Video UI for React Native.
+  - name: theoplayer
+    registry: pub.dev
+    url: https://pub.dev/packages/theoplayer
+    official: true
+    language: Dart
+    api: Dolby OptiView Player
+    version: 11.1.0
+    published: '2026-09-01'
+    description: THEOplayer Flutter SDK.
+  - name: theolive
+    registry: pub.dev
+    url: https://pub.dev/packages/theolive
+    official: true
+    language: Dart
+    api: Dolby OptiView Live
+    version: 1.0.2
+    published: '2024-08-08'
+    description: >-
+      THEOlive Flutter SDK. Last published 2024-08-08; the backing THEOlive API is now on v2
+      and the flutter-theolive-sdk repo was last touched 2024-12-15 - a decay signal.
+  - name: THEOplayerSDK-basic
+    registry: cocoapods
+    url: https://cocoapods.org/pods/THEOplayerSDK-basic
+    official: true
+    language: Swift
+    api: Dolby OptiView Player
+    version: 4.9.1
+    published: '2023-02-22'
+    description: >-
+      Legacy CocoaPods distribution of the THEOplayer iOS/tvOS SDK. Last trunk release 2023-02-22
+      at v4.x while the Web SDK is on v11 - current Apple distribution has moved to Swift Package
+      Manager and the theoplayer/theoplayer-sdk-apple repo.
+  - name: '@millicast/sdk'
+    registry: npm
+    url: https://www.npmjs.com/package/@millicast/sdk
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    version: 0.8.1
+    published: '2026-09-03'
+    description: Millicast Web SDK for building a realtime broadcaster / viewer.
+  - name: '@millicast/sdk-interactivity'
+    registry: npm
+    url: https://www.npmjs.com/package/@millicast/sdk-interactivity
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    version: 0.4.1
+    published: '2026-09-03'
+    description: Dolby Millicast Interactivity SDK for bi-directional communication scenarios.
+  - name: '@millicast/vue-viewer-plugin'
+    registry: npm
+    url: https://www.npmjs.com/package/@millicast/vue-viewer-plugin
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    version: 1.8.2
+    published: '2026-09-03'
+    description: Vue.js plugin embedding a Millicast stream viewer.
+  - name: com.millicast:millicast-sdk-android
+    registry: maven
+    url: https://search.maven.org/artifact/com.millicast/millicast-sdk-android
+    official: true
+    language: Kotlin
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    version: 2.4.3
+    published: '2025-06-20'
+    description: Millicast Android SDK on Maven Central.
+  - name: com.millicast:millicast-sdk-android-compose
+    registry: maven
+    url: https://search.maven.org/artifact/com.millicast/millicast-sdk-android-compose
+    official: true
+    language: Kotlin
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    version: 2.4.3
+    published: '2025-06-20'
+    description: Jetpack Compose bindings for the Millicast Android SDK.
+  - name: MillicastSDK
+    registry: cocoapods
+    url: https://cocoapods.org/pods/MillicastSDK
+    official: true
+    language: Swift
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    version: 2.6.0
+    published: '2026-06-10'
+    description: Millicast native SDK for iOS/tvOS.
+  - name: '@dolbyio/dolbyio-rest-apis-client'
+    registry: npm
+    url: https://www.npmjs.com/package/@dolbyio/dolbyio-rest-apis-client
+    official: true
+    language: JavaScript
+    api: Dolby OptiView REST APIs
+    version: 6.3.1
+    published: '2026-07-14'
+    description: >-
+      Node.js wrapper for the Dolby OptiView REST APIs - the only current first-party
+      REST client. Source: github.com/DolbyIO/dolbyio-rest-apis-client-node.
+  - name: dolbyio-rest-apis
+    registry: pypi
+    url: https://pypi.org/project/dolbyio-rest-apis/
+    official: true
+    language: Python
+    api: Dolby OptiView REST APIs
+    version: 5.0.0
+    published: '2024-08-20'
+    description: >-
+      Python wrapper for the Dolby.io REST APIs. Two years behind the Node client (6.3.1) and
+      predates the OptiView rebrand - a first-party abandonment signal, not a gap in our data.
+  - name: DolbyIO.Rest
+    registry: nuget
+    url: https://www.nuget.org/packages/DolbyIO.Rest
+    official: true
+    language: C#
+    api: Dolby OptiView REST APIs
+    version: 1.3.1
+    published: '2023-06-19'
+    description: >-
+      .NET wrapper for the Dolby.io REST APIs. Last published 2023-06-19; the strongest decay
+      signal in this set.
+  - name: '@dolbyio/webrtc-stats'
+    registry: npm
+    url: https://www.npmjs.com/package/@dolbyio/webrtc-stats
+    official: true
+    language: JavaScript
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    version: 1.3.0
+    published: '2026-09-03'
+    description: Dolby OptiView WebRTC statistics parser.
+not_found:
+  - registry: maven
+    query: com.theoplayer / theoplayer
+    version: null
+    note: >-
+      The THEOplayer Android SDK is not distributed through Maven Central. Dolby documents it as
+      an authenticated Maven repository reached with a per-customer licence, so there is no
+      unauthenticated registry endpoint to read a version or a date from. Checked 2026-09-06.
+  - registry: pypi
+    query: theoplayer, millicast
+    version: null
+    note: No first-party Python package for the Player or Millicast SDKs. Checked 2026-09-06.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

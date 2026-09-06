@@ -1,0 +1,136 @@
+generated: '2026-09-06'
+method: derived
+source: >-
+  Derived from the seven first-party OpenAPI documents in openapi/, plus the served
+  https://www.dolby.com/.well-known/security.txt and Dolby's published responsible-disclosure
+  policy at https://www.dolby.com/about/legal/responsible-disclosure-policy/.
+provider: Dolby
+providerId: dolby
+note: >-
+  Cross-cutting web-API standards are almost entirely ABSENT from this surface (no OAuth, no
+  OIDC, no RFC 9457, no idempotency beyond one operation). What Dolby OptiView does conform to
+  is the STREAMING AND ADVERTISING standards of its own market, declared in the contract itself
+  rather than claimed in prose - and those are the entries that matter to a buyer here.
+conformance:
+  - id: whip
+    name: WHIP - WebRTC-HTTP Ingestion Protocol (RFC 9725)
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      POST /api/whip/{streamName} in openapi/dolby-millicast-director-openapi.yml, tagged "Whip",
+      described as the "WHIP endpoint for publishers" and accepting an SDP offer body.
+      Reference page: https://optiview.dolby.com/docs/millicast/api/director/whip-whip-publish/
+  - id: whep
+    name: WHEP - WebRTC-HTTP Egress Protocol (IETF draft)
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      POST /api/whep/{streamAccountId}/{streamName} in
+      openapi/dolby-millicast-director-openapi.yml, tagged "Whep".
+      Reference page: https://optiview.dolby.com/docs/millicast/api/director/whep-whep-subscribe/
+  - id: scte-35
+    name: SCTE-35 digital program insertion cueing
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      A first-class `ScteParams` schema carrying `segmentationTypeId` and `uniqueProgramId` in
+      openapi/dolby-optiview-ads-signaling-v1-openapi.yml, and SCTE marker detection/marker-rule
+      resources in openapi/dolby-optiview-ads-openapi.yml
+      (/api/v1/channels/{channelId}/marker-rules, /api/v1/channels/{channelId}/detection-history).
+  - id: iab-vast
+    name: IAB VAST (Video Ad Serving Template)
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      Ad break entries in openapi/dolby-optiview-ads-openapi.yml take an asset URI documented as
+      "a media or VAST tag URL"; the Ad Engine conforms VAST-delivered creatives to the content
+      stream (openapi/dolby-optiview-ad-engine-openapi.yml, /ad-engine/conform).
+  - id: sgai
+    name: Server-Guided Ad Insertion
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      SGAI is the named delivery model of the whole OptiView Ads product, declared in the contract
+      (SGAI channel integrations, Google Ad Manager custom asset key for the server-guided path)
+      as well as in the docs at https://optiview.dolby.com/docs/ads/
+  - id: cenc-drm
+    name: MPEG Common Encryption with Widevine / FairPlay / PlayReady
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      /api/drm_proxy/{licenseType}/{assetId} and /api/drm_proxy/fair_play/cert in
+      openapi/dolby-millicast-director-openapi.yml; DRM content-protection configuration
+      resources on THEOlive channels (/channels/{id}/drm/configs) and distribution security keys.
+  - id: hls-dash
+    name: HLS and MPEG-DASH adaptive streaming
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      Output format and ABR-ladder configuration across
+      openapi/dolby-optiview-live-openapi.yml and openapi/dolby-millicast-api-openapi.yml;
+      EXT-X tag handling in the Ads contract.
+  - id: rtmp-srt-ingest
+    name: RTMP and SRT contribution ingest
+    conforms: true
+    domain_standard: true
+    evidence: >-
+      Ingest types rtmp-push / rtmp-pull / srt-pull in openapi/dolby-optiview-live-openapi.yml;
+      SRT re-stream output added to Millicast per the 2025-03-19 changelog entry.
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: false
+    evidence: >-
+      No securityScheme of type oauth2 in any of the seven specs, and
+      /.well-known/oauth-authorization-server returns 404 or a soft-404 shell on every host
+      (well-known/dolby-well-known.yml). Auth is HTTP Basic, HTTP Bearer or an apiKey header.
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence: /.well-known/openid-configuration 404s or soft-404s on every probed host.
+  - id: rfc9457
+    name: RFC 9457 Problem Details for HTTP APIs
+    conforms: false
+    evidence: >-
+      No application/problem+json media type anywhere in the seven specs; error envelopes are
+      vendor-specific per product (errors/dolby-problem-types.yml).
+  - id: idempotency
+    name: Idempotent request replay (Idempotency-Key)
+    conforms: partial
+    evidence: >-
+      An Idempotency-Key header is documented on exactly one operation,
+      MediaAssets_CreateMediaAsset (POST /api/v3/media/assets) in the Millicast API. See
+      conventions/dolby-conventions.yml idempotency.coverage = partial.
+  - id: pagination
+    name: Consistent pagination
+    conforms: partial
+    evidence: >-
+      Cursor pagination is consistent and documented for THEOlive
+      (https://optiview.dolby.com/docs/theolive/api/pagination/) but the Ads API uses
+      page/pageSize and Millicast mixes page/itemsOnPage with cursor/limit inside one spec.
+  - id: rfc9116
+    name: RFC 9116 security.txt
+    conforms: true
+    evidence: >-
+      https://www.dolby.com/.well-known/security.txt returns 200 text/plain with Contact,
+      Expires and Policy fields. Saved verbatim at well-known/dolby-security.txt.
+compliance:
+  published: partial
+  note: >-
+    Dolby operates a public coordinated-disclosure programme (Bugcrowd) with a published policy,
+    which is a real, verifiable security-programme claim. We found NO trust centre and no named
+    certification (SOC 2 / ISO 27001 / PCI / HIPAA / FedRAMP) published on optiview.dolby.com or
+    dolby.com: the OptiView site footer links an IAF CertSearch record
+    (https://www.iafcertsearch.org/certification/DQmrsq4w4DnUf2KBVA3WYdmR) but that page is
+    JS-rendered and returned no readable certificate scope to an anonymous fetch, so no
+    certification is asserted here. An honest gap, not a claim.
+  programs:
+    - name: Dolby responsible disclosure programme
+      url: https://www.dolby.com/about/legal/responsible-disclosure-policy/
+      status: 200
+      evidence: security/dolby-vulnerability-disclosure.yml
+    - name: Bugcrowd vulnerability disclosure programme
+      url: https://bugcrowd.com/c1afe99b-027c-4c6d-b642-f1b8dd08e417/external/report
+      evidence: Contact line in well-known/dolby-security.txt
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

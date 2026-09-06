@@ -1,0 +1,180 @@
+generated: '2026-09-06'
+method: searched
+source: >-
+  Derived from the seven first-party OpenAPI documents in openapi/ and confirmed against the
+  Dolby OptiView documentation: https://optiview.dolby.com/docs/theolive/api/authentication/,
+  https://optiview.dolby.com/docs/theolive/api/pagination/,
+  https://optiview.dolby.com/docs/ads/api/ and
+  https://optiview.dolby.com/docs/millicast/api/millicast-api/
+provider: Dolby
+providerId: dolby
+note: >-
+  Dolby OptiView is not one API with one set of conventions - it is four separately-built
+  platforms (THEOlive, Millicast, OptiView Ads, Ad Engine) behind a single brand. Auth style,
+  pagination shape, error envelope and versioning differ per platform, and an agent must
+  branch on which product it is calling. That inconsistency is the single most important
+  runtime fact in this file.
+authentication:
+  style: per-product
+  surfaces:
+    - api: Dolby OptiView Live (THEOlive)
+      scheme: HTTP Basic
+      detail: >-
+        key:secret pair, base64-encoded, sent as `Authorization: Basic <base64>`. Key and secret
+        are created in the dashboard under API Tokens and the secret is shown once only.
+      docs: https://optiview.dolby.com/docs/theolive/api/authentication/
+    - api: Dolby OptiView Ads
+      scheme: HTTP Basic + tenant header
+      detail: >-
+        HTTP Basic with API key as username and API secret as password, PLUS a required
+        `X-Org-ID` header naming the organization. Both are required on every request.
+      docs: https://optiview.dolby.com/docs/ads/api/
+    - api: Millicast (API, Director, Advanced Analytics)
+      scheme: HTTP Bearer
+      detail: >-
+        `Authorization: Bearer <API Secret>` where the API Secret is created in the streaming
+        dashboard under Settings -> Security -> API Secrets.
+      docs: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+    - api: Dolby OptiView Ad Engine
+      scheme: apiKey header
+      detail: '`x-rasp-auth-token: <token>`'
+      docs: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+  oauth2: false
+  note: >-
+    No OAuth 2.0 or OpenID Connect anywhere in the published surface - no securityScheme of type
+    oauth2/openIdConnect in any of the seven specs, and no /.well-known/oauth-authorization-server
+    on any host (see well-known/dolby-well-known.yml). There is therefore no scopes/ artifact:
+    an honest absence, not a gap in our probe.
+  cross_reference: authentication/dolby-authentication.yml
+idempotency:
+  coverage: partial
+  scope:
+    - MediaAssets_CreateMediaAsset
+  mechanism: Idempotency-Key request header
+  detail: >-
+    The Millicast API documents an `Idempotency-Key` header on exactly ONE operation -
+    POST /api/v3/media/assets (MediaAssets_CreateMediaAsset), where it is used so that a
+    repeated clip-creation request does not generate a duplicate clip. No other mutating
+    operation in any of the seven Dolby specs mentions idempotency: the THEOlive, OptiView Ads,
+    Ad Engine, Director and Analytics contracts have no replay protection at all.
+  denominator_note: >-
+    Across the four write-bearing specs there are well over 100 mutating operations
+    (POST/PUT/PATCH/DELETE); one of them accepts an idempotency key. An agent retrying a failed
+    POST /channels or POST /api/publish_token will create a duplicate resource.
+  evidence: openapi/dolby-millicast-api-openapi.yml
+reversibility:
+  grade: documented
+  detail: >-
+    Every long-running resource in the OptiView surface has an explicit reversal path, but Dolby
+    publishes no window for any of them, so this grades `documented` rather than `verified`.
+    Reversal is by paired start/stop and enable/disable operations, not by undo or restore -
+    there is no un-delete anywhere in the surface, and no operation named cancel, refund, void
+    or restore exists.
+  surfaces:
+    - write: start-channel (POST /channels/{id}/start, THEOlive)
+      reversal: stop-channel (POST /channels/{id}/stop)
+      window: null
+      note: Stops all connected engines. No documented window; reversible while running.
+    - write: start-engine (POST /engines/{id}/start, THEOlive)
+      reversal: stop-engine (POST /engines/{id}/stop)
+      window: null
+    - write: Transcoder_StartTranscoder (Millicast)
+      reversal: Transcoder_StopTranscoder (PUT /api/transcoders/stop/{transcoderId})
+      window: null
+    - write: publishing a stream (Millicast)
+      reversal: Stream_StopStream (POST /api/stream/stop) and Stream_StopByAccount (POST /api/stream/stop/all)
+      window: null
+    - write: PublishTokenV1_CreateToken (Millicast)
+      reversal: PublishTokenV1_DisableTokens (PATCH /api/publish_token/disable)
+      window: null
+      note: >-
+        Disable is reversible; DELETE is not. The 2025-05-30 changelog entry states that
+        deleting a publish token now triggers immediate termination of all associated live
+        streams - an irreversible, immediately destructive action.
+        https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  irreversible:
+    - delete-channel / delete-ingest / delete-engine / delete-distribution (THEOlive)
+    - RecordFiles_DeleteAllRecordFiles and MediaAssets_DeleteMediaAssets2 (Millicast) - bulk deletes with no restore path
+    - Delete /channels/{channelId} and Delete /templates/{templateId} (OptiView Ads)
+  note: >-
+    NEVER inferred: no retention or restore window is stated in any Dolby document we fetched.
+    Media assets do carry an expiration/expiry-rule surface (/api/v3/account/media/expiration,
+    /api/record_files/clip/sources/expiry) but that governs automatic deletion, not recovery
+    of something already deleted.
+dry_run_mode:
+  supported: false
+  detail: >-
+    No dry-run, preview, validate or simulate flag on any mutating operation. The closest thing
+    is Webhooks_TestWebhook (POST /api/webhooks/test/{webhookType}), which fires a synthetic
+    webhook payload, and RecordFiles_ValidateStorageProfile, which validates third-party storage
+    credentials - neither rehearses a write.
+pagination:
+  style: per-product
+  surfaces:
+    - api: Dolby OptiView Live (THEOlive)
+      style: cursor
+      params: [limit, cursor]
+      defaults: 'limit defaults to 20'
+      response_fields: [data, pagination.hasMore, pagination.cursor]
+      detail: >-
+        All list endpoints. `pagination.cursor` is an opaque string, present only when
+        hasMore is true; pass it back as the `cursor` query parameter.
+      docs: https://optiview.dolby.com/docs/theolive/api/pagination/
+    - api: Dolby OptiView Ads
+      style: page-number
+      params: [page, pageSize, sort]
+      response_fields: []
+      detail: Offset/page-number paging with a sort parameter on list endpoints.
+    - api: Millicast
+      style: mixed
+      params: [page, limit, cursor, itemsOnPage, sort, sortBy]
+      detail: >-
+        Inconsistent within the one product - older /api/* endpoints use page + itemsOnPage,
+        newer /api/v3/* endpoints use cursor + limit.
+field_expansion:
+  supported: false
+  detail: No expand, fields or include parameter in any spec; responses are fixed-shape.
+metadata:
+  supported: partial
+  detail: >-
+    THEOlive channels carry a `metadata` object, and there is a first-class in-stream metadata
+    write path (PUT /channels/{id}/instream-metadata/{uuid}) for sending timed metadata into a
+    live stream. There is no generic customer key/value metadata bag on Millicast or Ads resources.
+request_id_tracing:
+  supported: false
+  detail: >-
+    No request-id, trace-id or correlation-id response header documented in any of the seven
+    specs or in the docs. An agent debugging a failed call has no id to quote to support.
+versioning:
+  style: URL path
+  detail: >-
+    Each product versions independently in the path. THEOlive is at v2 (https://api.theo.live/v2)
+    with a published V1->V2 migration guide. OptiView Ads serves v2 of the product under an
+    /api/v1 path prefix and keeps a separate legacy v1 monetized-stream signalling contract.
+    Millicast mixes /api/, /api/v2/ and /api/v3/ prefixes inside one specification. Ad Engine
+    is unversioned in the path (info.version 1.0.0).
+  breaking_change_policy: >-
+    No written deprecation or breaking-change policy was found on any Dolby OptiView page.
+    Change is communicated through dated changelog entries and, for THEOlive, a migration guide.
+  docs: https://optiview.dolby.com/docs/theolive/api/migration-from-v1/
+error_envelope:
+  style: per-product
+  rfc9457: false
+  detail: >-
+    No application/problem+json anywhere. Millicast wraps everything in a
+    {"status": "success"|"fail", "data": {...}} envelope (the 403 body returned by an
+    unauthenticated probe of api.millicast.com is literally
+    {"data":{"message":"Unauthorized"},"status":"fail"}). THEOlive returns bare descriptive
+    strings on most errors and a {code, message} MonitoringError object on the monitoring
+    endpoints. OptiView Ads declares only 200/201/204 - it documents no error responses at all.
+  cross_reference: errors/dolby-problem-types.yml
+rate_limit_signaling:
+  headers: []
+  detail: >-
+    No RateLimit-*, X-RateLimit-* or Retry-After header is documented anywhere in the seven
+    specs or in the docs. Exactly one 429 is declared in the whole surface, on the THEOlive
+    per-channel instream-metadata endpoint, and it carries no header and no number.
+  cross_reference: rate-limits/dolby-rate-limits.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

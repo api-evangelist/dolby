@@ -1,0 +1,57 @@
+generated: '2026-09-06'
+method: derived
+source: openapi/dolby-millicast-analytics-openapi.yml, openapi/dolby-millicast-api-openapi.yml,
+  openapi/dolby-millicast-director-openapi.yml, openapi/dolby-optiview-ad-engine-openapi.yml,
+  openapi/dolby-optiview-ads-openapi.yml, openapi/dolby-optiview-ads-signaling-v1-openapi.yml,
+  openapi/dolby-optiview-live-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: API_Secret
+  type: http
+  scheme: bearer
+  description: |-
+    ### Usage
+    #### Acquire secret from dashboard.
+    * Login to the streaming dashboard
+    * On the left menu, click on Settings
+    * Navigate to the Security tab's sub section API Secrets
+    1. "+ Create" to generate a new named API Secret if needed
+    2. Click on the copy button or the reveal button to access a previously created API Secret
+
+    ![](../assets/api_secret.png "Find API Secret")
+  sources:
+  - openapi/dolby-millicast-analytics-openapi.yml
+  - openapi/dolby-millicast-api-openapi.yml
+  - openapi/dolby-millicast-director-openapi.yml
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: x-rasp-auth-token
+  description: API authentication token
+  sources:
+  - openapi/dolby-optiview-ad-engine-openapi.yml
+- name: basicAuth
+  type: http
+  scheme: basic
+  description: API key (username) and secret (password).
+  sources:
+  - openapi/dolby-optiview-ads-openapi.yml
+  - openapi/dolby-optiview-live-openapi.yml
+- name: orgId
+  type: apiKey
+  in: header
+  parameter: x-org-id
+  description: Organization identifier.
+  sources:
+  - openapi/dolby-optiview-ads-openapi.yml
+- name: apiKeyAuth
+  type: apiKey
+  in: header
+  parameter: X-API-KEY
+  sources:
+  - openapi/dolby-optiview-ads-signaling-v1-openapi.yml

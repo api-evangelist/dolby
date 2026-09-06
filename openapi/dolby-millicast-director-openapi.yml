@@ -1,0 +1,787 @@
+x-generator: NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))
+openapi: 3.0.0
+info:
+  title: Director API
+  version: 1.0.0
+servers:
+- url: https://director.millicast.com
+paths:
+  /api/director/publish:
+    post:
+      tags:
+      - Director
+      summary: Publish
+      description: Request for url and authorization to publish a stream.
+      operationId: Director_Publish
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublishStreamModel'
+            examples:
+              ? ''
+              : summary: ''
+                value:
+                  streamName: my_stream
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessPublishDirectorResponseModel'
+              examples:
+                ? ''
+                : summary: ''
+                  value:
+                    status: success
+                    data:
+                      urls:
+                      - wss://domain.millicast.com/ws/pub/faux
+                      jwt: long_jwt_string
+                      iceServers:
+                      - urls: stun:stun.example.com:3478
+                      - urls: turn:turn.example.com:443?transport=tcp
+                        username: user
+                        credential: secret
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - Token: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n   \
+          \  https://director.millicast.com/api/director/publish \\\n     -d '{\"streamName\": \"my_stream\"}'"
+  /api/director/subscribe:
+    post:
+      tags:
+      - Director
+      summary: Subscribe
+      description: Request for url and authorization to subscribe to a stream.
+      operationId: Director_Subscribe
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscribeStreamModel'
+            examples:
+              noauth:
+                summary: noauth
+                value:
+                  streamName: my_insecure_stream
+                  streamAccountId: abc123
+              auth:
+                summary: auth
+                value:
+                  streamName: my_secure_stream
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessSubscribeDirectorResponseModel'
+              examples:
+                noauth:
+                  summary: noauth
+                  value:
+                    status: success
+                    data:
+                      urls:
+                      - wss://domain.millicast.com/ws/sub/faux
+                      jwt: long_jwt_string
+                      iceServers:
+                      - urls: stun:stun.example.com:3478
+                      - urls: turn:turn.example.com:443?transport=tcp
+                        username: user
+                        credential: secret
+                auth:
+                  summary: auth
+                  value:
+                    status: success
+                    data:
+                      urls:
+                      - wss://domain.millicast.com/ws/sub/faux
+                      jwt: long_jwt_string
+                      iceServers:
+                      - urls: stun:stun.example.com:3478
+                      - urls: turn:turn.example.com:443?transport=tcp
+                        username: user
+                        credential: secret
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - Token: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n   \
+          \  https://director.millicast.com/api/director/subscribe \\\n     -d '{\"streamName\": \"my_insecure_stream\", \"\
+          streamAccountId\": \"abc123\"}'"
+  /api/drm_proxy/{licenseType}/{assetId}:
+    post:
+      tags:
+      - DrmLicence
+      operationId: DrmLicence_GetDrmLicence
+      parameters:
+      - name: licenseType
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      - name: assetId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 2
+      - name: specConform
+        in: query
+        required: true
+        schema:
+          type: boolean
+          nullable: true
+        x-position: 3
+      responses:
+        '200':
+          description: ''
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      security:
+      - Token: []
+  /api/drm_proxy/fair_play/cert:
+    get:
+      tags:
+      - DrmLicence
+      operationId: DrmLicence_GetFairplayCertificate
+      responses:
+        '200':
+          description: ''
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      security:
+      - Token: []
+  /api/multitrackvideo/configuration:
+    post:
+      tags:
+      - MultiTrackVideo
+      summary: Configuration
+      description: 'Supplies multi track video configuration to OBS. Please refer to OBS for request schema. Supports OBS
+        schema versions: [2024-06-04, 2025-01-25].'
+      operationId: MultiTrackVideo_Configuration
+      requestBody:
+        x-name: json
+        content:
+          application/json:
+            schema: {}
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultiTrackVideoConfigurationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - Token: []
+  /api/whep/{streamAccountId}/{streamName}:
+    post:
+      tags:
+      - Whep
+      summary: WHEP
+      description: 'WHEP endpoint for subscribers. Request body is SDP Offer. Response body will contain SDP Answer. Location
+        header contains remote WHEP endpoint url.
+
+
+        All errors are returned as plain text. If you send a request with the Accept header you must allow both mime types
+        `application/sdp, text/plain`.'
+      operationId: Whep_WhepSubscribe
+      parameters:
+      - name: streamAccountId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      - name: streamName
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 2
+      - name: sourceId
+        in: query
+        schema:
+          type: string
+          nullable: true
+        x-position: 4
+      requestBody:
+        x-name: sdpOffer
+        content:
+          application/sdp:
+            schema:
+              type: string
+            examples:
+              ? ''
+              : summary: ''
+                value: 'v=0\r\no=- ident1234 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0 1\r\na=extmap-allow-mixed\r\na=msid-semantic:
+                  WMS ident5678\r\n...'
+        required: true
+        x-position: 3
+      responses:
+        '201':
+          description: Success
+          content:
+            application/sdp:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'v=0\r\no=- ident1234 1 IN IP4 127.0.0.1\r\ns=semantic-sdp\r\nc=IN IP4 0.0.0.0\r\nt=0 0\r\na=ice-lite\r\na=msid-semantic:
+                    WMS *\r\na=group:BUNDLE 0 1\r\n...'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'Validation errors:
+
+                    A non-empty request body is required.'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'Unauthorized: authentication_error_reason'
+        '409':
+          description: Conflict
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: Stream not found
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+      security:
+      - Token: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/sdp\" \\\n    \
+          \ https://director.millicast.com/api/whep/abc123/my_stream \\\n     -d 'v=0\\r\\no=- ident1234 2 IN IP4 127.0.0.1\\\
+          r\\ns=-\\r\\nt=0 0\\r\\na=group:BUNDLE 0 1\\r\\na=extmap-allow-mixed\\r\\na=msid-semantic: WMS ident5678\\r\\n...'"
+  /api/whip/{streamName}:
+    post:
+      tags:
+      - Whip
+      summary: WHIP
+      description: 'WHIP endpoint for publishers. Request body is SDP Offer. Response body will contain SDP Answer. Location
+        header contains remote WHIP endpoint url.
+
+
+        All errors are returned as plain text. If you send a request with the Accept header you must allow both mime types
+        `application/sdp, text/plain`.'
+      operationId: Whip_WhipPublish
+      parameters:
+      - name: streamName
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      - name: codec
+        in: query
+        schema:
+          type: string
+          default: h264
+          nullable: true
+        x-position: 3
+      - name: sourceId
+        in: query
+        schema:
+          type: string
+          nullable: true
+        x-position: 4
+      requestBody:
+        x-name: sdpOffer
+        content:
+          application/sdp:
+            schema:
+              type: string
+            examples:
+              ? ''
+              : summary: ''
+                value: 'v=0\r\no=- ident1234 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0 1\r\na=extmap-allow-mixed\r\na=msid-semantic:
+                  WMS ident5678\r\n...'
+        required: true
+        x-position: 2
+      responses:
+        '201':
+          description: Success
+          content:
+            application/sdp:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'v=0\r\no=- ident1234 1 IN IP4 127.0.0.1\r\ns=semantic-sdp\r\nc=IN IP4 0.0.0.0\r\nt=0 0\r\na=ice-lite\r\na=msid-semantic:
+                    WMS *\r\na=group:BUNDLE 0 1\r\n...'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'Validation errors:
+
+                    A non-empty request body is required.'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'Unauthorized: authentication_error_reason'
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+      security:
+      - Token: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/sdp\" \\\n    \
+          \ https://director.millicast.com/api/whip/my_stream \\\n     -d 'v=0\\r\\no=- ident1234 2 IN IP4 127.0.0.1\\r\\\
+          ns=-\\r\\nt=0 0\\r\\na=group:BUNDLE 0 1\\r\\na=extmap-allow-mixed\\r\\na=msid-semantic: WMS ident5678\\r\\n...'"
+components:
+  schemas:
+    SuccessPublishDirectorResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/PublishDirectorResponseModel'
+    PublishDirectorResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        wsUrl:
+          type: string
+          deprecated: true
+          x-deprecatedMessage: Use Urls property
+        urls:
+          type: array
+          items:
+            type: string
+        jwt:
+          type: string
+        iceServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/IceServerModel'
+        streamAccountId:
+          type: string
+        drmObject:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/DrmLicenseServers'
+        subscribeRequiresAuth:
+          type: boolean
+    IceServerModel:
+      type: object
+      additionalProperties: false
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+        username:
+          type: string
+          nullable: true
+        credential:
+          type: string
+          nullable: true
+    DrmLicenseServers:
+      type: object
+      additionalProperties: false
+      properties:
+        widevineUrl:
+          type: string
+          nullable: true
+        fairPlayUrl:
+          type: string
+          nullable: true
+        fairPlayCertUrl:
+          type: string
+          nullable: true
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type: integer
+          format: int32
+          nullable: true
+        data:
+          nullable: true
+    PublishStreamModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      properties:
+        streamName:
+          type: string
+          minLength: 1
+        streamAccountId:
+          type: string
+          nullable: true
+    SuccessSubscribeDirectorResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DirectorResponseModel'
+    DirectorResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        wsUrl:
+          type: string
+          deprecated: true
+          x-deprecatedMessage: Use Urls property
+        urls:
+          type: array
+          items:
+            type: string
+        jwt:
+          type: string
+        iceServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/IceServerModel'
+        streamAccountId:
+          type: string
+        drmObject:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/DrmLicenseServers'
+    SubscribeStreamModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      properties:
+        streamName:
+          type: string
+          minLength: 1
+        streamAccountId:
+          type: string
+          description: Required **only** for published streams which have `subscribeRequiresAuth=false`.
+          nullable: true
+    MultiTrackVideoConfigurationResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        meta:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Meta'
+        ingest_endpoints:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/IngestEndpoint'
+        encoder_configurations:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/EncoderConfiguration'
+        audio_configurations:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurations'
+    Meta:
+      type: object
+      additionalProperties: false
+      properties:
+        schema_version:
+          type: string
+          nullable: true
+        service:
+          type: string
+          nullable: true
+        config_id:
+          type: string
+          nullable: true
+    IngestEndpoint:
+      type: object
+      additionalProperties: false
+      properties:
+        protocol:
+          type: string
+          nullable: true
+        url_template:
+          type: string
+          nullable: true
+        authentication:
+          type: string
+          nullable: true
+    EncoderConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          nullable: true
+        bitrate_interpolation_points:
+          type: array
+          nullable: true
+          items:
+            type: integer
+            format: int32
+        canvas_index:
+          type: integer
+          format: int32
+        framerate:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/Framerate'
+        gpu_scale_type:
+          type: string
+          nullable: true
+        width:
+          type: integer
+          format: int32
+        height:
+          type: integer
+          format: int32
+        settings:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/EncoderConfigurationSettings'
+    Framerate:
+      type: object
+      additionalProperties: false
+      properties:
+        numerator:
+          type: integer
+          format: int32
+        denominator:
+          type: integer
+          format: int32
+    EncoderConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type: integer
+          format: int32
+        bf:
+          type: integer
+          format: int32
+        bframes:
+          type: integer
+          format: int32
+        keyint:
+          type: integer
+          format: int32
+          nullable: true
+        keyint_sec:
+          type: integer
+          format: int32
+        lookahead:
+          type: boolean
+        preset2:
+          type: string
+          nullable: true
+        profile:
+          type: string
+          nullable: true
+        psycho_aq:
+          type: boolean
+        rate_control:
+          type: string
+          nullable: true
+        tune:
+          type: string
+          nullable: true
+        latency:
+          type: string
+          nullable: true
+        target_usage:
+          type: string
+          nullable: true
+    AudioConfigurations:
+      type: object
+      additionalProperties: false
+      properties:
+        live:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/AudioConfiguration'
+        vod:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/AudioConfiguration'
+    AudioConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        codec:
+          type: string
+          nullable: true
+        track_id:
+          type: integer
+          format: int32
+        channels:
+          type: integer
+          format: int32
+        settings:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurationSettings'
+    AudioConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type: integer
+          format: int32
+    SdpOffer:
+      type: object
+      additionalProperties: false
+      properties:
+        sdp:
+          type: string
+  securitySchemes:
+    Token:
+      type: http
+      description: '### Usage
+
+        #### Acquire token from dashboard or api.
+
+        Token will be specific to publishing or subscribing.'
+      scheme: bearer
+security:
+- Token: []
+x-code-samples-replace: {}

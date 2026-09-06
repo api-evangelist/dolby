@@ -1,0 +1,130 @@
+generated: '2026-09-06'
+method: searched
+source: Webhook management operations and event-type enumerations read from the first-party specs openapi/dolby-millicast-api-openapi.yml
+  and openapi/dolby-optiview-live-openapi.yml, plus the Millicast REST APIs & Webhooks changelog https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  and the sample receiver github.com/millicast/samples-millicast-webhooks.
+provider: Dolby
+providerId: dolby
+asyncapi_published: false
+note: 'Dolby OptiView publishes NO AsyncAPI document for any product - there is none in the docs site,
+  none in the public github.com/THEOplayer/documentation source repo, and no /asyncapi.yaml on any host.
+  It does ship a real, contract-declared webhook surface on two of its products, captured here as a webhook
+  catalogue. Nothing in this file was authored on Dolby''s behalf: every event name below is an enum value
+  in a Dolby-published OpenAPI document.'
+surfaces:
+- api: Dolby OptiView Real-time Streaming (Millicast)
+  transport: HTTPS POST to a subscriber-supplied URL
+  management_operations:
+  - operationId: Webhooks_AddWebhook
+    method: POST
+    path: /api/webhooks
+  - operationId: Webhooks_ListWebhooks
+    method: GET
+    path: /api/webhooks/list
+  - operationId: Webhooks_Get
+    method: GET
+    path: /api/webhooks/{webhookId}
+  - operationId: Webhooks_UpdateWebhook
+    method: PUT
+    path: /api/webhooks/{webhookId}
+  - operationId: Webhooks_RemoveWebhook
+    method: DELETE
+    path: /api/webhooks/{webhookId}
+  - operationId: Webhooks_TestWebhook
+    method: POST
+    path: /api/webhooks/test/{webhookType}
+    note: Fires a synthetic payload of the chosen type - the only rehearsal mechanism in the whole Dolby
+      surface.
+  event_types:
+  - Recordings
+  - Thumbnail
+  - Transcoder
+  - Media
+  - Feeds
+  - ViewerConnection
+  subscription_model: Per-webhook boolean toggles on the AddWebhookModel (isFeedHooks, isRecordingHooks
+    and siblings) rather than a subscribe-by-event-name list.
+  security:
+    signing: true
+    detail: Each webhook carries a base64 signing secret returned on the WebhookModel; refreshSecret on
+      update rotates it.
+  delivery_logs: false
+- api: Dolby OptiView Live (THEOlive)
+  transport: HTTPS POST to a subscriber-supplied URL
+  management_operations:
+  - operationId: create-webhook
+    method: POST
+    path: /webhooks
+  - operationId: get-webhooks
+    method: GET
+    path: /webhooks
+  - operationId: get-webhook
+    method: GET
+    path: /webhooks/{id}
+  - operationId: update-webhook
+    method: PATCH
+    path: /webhooks/{id}
+  - operationId: delete-webhook
+    method: DELETE
+    path: /webhooks/{id}
+  - operationId: get-webhook-secret
+    method: GET
+    path: /webhooks/{id}/secret
+  - operationId: get-webhook-logs
+    method: GET
+    path: /webhooks/{id}/logs
+  event_types:
+  - '*'
+  - channel.created
+  - channel.stopped
+  - channel.deleted
+  - channel.deploying
+  - channel.updated
+  - webhook.created
+  - webhook.updated
+  - webhook.deleted
+  - scheduler.created
+  - scheduler.updated
+  - scheduler.deleted
+  - scheduler.active
+  - scheduler.terminated
+  - engine.deploying
+  - engine.waiting
+  - engine.starting
+  - engine.error
+  - engine.playing
+  - engine.ingesting
+  - engine.created
+  - engine.updated
+  - engine.stopping
+  - engine.stopped
+  - engine.deleting
+  - engine.deleted
+  - engine.log.warn
+  - engine.log.error
+  - engine.log.info
+  - ingest.created
+  - ingest.updated
+  - ingest.deleted
+  - distribution.created
+  - distribution.enabled
+  - distribution.disabled
+  - distribution.updated
+  - distribution.deleted
+  - distribution.security.key.added
+  - distribution.security.key.deleted
+  - distribution.security.keys.deleted
+  subscription_model: Event-name subscription; "*" subscribes to everything.
+  security:
+    signing: true
+    detail: A per-webhook signing secret is retrievable at GET /webhooks/{id}/secret.
+  delivery_logs: true
+  delivery_logs_detail: GET /webhooks/{id}/logs returns cursor-paginated WebhookLog entries - the only
+    delivery observability in the surface.
+gaps:
+- No AsyncAPI or CloudEvents document published for either surface.
+- No retry or backoff policy documented for webhook delivery on either product.
+- No webhook surface at all on Dolby OptiView Ads, the Ad Engine, the Director API or Advanced Analytics.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

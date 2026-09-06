@@ -1,0 +1,39 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for OptiView Ads API
+  version: 1.0.0
+extends: openapi/dolby-optiview-ads-openapi.yml
+x-generated: '2026-09-06'
+x-method: generated
+x-source: API Evangelist enrichment pass 2026-09-06. Captures observations made about the upstream contract; the
+  upstream document in openapi/ is never mutated.
+actions:
+- target: $.info
+  description: Stamp provenance for the harvested copy of this contract.
+  update:
+    x-apievangelist:
+      harvested: '2026-09-06'
+      provider: Dolby
+      providerId: dolby
+      ownership: Served by Dolby. THEO Technologies (THEOplayer / THEOlive / THEOads) and Millicast trade as Dolby
+        OptiView; github.com/millicast and github.com/DolbyIO both render as "Dolby OptiView" and Dolby's own docs
+        source repo github.com/THEOplayer/documentation names this specification as the source of the optiview.dolby.com
+        reference pages.
+      base_url: https://us.ads.optiview.dolby.com
+- target: $.servers
+  description: The published Ads specification declares no servers[]. The docs state the base URL explicitly at
+    https://optiview.dolby.com/docs/ads/api/ ("curl 'https://us.ads.optiview.dolby.com/api/v1/channels'"), and that
+    is the host it was fetched from.
+  update:
+  - url: https://us.ads.optiview.dolby.com
+    description: US region. Base recorded by API Evangelist from the Dolby OptiView Ads REST API documentation;
+      not present in the upstream document.
+- target: $.info
+  description: 'Record the contract-quality gaps found in this document: no operationId on any of 55 operations,
+    components.schemas empty, zero $ref, and no 4xx/5xx responses declared anywhere.'
+  update:
+    x-apievangelist-findings:
+      operation_ids: absent on all 55 operations
+      reusable_schemas: components.schemas is empty; every body is inlined
+      error_responses: none declared - only 200/201/204
+      servers: absent from the upstream document

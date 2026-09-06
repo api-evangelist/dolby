@@ -1,0 +1,32 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for Dolby OptiView Live (THEOlive) API v2
+  version: 1.0.0
+extends: openapi/dolby-optiview-live-openapi.yml
+x-generated: '2026-09-06'
+x-method: generated
+x-source: API Evangelist enrichment pass 2026-09-06. Captures observations made about the upstream contract; the
+  upstream document in openapi/ is never mutated.
+actions:
+- target: $.info
+  description: Stamp provenance for the harvested copy of this contract.
+  update:
+    x-apievangelist:
+      harvested: '2026-09-06'
+      provider: Dolby
+      providerId: dolby
+      ownership: Served by Dolby. THEO Technologies (THEOplayer / THEOlive / THEOads) and Millicast trade as Dolby
+        OptiView; github.com/millicast and github.com/DolbyIO both render as "Dolby OptiView" and Dolby's own docs
+        source repo github.com/THEOplayer/documentation names this specification as the source of the optiview.dolby.com
+        reference pages.
+      base_url: https://api.theo.live/v2
+- target: $.info
+  description: 'Record the documented cross-cutting conventions that the specification itself does not encode: cursor
+    pagination with limit defaulting to 20, HTTP Basic key:secret auth, and the single per-channel rate limit.'
+  update:
+    x-apievangelist-findings:
+      pagination: cursor; limit default 20; response carries pagination.hasMore and pagination.cursor
+      pagination_docs: https://optiview.dolby.com/docs/theolive/api/pagination/
+      auth_docs: https://optiview.dolby.com/docs/theolive/api/authentication/
+      rate_limits: one 429, on send-channel-instream-metadata; no value and no Retry-After published
+      migration_guide: https://optiview.dolby.com/docs/theolive/api/migration-from-v1/

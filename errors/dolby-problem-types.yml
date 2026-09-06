@@ -1,0 +1,188 @@
+generated: '2026-09-06'
+method: derived
+source: Derived from the 4xx/5xx/default responses declared in the seven first-party OpenAPI documents
+  in openapi/, cross-checked against the Dolby OptiView documentation.
+provider: Dolby
+providerId: dolby
+format: vendor
+rfc9457: false
+note: 'No Dolby OptiView API uses RFC 9457 application/problem+json. Error shape is per-product: Millicast
+  returns a {status: ''success''|''fail'', data: {...}} envelope, THEOlive returns bare descriptive strings
+  plus a {code, message} MonitoringError on monitoring endpoints, and the OptiView Ads spec declares NO
+  error responses at all - only 200/201/204 - so an agent calling Ads has no contract for what a failure
+  looks like. That gap is the finding, not an omission in this catalogue. No provider-published error-code
+  reference page exists on optiview.dolby.com/docs; the docs sitemap has no error reference for any of
+  the REST APIs.'
+problem_types:
+- apis: Dolby OptiView Live
+  status: '413'
+  title: 'Payload too large: the instream metadata payload exceeds the configured maximum size (default
+    65536 bytes)'
+  media_types: []
+  operations:
+  - send-channel-instream-metadata
+  operation_count: 1
+- apis: Dolby OptiView Live
+  status: '429'
+  title: 'Too many requests: the per-channel instream metadata rate limit was exceeded'
+  media_types: []
+  operations:
+  - send-channel-instream-metadata
+  operation_count: 1
+- apis: Dolby OptiView Live
+  status: '404'
+  title: Region not found or not available for your organization
+  media_types: []
+  operations:
+  - get-region
+  - get-region-ndi-sources
+  - get-region-sdi-devices
+  operation_count: 3
+- apis: Dolby OptiView Live
+  status: '400'
+  title: Region is not an on-prem region
+  media_types: []
+  operations:
+  - get-region-ndi-sources
+  - get-region-sdi-devices
+  operation_count: 2
+- apis: Dolby OptiView Live
+  status: '404'
+  title: Channel not found
+  media_types:
+  - application/json
+  operations:
+  - get-channel-engines-monitoring
+  - get-channel-ingests-monitoring
+  - get-channel-monitoring
+  operation_count: 3
+- apis: Dolby OptiView Live
+  status: '500'
+  title: Internal error
+  media_types:
+  - application/json
+  operations:
+  - get-channel-engines-monitoring
+  - get-channel-ingests-monitoring
+  - get-channel-monitoring
+  - get-engine-monitoring
+  - get-ingest-monitoring
+  operation_count: 5
+- apis: Dolby OptiView Live
+  status: '404'
+  title: Ingest not found
+  media_types:
+  - application/json
+  operations:
+  - get-ingest-monitoring
+  operation_count: 1
+- apis: Dolby OptiView Live
+  status: '404'
+  title: Engine not found
+  media_types:
+  - application/json
+  operations:
+  - get-engine-monitoring
+  operation_count: 1
+- apis: Millicast API
+  status: default
+  title: Server Error
+  media_types:
+  - application/json
+  operations:
+  - Account_CreateStorageProfile
+  - Account_DeleteStorageProfile
+  - Account_GetAccountDistribution
+  - Account_GetAccountInfo
+  - Account_GetAccountSecurity
+  - Account_GetExpirationRules
+  - Account_GetGeoCascade
+  - Account_GetStorageProfile
+  - Account_ListStorageProfiles
+  - Account_UpdateAccountDistribution
+  - Account_UpdateAccountSecurity
+  - Account_UpdateExpirationRules
+  operation_count: 12
+- apis: Millicast API
+  status: '400'
+  title: Bad Request
+  media_types:
+  - application/json
+  operations:
+  - Account_CreateStorageProfile
+  - Account_GetAccountDistribution
+  - Account_GetAccountSecurity
+  - Account_GetGeoCascade
+  - Account_UpdateAccountDistribution
+  - Account_UpdateAccountSecurity
+  - Account_UpdateGeoCascade
+  - Analytics_AccountGeo
+  - Analytics_AccountGeoSeries
+  - Analytics_AccountGeoTotal
+  - Analytics_AccountSeries
+  - Analytics_AccountTotal
+  operation_count: 12
+- apis: Millicast Director API
+  status: '400'
+  title: Bad Request
+  media_types:
+  - application/json
+  operations:
+  - Director_Publish
+  - Director_Subscribe
+  - MultiTrackVideo_Configuration
+  - Whep_WhepSubscribe
+  - Whip_WhipPublish
+  operation_count: 5
+- apis: Millicast Director API
+  status: '401'
+  title: Unauthorized
+  media_types:
+  - application/json
+  operations:
+  - Director_Publish
+  - Director_Subscribe
+  - Whep_WhepSubscribe
+  - Whip_WhipPublish
+  operation_count: 4
+- apis: Millicast Director API
+  status: default
+  title: Server Error
+  media_types:
+  - application/json
+  operations:
+  - Director_Publish
+  - Director_Subscribe
+  - MultiTrackVideo_Configuration
+  operation_count: 3
+- apis: Millicast Director API
+  status: '409'
+  title: Conflict
+  media_types:
+  - text/plain
+  operations:
+  - Whep_WhepSubscribe
+  operation_count: 1
+- apis: Millicast Director API
+  status: '500'
+  title: Server Error
+  media_types:
+  - text/plain
+  operations:
+  - Whep_WhepSubscribe
+  - Whip_WhipPublish
+  operation_count: 2
+coverage:
+  apis_with_declared_errors:
+  - Dolby OptiView Live
+  - Millicast API
+  - Millicast Director API
+  apis_with_no_declared_errors:
+  - Dolby OptiView Ads
+  - Dolby OptiView Ads (legacy v1 signalling)
+  - Millicast Advanced Analytics API
+  - Dolby OptiView Ad Engine
+  entries: 15
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

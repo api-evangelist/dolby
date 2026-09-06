@@ -1,0 +1,222 @@
+generated: '2026-09-06'
+method: probed
+source: >-
+  Anonymous HTTP probes of /.well-known/* on every host this record knows: the registrable
+  domains (dolby.com, dolby.io, millicast.com), www, the docs host (optiview.dolby.com), and
+  every OpenAPI servers[] host (us.ads.optiview.dolby.com, api.theo.live, api.millicast.com,
+  director.millicast.com, analyticsapi.millicast.com, api.galaxy.dolbyrasp.com).
+note: >-
+  ONE real document was found across all hosts: a served security.txt on dolby.com / www.dolby.com.
+  Every other 200 in this file is a catch-all: dolby.io, millicast.com and www.dolby.com answer
+  200 with the site's own HTML page body (WordPress / CMS catch-all) for EVERY /.well-known/ path,
+  including agent-card.json and ai-plugin.json. Those are recorded with soft_404: true and are NOT
+  documents - no WellKnown credit is claimed from them and no agent card was written.
+  api.galaxy.dolbyrasp.com (the Ad Engine servers[] host) does not resolve publicly from our network.
+hosts:
+  - host: www.dolby.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: dolby-security.txt
+        content_type: text/plain
+      - path: /.well-known/openid-configuration
+        status: 200
+        soft_404: true
+        note: returns the dolby.com 404 HTML page with a 200 status
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        soft_404: true
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        soft_404: true
+      - path: /.well-known/api-catalog
+        status: 200
+        soft_404: true
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        soft_404: true
+      - path: /.well-known/agent-card.json
+        status: 200
+        soft_404: true
+      - path: /.well-known/agent.json
+        status: 200
+        soft_404: true
+  - host: dolby.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        content_type: text/plain
+        note: >-
+          Same document as www.dolby.com except the Policy: line, which points at
+          https://www.dolby.com/about/legal/ - a URL that itself returns the Dolby 404 page
+          with a 200 status. The www copy points at the live responsible-disclosure policy.
+  - host: dolby.io
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        soft_404: true
+        note: WordPress catch-all returns the dolby.io page HTML for every /.well-known/ path
+      - path: /.well-known/openid-configuration
+        status: 200
+        soft_404: true
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        soft_404: true
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        soft_404: true
+      - path: /.well-known/api-catalog
+        status: 200
+        soft_404: true
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        soft_404: true
+      - path: /.well-known/agent-card.json
+        status: 200
+        soft_404: true
+      - path: /.well-known/agent.json
+        status: 200
+        soft_404: true
+  - host: millicast.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        soft_404: true
+      - path: /.well-known/openid-configuration
+        status: 200
+        soft_404: true
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        soft_404: true
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        soft_404: true
+      - path: /.well-known/api-catalog
+        status: 200
+        soft_404: true
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        soft_404: true
+      - path: /.well-known/agent-card.json
+        status: 200
+        soft_404: true
+      - path: /.well-known/agent.json
+        status: 200
+        soft_404: true
+  - host: optiview.dolby.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /llms.txt
+        status: 200
+        file: ../llms/dolby-llms.txt
+        content_type: text/plain
+  - host: us.ads.optiview.dolby.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: api.theo.live
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: api.millicast.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+      - path: /.well-known/openid-configuration
+        status: 403
+      - path: /.well-known/oauth-authorization-server
+        status: 403
+      - path: /.well-known/oauth-protected-resource
+        status: 403
+      - path: /.well-known/api-catalog
+        status: 403
+      - path: /.well-known/ai-plugin.json
+        status: 403
+      - path: /.well-known/agent-card.json
+        status: 403
+      - path: /.well-known/agent.json
+        status: 403
+  - host: director.millicast.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+      - path: /.well-known/openid-configuration
+        status: 403
+      - path: /.well-known/oauth-authorization-server
+        status: 403
+      - path: /.well-known/oauth-protected-resource
+        status: 403
+      - path: /.well-known/api-catalog
+        status: 403
+      - path: /.well-known/ai-plugin.json
+        status: 403
+      - path: /.well-known/agent-card.json
+        status: 403
+      - path: /.well-known/agent.json
+        status: 403
+  - host: analyticsapi.millicast.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: api.galaxy.dolbyrasp.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 0
+        note: DNS does not resolve from a public network

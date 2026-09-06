@@ -1,0 +1,66 @@
+generated: '2026-09-06'
+method: searched
+source: >-
+  https://optiview.dolby.com/docs/open-video-ui/, https://optiview.dolby.com/docs/theoplayer/web/hosted-player/,
+  the npm registry, and github.com/THEOplayer/web-ui, github.com/THEOplayer/android-ui and
+  github.com/THEOplayer/react-native-theoplayer-ui.
+provider: Dolby
+providerId: dolby
+note: >-
+  Distinct from packages/dolby-packages.yml: these are client-side embeddable UI surfaces, not
+  API client libraries. Dolby OptiView's component story is Open Video UI - an open-source
+  library of player UI components published per platform - plus a hosted player embed. The
+  ad-serving and streaming APIs ship no embeddable dashboard or element library.
+families:
+  - name: Open Video UI for Web
+    kind: web components
+    description: >-
+      Open-source custom-element library for building and skinning a THEOplayer / OptiView Player
+      UI. Ships standard-conformant Web Components plus a React wrapper.
+    docs: https://optiview.dolby.com/docs/open-video-ui/
+    loaders:
+      - package: '@theoplayer/web-ui'
+        registry: npm
+        version: 2.3.3
+        published: '2026-09-03'
+      - package: '@theoplayer/react-ui'
+        registry: npm
+        version: 2.3.3
+        published: '2026-09-03'
+    source: https://github.com/THEOplayer/web-ui
+    license: open source
+  - name: Open Video UI for React Native
+    kind: React Native components
+    description: Component library for building a player UI in React Native apps.
+    loaders:
+      - package: '@theoplayer/react-native-ui'
+        registry: npm
+        version: 0.23.3
+        published: '2026-07-03'
+    source: https://github.com/THEOplayer/react-native-theoplayer-ui
+  - name: Open Video UI for Android
+    kind: Jetpack Compose components
+    description: UI component library for the THEOplayer Android SDK.
+    source: https://github.com/THEOplayer/android-ui
+  - name: OptiView Hosted Player
+    kind: hosted embed
+    description: >-
+      A Dolby-hosted player page that can be embedded without building an application - the only
+      no-code embeddable surface in the OptiView product set.
+    docs: https://optiview.dolby.com/docs/theoplayer/web/hosted-player/
+  - name: Millicast Vue viewer plugin
+    kind: framework plugin
+    description: Vue.js plugin that embeds a Millicast real-time stream viewer.
+    loaders:
+      - package: '@millicast/vue-viewer-plugin'
+        registry: npm
+        version: 1.8.2
+        published: '2026-09-03'
+    source: https://github.com/millicast/vue-viewer-plugin
+  - name: Millicast Video.js WHEP plugin
+    kind: player plugin
+    description: Video.js plugin that plays a Millicast stream over WHEP.
+    source: https://github.com/millicast/videojs-plugin-millicast-whep
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

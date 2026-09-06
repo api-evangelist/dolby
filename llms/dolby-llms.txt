@@ -1,0 +1,1147 @@
+# Dolby Optiview LLMs.txt - Complete Web Content Analysis
+
+> This is Dolby Optiview's LLMs.txt file.
+
+## Executive Summary
+
+This documentation contains analysis of **79 web pages** across **9 categories**. Each page has been analyzed for content quality, categorized by type, and ranked by importance. This comprehensive resource provides insights into the structure and content of the analyzed website.
+
+## Statistics Overview
+
+- **Total Pages Analyzed**: 79
+- **Categories Covered**: 9
+- **High Importance Pages (4-5/5)**: 35
+- **Medium Importance Pages (3/5)**: 41
+- **Analysis Date**: 8/7/2025
+
+---
+
+## Docs (9 pages)
+
+### [Introduction to Streaming APIs | Dolby OptiView Documentation](https://optiview.dolby.com/docs/millicast/)
+
+**Summary**: This page introduces Dolby.io Streaming APIs, focusing on real-time streaming capabilities. It highlights the API's ability to deliver ultra-low latency streaming for various use cases, including live events and remote production.
+
+**Key Points**:
+- Introduces Dolby.io Streaming APIs for real-time streaming.
+- Emphasizes ultra-low latency delivery.
+- Supports diverse use cases like live events and remote production.
+
+**Importance**: 5/5  
+**Category**: docs
+
+---
+
+### [How to prevent screen recording | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/faq/how-to-prevent-screen-recording/)
+
+**Summary**: This documentation provides strategies to prevent and cope with screen recording, a significant issue in the video industry, by using DRM, watermarking, and platform restrictions.
+
+**Key Points**:
+- Screen recording is a major issue for content providers.
+- DRM and platform restrictions can prevent screen recording.
+- Watermarking helps cope with unauthorized recordings.
+
+**Importance**: 4/5  
+**Category**: docs
+
+---
+
+### [WebRTC | WHIP | Dolby OptiView Documentation](https://optiview.dolby.com/docs/millicast/broadcast/webrtc-and-whip/)
+
+**Summary**: This documentation covers the use of WebRTC with WHIP for real-time streaming, detailing the protocol's support across browsers and its integration with Dolby.io's streaming solutions.
+
+**Key Points**:
+- WebRTC enables real-time global streaming
+- WHIP standardizes WebRTC ingestion
+- Supports streaming up to 4k 60fps
+
+**Importance**: 4/5  
+**Category**: docs
+
+---
+
+### [THEOplayer React Native SDK | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/react-native/)
+
+**Summary**: This documentation provides an overview of the THEOplayer React Native SDK, including getting started guides, API references, and a knowledge base. It aims to help developers implement video player features in React Native applications.
+
+**Key Points**:
+- Overview of THEOplayer React Native SDK.
+- Includes guides and API references.
+- Supports video player feature implementation in React Native.
+
+**Importance**: 4/5  
+**Category**: docs
+
+---
+
+### [How to embed an iframe | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/getting-started/sdks/web/how-can-we-embed-iframe/)
+
+**Summary**: This documentation provides a comprehensive guide on embedding THEOplayer using an iframe, covering implementation, styling, and communication between parent and embedded pages.
+
+**Key Points**:
+- Embedding THEOplayer via iframe is versatile.
+- The guide covers styling and feature enabling.
+- Communication between pages is crucial for functionality.
+
+**Importance**: 3/5  
+**Category**: docs
+
+---
+
+### [Changelog | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/changelog/)
+
+**Summary**: This changelog documents updates, improvements, and bug fixes for THEOplayer across various platforms, providing a detailed history of software changes.
+
+**Key Points**:
+- Changelog tracks updates and fixes for THEOplayer.
+- Covers multiple platforms including Web, Android, and iOS.
+- Includes features, improvements, and known issues.
+
+**Importance**: 3/5  
+**Category**: docs
+
+---
+
+### [OBS Enhanced Broadcasting | Dolby OptiView Documentation](https://optiview.dolby.com/docs/millicast/software-encoders/obs/enhanced-broadcasting-multitrack-video/)
+
+**Summary**: This documentation describes the enhanced broadcasting feature in OBS for multitrack video support, including automatic stream configuration and adaptive bitrate streaming.
+
+**Key Points**:
+- Supports multitrack video with ABR
+- Automatic stream configuration with Dolby Millicast
+- Requires OBS version 31.1 or higher
+
+**Importance**: 3/5  
+**Category**: docs
+
+---
+
+### [Why does Chromecast not work on iOS Chrome? | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/faq/why-does-chromecast-not-work-on-ios-chrome/)
+
+**Summary**: This FAQ explains the lack of Chromecast support on iOS Chrome, providing guidance on alternative implementation methods for Chromecast functionality.
+
+**Key Points**:
+- Chromecast is not supported on iOS Chrome.
+- Google removed support for Chromecast on iOS Chrome.
+- Alternative methods are available for Chromecast implementation.
+
+**Importance**: 2/5  
+**Category**: docs
+
+---
+
+### [What are the limitations of AirPlay | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/faq/what-are-the-limitations-of-AirPlay/)
+
+**Summary**: This FAQ outlines the limitations of using AirPlay with third-party video players, offering alternative solutions for unsupported features.
+
+**Key Points**:
+- AirPlay has several limitations with third-party players.
+- Client-side ad-insertion and VR/360 videos are unsupported.
+- Alternative solutions include server-side ad-insertion.
+
+**Importance**: 2/5  
+**Category**: docs
+
+---
+
+## Homepage (2 pages)
+
+### [High Quality Live Streaming & Playback | Dolby OptiView](https://optiview.dolby.com/)
+
+**Summary**: This page serves as an overview of Dolby OptiView's capabilities in enhancing live streaming and playback experiences. It highlights the product's ability to drive viewer engagement and revenue through immersive and interactive solutions, particularly in live sports and iGaming sectors.
+
+**Key Points**:
+- Overview of Dolby OptiView's streaming and playback solutions
+- Focus on enhancing viewer engagement and revenue
+- Targeted use cases in live sports and iGaming
+
+**Importance**: 5/5  
+**Category**: homepage
+
+---
+
+### [Dolby OptiView Documentation](https://optiview.dolby.com/docs/)
+
+**Summary**: The main documentation hub for Dolby OptiView, offering resources on deploying video playback experiences across various platforms, including live-streaming and ad integration.
+
+**Key Points**:
+- Comprehensive video playback solutions
+- Live-streaming with ultra-low latency
+- Ad integration with OptiView Ads
+
+**Importance**: 5/5  
+**Category**: homepage
+
+---
+
+## Product (11 pages)
+
+### [Commercial Video Player | Dolby OptiView Player](https://optiview.dolby.com/products/video-player/)
+
+**Summary**: This product page details the Dolby OptiView Video Player, emphasizing its cross-platform capabilities and revenue opportunities through seamless ad experiences. It also highlights partnerships with major organizations like the NFL and NASCAR.
+
+**Key Points**:
+- Cross-platform video player with seamless ad experiences
+- Partnerships with major organizations like NFL and NASCAR
+- Focus on boosting viewer engagement and business growth
+
+**Importance**: 5/5  
+**Category**: product
+
+---
+
+### [High Quality Live Streaming at Low Latency | Dolby OptiView](https://optiview.dolby.com/products/streaming/)
+
+**Summary**: This page highlights Dolby OptiView's capabilities in delivering ultra-low latency video streaming solutions. It emphasizes scalability, real-time video transcoding, and advanced streaming features that enhance viewer engagement and maximize ROI.
+
+**Key Points**:
+- Ultra-low latency video streaming
+- Scalability for global audiences
+- Advanced streaming features
+
+**Importance**: 5/5  
+**Category**: product
+
+---
+
+### [THEOplayer | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/)
+
+**Summary**: An overview of THEOplayer, a universal video player solution supporting various streaming protocols and platforms, with links to SDKs and feature guides.
+
+**Key Points**:
+- Supports HLS, MPEG-DASH, DRM
+- Available for multiple platforms
+- Comprehensive SDK documentation
+
+**Importance**: 5/5  
+**Category**: product
+
+---
+
+### [Customize Video Player UI | Dolby OptiView Open Video UI](https://optiview.dolby.com/products/customizable-video-player-ui/)
+
+**Summary**: This page introduces the Open Video UI framework, allowing for extensive customization of video player UI components. It emphasizes the framework's compatibility with accessibility standards and its benefits in accelerating time-to-market.
+
+**Key Points**:
+- Comprehensive library for customizing video player UI
+- Compatibility with accessibility standards
+- Benefits in reducing costs and enhancing viewer experience
+
+**Importance**: 4/5  
+**Category**: product
+
+---
+
+### [HTML 5 / Tizen / webOS Video Player SDK | Dolby OptiView](https://optiview.dolby.com/products/video-player/html5-tizen-webos-sdk/)
+
+**Summary**: This page describes the HTML5/Tizen/webOS SDK, highlighting its extensive features for superior playback experiences on smart TVs. It also outlines the SDK's advantages over open-source alternatives in terms of time-to-market and maintenance.
+
+**Key Points**:
+- Extensive features for smart TV playback
+- Advantages over open-source alternatives
+- Focus on reducing maintenance efforts
+
+**Importance**: 4/5  
+**Category**: product
+
+---
+
+### [Android & Fire TV Video Player SDK | Dolby OptiView](https://optiview.dolby.com/products/video-player/android-firetv-sdk/)
+
+**Summary**: This product page focuses on the Android/Fire TV SDK, detailing its features for delivering high-quality playback across Android and Fire TV platforms. It emphasizes the SDK's role in reducing maintenance costs and supporting the latest streaming technologies.
+
+**Key Points**:
+- High-quality playback across Android and Fire TV
+- Reduction in maintenance costs
+- Support for latest streaming technologies
+
+**Importance**: 4/5  
+**Category**: product
+
+---
+
+### [Apple IOS Video Player SDK | Dolby OptiView](https://optiview.dolby.com/products/video-player/ios-tvos-sdk/)
+
+**Summary**: This page outlines the iOS/tvOS SDK, highlighting its capabilities in providing seamless video experiences on Apple devices. It positions the SDK as a superior alternative to AVPlayer, with features that enhance viewer experience and accessibility.
+
+**Key Points**:
+- Seamless video experiences on Apple devices
+- Superior alternative to AVPlayer
+- Features enhancing viewer experience and accessibility
+
+**Importance**: 4/5  
+**Category**: product
+
+---
+
+### [Roku Video Player SDK | Dolby OptiView](https://optiview.dolby.com/products/video-player/roku-sdk/)
+
+**Summary**: This page describes the Roku SDK, emphasizing its ability to deliver top-quality video playback on Roku devices. It highlights the SDK's integration with the Roku Advertising Framework and its extensive device coverage.
+
+**Key Points**:
+- Top-quality video playback on Roku devices
+- Integration with Roku Advertising Framework
+- Extensive device coverage
+
+**Importance**: 4/5  
+**Category**: product
+
+---
+
+### [React Native Video Player SDK | Dolby OptiView](https://optiview.dolby.com/products/video-player/react-native-sdk/)
+
+**Summary**: This page focuses on the React Native SDK, detailing its features for deploying premium video across multiple platforms. It emphasizes the SDK's ability to accelerate app deployment and its compatibility with various platforms without native code.
+
+**Key Points**:
+- Deploy premium video across multiple platforms
+- Accelerate app deployment
+- Compatibility without native code
+
+**Importance**: 4/5  
+**Category**: product
+
+---
+
+### [Flutter Video Player SDK | Dolby OptiView](https://optiview.dolby.com/products/video-player/flutter-sdk/)
+
+**Summary**: This page introduces the Flutter SDK, highlighting its native performance and extensive platform support. It focuses on the SDK's ability to deliver high-performance video playback and its flexibility in customization.
+
+**Key Points**:
+- Native performance with extensive platform support
+- High-performance video playback
+- Flexibility in customization
+
+**Importance**: 4/5  
+**Category**: product
+
+---
+
+### [Server-Guided Ad Insertion | SGAI | Dolby OptiView Ads](https://optiview.dolby.com/products/server-guided-ad-insertion/)
+
+**Summary**: This page explains Server-Guided Ad Insertion (SGAI), focusing on its ability to maximize ad revenue and viewer engagement through innovative ad formats. It highlights the benefits of personalized ads and enhanced ad analytics.
+
+**Key Points**:
+- Maximize ad revenue and viewer engagement
+- Innovative ad formats with SGAI
+- Benefits of personalized ads and enhanced analytics
+
+**Importance**: 4/5  
+**Category**: product
+
+---
+
+## Solutions (9 pages)
+
+### [Live Sports Streaming Solution | Dolby OptiView](https://optiview.dolby.com/solutions/live-sports-streaming/)
+
+**Summary**: This page presents Dolby's live sports streaming solutions, emphasizing ultra-low latency for real-time interaction and scalable delivery for large audiences. It aims to enhance fan engagement and maximize profits.
+
+**Key Points**:
+- Ultra-low latency for sports
+- Scalable delivery for large audiences
+- Enhanced fan engagement
+
+**Importance**: 5/5  
+**Category**: solutions
+
+---
+
+### [Real-time Streaming | Engage Audiences | Dolby](https://optiview.dolby.com/solutions/real-time-streaming/)
+
+**Summary**: The page focuses on Dolby's real-time streaming solutions, offering features like live monitoring, stream analytics, and DRM content protection. It aims to enhance audience engagement and drive revenue growth through high-quality, low-latency streaming.
+
+**Key Points**:
+- Real-time video streaming
+- Stream analytics and security
+- Revenue growth through audience engagement
+
+**Importance**: 4/5  
+**Category**: solutions
+
+---
+
+### [Cross-Platform Video Playback | Dolby OptiView](https://optiview.dolby.com/solutions/cross-platform-playback/)
+
+**Summary**: This page describes Dolby OptiView's cross-platform video playback capabilities, ensuring high-quality video delivery across various devices. It highlights the support and innovation provided by Dolby's video experts.
+
+**Key Points**:
+- Cross-platform video playback
+- High-quality video delivery
+- Support from Dolby video experts
+
+**Importance**: 4/5  
+**Category**: solutions
+
+---
+
+### [Fan Engagement for Live Sports | Dolby OptiView](https://optiview.dolby.com/solutions/fan-engagement-live-sports/)
+
+**Summary**: Dolby OptiView's fan engagement solutions focus on interactive experiences that captivate sports fans year-round. It highlights the importance of synchronized viewing and real-time streaming to boost revenue.
+
+**Key Points**:
+- Interactive fan engagement
+- Synchronized viewing
+- Year-round fan interaction
+
+**Importance**: 4/5  
+**Category**: solutions
+
+---
+
+### [Live Sports Betting Streaming Solution | Dolby OptiView](https://optiview.dolby.com/solutions/sports-betting/)
+
+**Summary**: This page details Dolby's solutions for live sports betting, offering cross-platform excellence and adaptive bitrate streaming. It focuses on enhancing the betting experience and increasing sportsbook revenue.
+
+**Key Points**:
+- Cross-platform excellence
+- Adaptive bitrate streaming
+- Enhanced betting experience
+
+**Importance**: 4/5  
+**Category**: solutions
+
+---
+
+### [iGaming Streaming for Live Dealer Casinos | Dolby OptiView](https://optiview.dolby.com/solutions/igaming/)
+
+**Summary**: Dolby's iGaming streaming solutions provide immersive experiences for live dealer casinos, focusing on high-quality, low-latency streaming. It aims to increase player engagement and reinforce brand trust.
+
+**Key Points**:
+- Immersive iGaming experiences
+- High-quality, low-latency streaming
+- Increased player engagement
+
+**Importance**: 4/5  
+**Category**: solutions
+
+---
+
+### [Live Horse Race Betting Solution](https://optiview.dolby.com/solutions/horse-race-betting/)
+
+**Summary**: This solutions page details Dolby's real-time streaming technology for horse race betting, emphasizing its low latency and high-quality video delivery. It highlights the benefits of increased viewer engagement and revenue opportunities through advanced streaming solutions.
+
+**Key Points**:
+- Sub-second latency
+- High-quality video delivery
+- Increased viewer engagement
+
+**Importance**: 4/5  
+**Category**: solutions
+
+---
+
+### [Personalized Advertising for Streaming | Dolby OptiView](https://optiview.dolby.com/solutions/personalized-advertising/)
+
+**Summary**: Dolby's personalized advertising solution offers fully addressable ads that enhance viewer engagement without interrupting the streaming experience. It focuses on innovative ad formats and low-latency delivery.
+
+**Key Points**:
+- Fully addressable ads
+- Innovative ad formats
+- Low-latency ad delivery
+
+**Importance**: 3/5  
+**Category**: solutions
+
+---
+
+### [Real-Time Streaming for Live Auctions | Dolby OptiView](https://optiview.dolby.com/solutions/auctions/)
+
+**Summary**: This page showcases Dolby's real-time streaming solutions for live auctions, offering sub-500-millisecond latency and advanced tools to enhance auction performance. It aims to provide a seamless auction experience.
+
+**Key Points**:
+- Real-time streaming for auctions
+- Sub-500-millisecond latency
+- Advanced auction tools
+
+**Importance**: 3/5  
+**Category**: solutions
+
+---
+
+## Blog (30 pages)
+
+### [The Ultimate Guide to iGaming: Evolution, Types, and Regulations](https://optiview.dolby.com/resources/blog/igaming/the-ultimate-guide-to-igaming-evolution-types-and-regulations/)
+
+**Summary**: This comprehensive guide covers the evolution, current state, and future of the iGaming industry, including legal aspects and technological advancements. It provides insights into the impact of COVID-19 and the role of software providers in shaping the industry.
+
+**Key Points**:
+- Evolution of iGaming
+- Impact of COVID-19
+- Global iGaming regulations
+
+**Importance**: 4/5  
+**Category**: blog
+
+---
+
+### [What is a High-Quality Streaming Experience in 2025?](https://optiview.dolby.com/resources/blog/igaming/what-is-a-high-quality-streaming-experience-in-2025-what-sports-fans-and-casino-players-expect/)
+
+**Summary**: This blog post discusses the evolving expectations of sports fans and casino players for high-quality streaming experiences by 2025, focusing on interactivity, ultra-low latency, and personalized content.
+
+**Key Points**:
+- Evolving viewer expectations
+- Key features for high-quality streams
+- Impact on iGaming and live sports
+
+**Importance**: 4/5  
+**Category**: blog
+
+---
+
+### [Blog | Dolby OptiView](https://optiview.dolby.com/resources/blog/)
+
+**Summary**: The blog provides insights and updates on various topics related to Dolby OptiView's streaming solutions, including sports trends, auction streaming, and advertising strategies. It serves as a resource for industry trends and innovations.
+
+**Key Points**:
+- Insights on streaming solutions
+- Industry trends and innovations
+- Updates on sports and advertising
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Understanding Server-Guided Ad Insertion (SGAI) in Streaming](https://optiview.dolby.com/resources/blog/advertising/what-is-sgai-server-guided-ad-insertion-in-streaming/)
+
+**Summary**: This blog post provides an in-depth exploration of Server-Guided Ad Insertion (SGAI), comparing it with other ad insertion technologies like SSAI and CSAI. It discusses the benefits and drawbacks of SGAI, its operational mechanics, and its role in enhancing streaming experiences.
+
+**Key Points**:
+- SGAI combines elements of CSAI and SSAI for seamless ad transitions.
+- Ad-supported streaming is projected to grow significantly.
+- Dolby offers a solution for low latency streaming with SGAI.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [The Future of Live Sports: Engaging Fans with Live Betting Solutions](https://optiview.dolby.com/resources/blog/sports/the-future-of-live-sports-engage-fans-with-premium-live-betting-solutions/)
+
+**Summary**: This blog recaps a session on leveraging live sports betting trends to enhance viewer experiences. It highlights the importance of low latency streaming in sports betting and discusses strategies for maximizing bettor engagement.
+
+**Key Points**:
+- Live sports betting requires high-quality, seamless streams.
+- Dolby and Amino's joint solution enhances sports betting engagement.
+- The session covers top trends in live sports betting.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [The Rise of Social Casino Streaming in iGaming](https://optiview.dolby.com/resources/blog/igaming/why-social-casino-streaming-is-booming-redefining-igaming-entertainment/)
+
+**Summary**: This article examines the growing trend of social casino streaming in the iGaming industry. It explores the differences between social casinos and traditional online casinos, emphasizing the importance of social engagement and low-latency streaming.
+
+**Key Points**:
+- Social casino streaming combines betting with social interaction.
+- Emerging markets like Asia and LATAM are key growth areas.
+- Low-latency streaming is crucial for player retention.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Enhancing Player Engagement with Real-Time Streaming in iGaming](https://optiview.dolby.com/resources/blog/igaming/maximize-player-engagement-with-real-time-streaming/)
+
+**Summary**: This blog discusses the impact of real-time streaming on the iGaming industry, highlighting its role in increasing player engagement and revenue. It covers technological advancements like 5G and PWAs, and the importance of low-latency streaming.
+
+**Key Points**:
+- Real-time streaming boosts player engagement and revenue.
+- 5G and PWAs are driving iGaming advancements.
+- Low-latency streaming is essential for fair and immersive experiences.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Exploring the APAC iGaming Boom: Trends and Strategies for 2025](https://optiview.dolby.com/resources/blog/igaming/the-apac-igaming-boom-key-trends-and-strategies-in-2025/)
+
+**Summary**: This article provides insights into the rapid growth of the iGaming market in the Asia Pacific region. It discusses key trends, market projections, and strategies for operators to succeed in this dynamic landscape.
+
+**Key Points**:
+- APAC iGaming market is experiencing explosive growth.
+- Live casinos and sports betting are key drivers.
+- Success requires understanding the region's unique landscape.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Boosting Viewer Engagement with Gamification in Live Sports](https://optiview.dolby.com/resources/blog/sports/enhancing-viewer-engagement-through-gamification-in-live-sports-streaming/)
+
+**Summary**: This blog explores how gamification is transforming live sports streaming by enhancing fan engagement. It covers various gamification strategies and their impact on sports communities and revenue generation.
+
+**Key Points**:
+- Gamification enhances fan engagement and revenue.
+- Interactive experiences foster deeper connections with sports.
+- Future trends include VR, AR, and social media challenges.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [The Future of iGaming: Live Dealer Casinos](https://optiview.dolby.com/resources/blog/igaming/the-future-of-igaming-live-dealer-casinos/)
+
+**Summary**: This article discusses the evolution of live dealer casinos in the iGaming industry, highlighting technological advancements and trends that are shaping the future of casino streaming.
+
+**Key Points**:
+- Live dealer casinos offer unique interactive experiences.
+- Technological advancements are revolutionizing iGaming.
+- AI personalization and enhanced production are key trends.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Revolutionizing Sports Betting with Real-Time Streaming](https://optiview.dolby.com/resources/blog/sports-betting/revolutionizing-microbetting-in-sports-with-real-time-streaming/)
+
+**Summary**: This blog examines how real-time streaming is transforming in-game and micro betting in sports. It highlights the benefits of instant access, immersive experiences, and data-driven insights for sports bettors.
+
+**Key Points**:
+- Real-time streaming enhances in-game and micro betting.
+- Instant access and immersive experiences boost engagement.
+- Data-driven insights and social interactivity expand opportunities.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Building a Thriving Community Through Fan Engagement](https://optiview.dolby.com/resources/blog/streaming/powering-success-the-importance-of-fan-engagement-in-building-a-thriving-community/)
+
+**Summary**: This article emphasizes the importance of fan engagement in sports and how it contributes to building a thriving community. It provides actionable tips for enhancing fan experiences and fostering team loyalty.
+
+**Key Points**:
+- Fan engagement is crucial for brand success and growth.
+- Interactive content and two-way conversations enhance engagement.
+- Community-building techniques amplify brand visibility.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [iGaming Trends: Top 7 Trends to Look for in 2025 and Beyond](https://optiview.dolby.com/resources/blog/igaming/igaming-trends-of-2024-top-7-trends-that-will-rule-the-industry/)
+
+**Summary**: This blog post explores the top seven trends in the iGaming industry for 2025, focusing on personalized user experiences, immersive technologies, and regulatory shifts. It highlights the importance of technological advancements in streaming and social interaction features to enhance user engagement.
+
+**Key Points**:
+- Personalized user experiences with AI
+- Immersive experiences with AR and VR
+- Technological advances for real-time streaming
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Revolutionize Live Auctions Using Real-time Streaming Software](https://optiview.dolby.com/resources/blog/streaming/revolutionize-live-auctions-using-real-time-streaming-software-advanced-tools-to-boost-auction-performance/)
+
+**Summary**: This blog discusses how real-time streaming software can transform live auctions by enhancing global reach, image clarity, and bid refresh rates. It also covers the benefits of Dolby Millicast in improving auction performance through features like mobile bidding and live clipping.
+
+**Key Points**:
+- Global reach and accessibility
+- Simultaneous in-person and online bidding
+- Superior image clarity
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Player Acquisition in iGaming: Essential Tactics](https://optiview.dolby.com/resources/blog/igaming/player-acquisition-in-igaming-essential-tactics-for-attracting-and-retaining-new-players/)
+
+**Summary**: This blog provides strategies for acquiring and retaining players in the iGaming industry, focusing on multi-channel marketing and new technologies. It addresses challenges like short attention spans and ad fatigue, offering solutions to enhance player engagement.
+
+**Key Points**:
+- Effective user acquisition strategies
+- Multi-channel approach
+- Challenges in player acquisition
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Understanding the Real-time Streaming Ecosystem](https://optiview.dolby.com/resources/blog/streaming/understanding-the-real-time-streaming-ecosystem/)
+
+**Summary**: This blog series introduction outlines the components of the real-time streaming ecosystem, including video capture, broadcasting, and distribution. It emphasizes the importance of mastering these elements to enhance viewer engagement and global reach.
+
+**Key Points**:
+- Components of real-time streaming
+- Importance of viewer engagement
+- Global reach
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Top 5 Trends in Live Sports to Watch in 2025](https://optiview.dolby.com/resources/blog/sports/top-5-trends-in-live-sports-to-watch-in-2025/)
+
+**Summary**: This blog highlights the top trends in live sports for 2025, including online viewership, multiview streaming, and personalized ads. It discusses the impact of these trends on audience engagement and revenue generation for sports leagues.
+
+**Key Points**:
+- Rise in online viewership
+- Multiview streaming
+- Personalized, interactive ads
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [What is Multistreaming?](https://optiview.dolby.com/resources/blog/streaming/what-is-multistreaming/)
+
+**Summary**: This blog explains multistreaming, its benefits, and challenges, comparing it with re-streaming and simulcasting. It provides a step-by-step guide on how to multistream content to enhance visibility and engagement across multiple platforms.
+
+**Key Points**:
+- Benefits of multistreaming
+- Challenges of multistreaming
+- How to multistream content
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Live Auctions vs. Timed Auctions: Comparing Types of Online Auctions](https://optiview.dolby.com/resources/blog/streaming/live-online-auctions-vs-timed-online-auctions/)
+
+**Summary**: This article provides a detailed comparison between live and timed online auctions, discussing their functionalities, use cases, benefits, and challenges. It aims to help readers determine which auction type is best suited for their needs.
+
+**Key Points**:
+- Comparison of live and timed auctions
+- Use cases for different auction types
+- Benefits and challenges of each auction type
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Multilingual Live Streaming](https://optiview.dolby.com/resources/blog/streaming/multilingual-live-streaming/)
+
+**Summary**: This blog post explores the concept of multilingual live streaming, highlighting its benefits, challenges, and best practices. It emphasizes the importance of language in expanding audience reach and engagement.
+
+**Key Points**:
+- Benefits of multilingual streaming
+- Challenges in content localization
+- Best practices for multilingual streaming
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [What is Cloud Transcoding?](https://optiview.dolby.com/resources/blog/streaming/what-is-cloud-transcoding/)
+
+**Summary**: The article explains cloud transcoding, contrasting it with on-premises transcoding, and discusses its benefits, challenges, and use cases. It highlights the role of cloud transcoding in enhancing video streaming experiences.
+
+**Key Points**:
+- Difference between cloud and on-premises transcoding
+- Benefits of cloud transcoding
+- Use cases for cloud transcoding
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Adaptive Bitrate vs. Multi-Bitrate Streaming](https://optiview.dolby.com/resources/blog/streaming/adaptive-bitrate-vs-multi-bitrate-streaming/)
+
+**Summary**: The article compares adaptive bitrate streaming with multi-bitrate streaming, detailing their functionalities, benefits, and use cases. It aims to guide users in choosing the right streaming method based on their needs.
+
+**Key Points**:
+- Differences between ABR and MBR
+- Benefits of each streaming method
+- Use cases for ABR and MBR
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [What is WHIP?: Your Guide to the WebRTC-HTTP Ingestion Protocol](https://optiview.dolby.com/resources/blog/streaming/what-is-whip-intro-to-webrtc-streaming-part-1/)
+
+**Summary**: This blog post introduces WHIP, a protocol designed to enhance WebRTC streaming by addressing previous challenges. It discusses WHIP's benefits and its role in improving real-time streaming experiences.
+
+**Key Points**:
+- Introduction to WHIP protocol
+- Benefits of using WHIP
+- Enhancements to WebRTC streaming
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [What is Interactive Live Streaming?](https://optiview.dolby.com/resources/blog/streaming/what-is-interactive-live-streaming/)
+
+**Summary**: The article explores interactive live streaming, its benefits, and various use cases. It provides insights into making live streams more engaging and interactive for audiences.
+
+**Key Points**:
+- Benefits of interactive live streaming
+- Examples of interactive streaming
+- Strategies for enhancing interactivity
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [What is Stream Bitrate?](https://optiview.dolby.com/resources/blog/streaming/what-is-stream-bitrate/)
+
+**Summary**: This blog post explains the concept of streaming bitrate, its impact on video quality, and how to optimize it for better streaming experiences. It provides practical tips for achieving optimal bitrate settings.
+
+**Key Points**:
+- Impact of bitrate on video quality
+- Factors affecting streaming bitrate
+- Tips for optimizing bitrate
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Benefits of a Commercial React Native Video Player vs DIY with Open Source](https://optiview.dolby.com/resources/blog/playback/benefits-of-a-commercial-react-native-video-player-vs-diy-with-open-source/)
+
+**Summary**: The article compares commercial React Native video players with DIY open-source options, discussing their advantages and disadvantages. It aims to help developers choose the best approach for their needs.
+
+**Key Points**:
+- Comparison of commercial vs. open-source React Native players
+- Advantages of using commercial solutions
+- Considerations for developers
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [What is Simulcast and Why Does it Matter for Streaming? | Dolby OptiView](https://optiview.dolby.com/resources/blog/streaming/what-is-simulcast-and-why-does-it-matter-for-streaming/)
+
+**Summary**: This blog post explains the concept of simulcasting in streaming, its importance, and how it can be implemented. It highlights the benefits of simulcasting, particularly in optimizing stream quality based on viewer bandwidth and device capabilities.
+
+**Key Points**:
+- Simulcasting optimizes stream quality for different bandwidths.
+- It is crucial for industries like online auctions and racing.
+- The article clarifies common misconceptions about simulcasting.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [The Digital Rebirth of Live Horse Racing: How Technology is Fueling iGaming's Rapid Rise | Dolby OptiView](https://optiview.dolby.com/resources/blog/igaming/the-digital-rebirth-of-live-horse-racing-how-technology-is-fueling-igamings-rapid-rise/)
+
+**Summary**: This article discusses the impact of digital technology on live horse racing and iGaming, emphasizing how advancements like WebRTC and 5G are transforming the industry by enhancing engagement and betting experiences.
+
+**Key Points**:
+- Technology is revitalizing the horse racing industry.
+- Live streaming and mobile betting are key drivers.
+- The industry's market value is projected to grow significantly.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Boost Viewer Engagement: 5 Pro Tips for Your Live Sports Broadcast | Dolby OptiView](https://optiview.dolby.com/resources/blog/streaming/boost-viewer-engagement-5-pro-tips-for-your-live-sports-broadcast/)
+
+**Summary**: This blog provides strategies for enhancing viewer engagement in live sports broadcasts through personalization, interactive features, and monetization opportunities, leveraging modern technology and changing viewer expectations.
+
+**Key Points**:
+- Personalization and interactivity are key to viewer engagement.
+- Monetization opportunities exist through interactive ads.
+- Broadcasters must adapt to changing viewer expectations.
+
+**Importance**: 3/5  
+**Category**: blog
+
+---
+
+### [Geo-Blocking: What Is It and How To Implement It](https://optiview.dolby.com/resources/blog/streaming/geo-blocking-what-is-it-and-how-to-implement-it-into-your-stream/)
+
+**Summary**: This blog explains geo-blocking and its implementation in streaming, discussing its effectiveness in managing content rights across different regions. It provides practical options for allowing or blocking access based on countries or IP addresses.
+
+**Key Points**:
+- Geo-blocking options
+- Content rights management
+- Implementation strategies
+
+**Importance**: 2/5  
+**Category**: blog
+
+---
+
+## Guides (11 pages)
+
+### [Comprehensive Guide to Low Latency Video Streaming](https://optiview.dolby.com/resources/blog/streaming/the-complete-guide-to-low-latency-in-live-streaming/)
+
+**Summary**: This guide provides an in-depth look at low-latency streaming, its importance, and techniques to reduce latency. It covers various protocols and use cases where low-latency streaming is essential.
+
+**Key Points**:
+- Low-latency streaming is crucial for live sports and online casinos.
+- Techniques to reduce latency include using a global CDN and optimizing encoder settings.
+- Protocols like WebRTC and Low-Latency HLS are vital for low-latency streaming.
+
+**Importance**: 4/5  
+**Category**: guides
+
+---
+
+### [A Fullscreen Video Player Component | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/getting-started/frameworks/react-native/fullscreen/)
+
+**Summary**: This documentation provides guidance on implementing fullscreen video player components in React Native using THEOplayer, detailing methods for seamless transitions and UI management.
+
+**Key Points**:
+- Fullscreen API support varies by browser
+- Challenges in transitioning to fullscreen on mobile
+- Two methods for presenting fullscreen video
+
+**Importance**: 4/5  
+**Category**: guides
+
+---
+
+### [Multi-key HLS | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/how-to-guides/drm/multikey-hls/)
+
+**Summary**: This page provides a detailed guide on configuring multi-key HLS streams using THEOplayer, compatible with various DRM systems like Google Widevine, Microsoft PlayReady, and Apple FairPlay. It explains the encryption methods and how to create HLS streams that work across different platforms without needing multiple encodings.
+
+**Key Points**:
+- Explains multi-key HLS stream configuration.
+- Covers compatibility with major DRM systems.
+- Reduces need for multiple stream encodings.
+
+**Importance**: 4/5  
+**Category**: guides
+
+---
+
+### [Google IMA | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/how-to-guides/ads/google-ima/)
+
+**Summary**: This documentation outlines the integration of Google IMA with THEOplayer for ad management. It covers SDKs for web, Android, and iOS, detailing the steps to include the IMA SDK and configure ad scheduling and tracking.
+
+**Key Points**:
+- Details Google IMA integration with THEOplayer.
+- Includes SDK setup for web, Android, and iOS.
+- Covers ad scheduling and tracking configuration.
+
+**Importance**: 4/5  
+**Category**: guides
+
+---
+
+### [Casting with Chromecast and Airplay | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/getting-started/frameworks/react-native/cast/)
+
+**Summary**: This guide explains how to set up and use Chromecast and Airplay with THEOplayer in React Native applications. It covers configuration, API usage, and event subscription for casting functionalities.
+
+**Key Points**:
+- Covers Chromecast and Airplay setup in React Native.
+- Includes configuration and API usage.
+- Details event subscription for casting functionalities.
+
+**Importance**: 4/5  
+**Category**: guides
+
+---
+
+### [How to set up VAST and VMAP ads? | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/how-to-guides/ads/how-to-set-up-vast-and-vmap/)
+
+**Summary**: This guide provides instructions for scheduling VAST and VMAP ads using THEOplayer. It includes examples for different SDKs and explains dynamic scheduling and ad integration options.
+
+**Key Points**:
+- Instructions for scheduling VAST and VMAP ads.
+- Includes examples for various SDKs.
+- Explains dynamic scheduling and ad integration.
+
+**Importance**: 4/5  
+**Category**: guides
+
+---
+
+### [A Guide to Re-streaming and Live Clipping](https://optiview.dolby.com/resources/blog/streaming/a-guide-to-re-streaming-and-live-clipping/)
+
+**Summary**: This guide explains the concepts of re-streaming and live clipping, highlighting their benefits in increasing reach and engagement. It discusses applications in live sports, casinos, and auctions, providing practical tips for broadcasters to maximize impact.
+
+**Key Points**:
+- Benefits of re-streaming
+- Applications in live sports
+- Practical tips for broadcasters
+
+**Importance**: 3/5  
+**Category**: guides
+
+---
+
+### [Android Network Request/Response Interceptor | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/how-to-guides/network/android-network-interceptor/)
+
+**Summary**: This guide explains how to set up and use network request/response interceptors in THEOplayer Android SDK, allowing developers to modify network interactions during video playback.
+
+**Key Points**:
+- Intercept network requests and responses
+- Modify requests or provide new responses
+- Requires THEOplayer Android SDK version 5.11.0 or higher
+
+**Importance**: 3/5  
+**Category**: guides
+
+---
+
+### [Youbora (NPAW Plugin) | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/how-to-guides/analytics/youbora/)
+
+**Summary**: This article provides information on configuring THEOplayer with the Youbora analytics plugin, including setup instructions for various platforms and integration details.
+
+**Key Points**:
+- Youbora plugin maintained by NPAW
+- Integration with THEOplayer across platforms
+- Requires NPAW developer account for access
+
+**Importance**: 3/5  
+**Category**: guides
+
+---
+
+### [How to play a Clear-Key-protected stream in THEOplayer? | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/how-to-guides/drm/how-to-play-clear-key-protected-stream/)
+
+**Summary**: This guide provides instructions on using Clear Key DRM with THEOplayer, including examples for Web and Android SDKs and related API documentation.
+
+**Key Points**:
+- Clear Key DRM does not require a provider
+- Direct key provision through LicenseAcquisitionDescription
+- Examples for Web and Android SDKs
+
+**Importance**: 3/5  
+**Category**: guides
+
+---
+
+### [Basic guide to Web Audio API | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/knowledge-base/playback/basic-guide-web-audio-api/)
+
+**Summary**: This guide introduces the Web Audio API in THEOplayer, providing a basic understanding of audio graph setup and manipulation. It includes practical examples for developers to enhance audio output in their applications.
+
+**Key Points**:
+- Introduces Web Audio API in THEOplayer.
+- Covers audio graph setup and manipulation.
+- Provides practical examples for audio enhancement.
+
+**Importance**: 3/5  
+**Category**: guides
+
+---
+
+## Resources (1 pages)
+
+### [Case Study: How Livespins Transformed Online Slot Gaming](https://optiview.dolby.com/resources/customer-stories/case-study-how-livespins-transformed-online-slot-gaming/)
+
+**Summary**: This case study highlights how Livespins utilized Dolby OptiView Streaming to enhance the online slot gaming experience, focusing on the 'Bet Behind' feature to increase player engagement and retention.
+
+**Key Points**:
+- Livespins' use of Dolby OptiView Streaming
+- Introduction of 'Bet Behind' feature
+- Impact on player engagement and retention
+
+**Importance**: 4/5  
+**Category**: resources
+
+---
+
+## Tutorial (2 pages)
+
+### [Building a WebRTC Streaming App | Dolby OptiView](https://optiview.dolby.com/resources/blog/streaming/building-a-low-latency-livestream-viewer-with-webrtc-millicast/)
+
+**Summary**: This guide details the process of building a low-latency WebRTC streaming platform using dolby.io Millicast and JavaScript, focusing on achieving high-quality and fast content delivery.
+
+**Key Points**:
+- WebRTC enables ultra-low latency streaming.
+- JavaScript and dolby.io Millicast are key components.
+- The guide balances quality and speed in streaming.
+
+**Importance**: 4/5  
+**Category**: tutorial
+
+---
+
+### [Getting started with Millicast | Dolby OptiView Documentation](https://optiview.dolby.com/docs/millicast/getting-started/)
+
+**Summary**: This tutorial introduces Dolby.io Real-time Streaming APIs, guiding users through setting up and running private streams with low latency for various applications.
+
+**Key Points**:
+- Dolby.io APIs enable low-latency global streaming.
+- The guide covers setup and application building.
+- Suitable for diverse use cases like sports and live events.
+
+**Importance**: 4/5  
+**Category**: tutorial
+
+---
+
+## Support (4 pages)
+
+### [Why is my video not playing automatically | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/faq/why-is-video-not-playing-automatically/)
+
+**Summary**: This page addresses common issues and solutions related to videos not playing automatically in THEOplayer, focusing on autoplay policies, browser-specific behaviors, and technical recommendations.
+
+**Key Points**:
+- Autoplay policies affect video playback
+- Different browsers have unique autoplay rules
+- Technical solutions for autoplay issues
+
+**Importance**: 3/5  
+**Category**: support
+
+---
+
+### [Why does fullscreen not behave as expected on iOS | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/faq/why-does-fullscreen-not-behave-as-expected-on-ios/)
+
+**Summary**: This FAQ addresses the limitations of fullscreen playback on iOS devices using THEOplayer, offering workarounds and technical solutions for developers.
+
+**Key Points**:
+- iOS limits fullscreen to video elements
+- Workarounds for full-window playback
+- allowNativeFullscreen property for native fullscreen
+
+**Importance**: 3/5  
+**Category**: support
+
+---
+
+### [Widevine CDM deprecation notice for old browser versions | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/faq/old-widevine-cdm-deprecation-notice/)
+
+**Summary**: This notice informs users about the deprecation of older Widevine CDM versions by Google, affecting DRM-protected streams on outdated browsers. It advises users to update their browsers to continue accessing Widevine-protected content.
+
+**Key Points**:
+- Announces deprecation of older Widevine CDM versions.
+- Affects DRM streams on outdated browsers.
+- Advises browser updates for continued access.
+
+**Importance**: 3/5  
+**Category**: support
+
+---
+
+### [Why can't I select another video quality on iOS/tvOS? | Dolby OptiView Documentation](https://optiview.dolby.com/docs/theoplayer/faq/why-cant-we-select-other-video-quality-on-ios-tvos/)
+
+**Summary**: This FAQ addresses the technical limitations on iOS/tvOS that prevent video quality selection in THEOplayer. It explains the reliance on native playback pipelines and the constraints imposed by Apple's technologies.
+
+**Key Points**:
+- Explains video quality selection limitations on iOS/tvOS.
+- Discusses reliance on native playback pipelines.
+- Highlights constraints from Apple's technologies.
+
+**Importance**: 3/5  
+**Category**: support
+
+---
+
+## Conclusion
+
+This comprehensive analysis covers 79 pages providing insights across 9 different content categories. The documentation serves as a complete reference for understanding the scope, structure, and key content elements of the analyzed website.
+
+*Generated on 8/7/2025, 9:57:44 PM | Total URLs: 79*

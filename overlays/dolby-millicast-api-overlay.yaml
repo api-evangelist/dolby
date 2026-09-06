@@ -1,0 +1,32 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for Millicast API
+  version: 1.0.0
+extends: openapi/dolby-millicast-api-openapi.yml
+x-generated: '2026-09-06'
+x-method: generated
+x-source: API Evangelist enrichment pass 2026-09-06. Captures observations made about the upstream contract; the
+  upstream document in openapi/ is never mutated.
+actions:
+- target: $.info
+  description: Stamp provenance for the harvested copy of this contract.
+  update:
+    x-apievangelist:
+      harvested: '2026-09-06'
+      provider: Dolby
+      providerId: dolby
+      ownership: Served by Dolby. THEO Technologies (THEOplayer / THEOlive / THEOads) and Millicast trade as Dolby
+        OptiView; github.com/millicast and github.com/DolbyIO both render as "Dolby OptiView" and Dolby's own docs
+        source repo github.com/THEOplayer/documentation names this specification as the source of the optiview.dolby.com
+        reference pages.
+      base_url: https://api.millicast.com
+- target: $.info
+  description: Record that 30 of the 129 operations in this document are flagged deprecated with no published sunset
+    date, and that exactly one operation supports Idempotency-Key.
+  update:
+    x-apievangelist-findings:
+      deprecated_operations: 30
+      sunset_dates_published: false
+      idempotency_key_operations:
+      - MediaAssets_CreateMediaAsset
+      error_envelope: '{status, data} vendor envelope; no RFC 9457'

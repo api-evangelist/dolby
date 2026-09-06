@@ -1,0 +1,31 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay for Dolby OptiView Ad Engine
+  version: 1.0.0
+extends: openapi/dolby-optiview-ad-engine-openapi.yml
+x-generated: '2026-09-06'
+x-method: generated
+x-source: API Evangelist enrichment pass 2026-09-06. Captures observations made about the upstream contract; the
+  upstream document in openapi/ is never mutated.
+actions:
+- target: $.info
+  description: Stamp provenance for the harvested copy of this contract.
+  update:
+    x-apievangelist:
+      harvested: '2026-09-06'
+      provider: Dolby
+      providerId: dolby
+      ownership: Served by Dolby. THEO Technologies (THEOplayer / THEOlive / THEOads) and Millicast trade as Dolby
+        OptiView; github.com/millicast and github.com/DolbyIO both render as "Dolby OptiView" and Dolby's own docs
+        source repo github.com/THEOplayer/documentation names this specification as the source of the optiview.dolby.com
+        reference pages.
+      base_url: https://api.galaxy.dolbyrasp.com
+- target: $.info
+  description: Record that the declared server host does not resolve from a public network, so the contract cannot
+    be exercised without Dolby-side access.
+  update:
+    x-apievangelist-findings:
+      server_reachability: servers[0] https://api.galaxy.dolbyrasp.com did not resolve from a public network on
+        2026-09-06
+      auth: x-rasp-auth-token apiKey header
+      error_responses: none declared - only 200

@@ -3,154 +3,101 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
 provider: Dolby
 providerId: dolby
+generated: '2026-09-06'
+method: searched
+source: https://optiview.dolby.com/plans/
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+modified: '2026-09-06'
 tags:
   - Audio
   - Video
   - Streaming
   - Media
   - Real-Time
-description: Machine-readable plans and pricing scaffold for this API provider. Conforms to the API Commons
-  Plans schema. Tier limits and prices are scaffold defaults; replace with provider-published values.
+supersedes: >-
+  A scaffold written by the 2026-05-04 bulk sweep that invented a Free / Professional /
+  Enterprise ladder with 1,000 and 100,000 request quotas and 10/100/1000 rpm limits. Dolby
+  publishes none of that. It has been replaced entirely by what the pricing page actually says.
+plan_count: 3
+description: >-
+  Dolby OptiView publishes three named plans - Streaming, Playback and Advertising - which can be
+  bought standalone or bundled. ALL THREE ARE "Custom pricing" with a "Request pricing" call to
+  action. No price, no currency, no billing period, no included quota, no overage rate and no
+  per-tier limit is published anywhere on the site. There is no free tier and no self-serve
+  signup: every path to the API goes through a contact form.
+public_pricing: false
+free_tier: false
+self_serve: false
+currency: null
+billing_period: null
 plans:
-  - id: dolby-free
-    name: Free
-    type: freemium
-    description: Free entry tier for the Dolby API surface. Intended for evaluation, prototyping, and
-      low-volume integrations. Real limits and pricing must be reconciled with the provider's published
-      plan documentation.
-    entries:
-      - label: API Requests
-        description: Monthly API request quota across all included endpoints
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: 1000
-        timeFrame: month
-        geo: global
-        domains: []
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the free tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 10
-        timeFrame: minute
-        geo: global
-        domains: []
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-    elements:
-      - name: Public Documentation
-      - name: Community Support
-      - name: Sandbox Access
-      - name: Dolby OptiView Player
-      - name: Dolby OptiView Live
-      - name: Dolby Real-time Streaming (Millicast)
-      - name: Dolby OptiView Ads
-      - name: Dolby OptiView Ad Engine
-  - id: dolby-pro
-    name: Professional
-    type: paid
-    description: Production tier for Dolby. Provides higher quotas, priority support, and access to the
-      broader API portfolio. Pricing placeholder; align with the provider's pricing page.
-    entries:
-      - label: API Requests
-        description: Monthly API request quota
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: 100000
-        timeFrame: month
-        geo: global
-        domains: []
-        unit: 1
-        price: TBD
-        userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the professional tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 100
-        timeFrame: minute
-        geo: global
-        domains: []
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Overage
-        description: Per-request price after monthly quota is exceeded
-        name: overage
-        type: metered
-        metric: requests
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains: []
-        unit: 1000
-        price: TBD
-        userMultiplied: false
-    elements:
-      - name: All Production Endpoints
-      - name: Email Support
-      - name: SLA Targets
-      - name: Webhook Subscriptions
-      - name: Dolby OptiView Player
-      - name: Dolby OptiView Live
-      - name: Dolby Real-time Streaming (Millicast)
-      - name: Dolby OptiView Ads
-      - name: Dolby OptiView Ad Engine
-  - id: dolby-enterprise
-    name: Enterprise
+  - id: dolby-optiview-streaming
+    name: Streaming
     type: enterprise
-    description: Custom-negotiated tier for Dolby. Includes dedicated capacity, contractual SLAs, security
-      review, data residency options, and named technical account management.
-    entries:
-      - label: API Requests
-        description: Negotiated request volume; -1 indicates uncapped subject to fair use
-        name: api_requests
-        type: quota
-        metric: requests
-        limit: -1
-        timeFrame: month
-        geo: configurable
-        domains: []
-        unit: 1
-        price: custom
-        userMultiplied: false
-      - label: Rate Limit
-        description: Negotiated burst and steady-state rate
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 1000
-        timeFrame: minute
-        geo: configurable
-        domains: []
-        unit: 1
-        price: custom
-        userMultiplied: false
+    price: custom
+    currency: null
+    billing_period: null
+    quota: null
+    overage: null
+    cta: Request pricing
+    cta_url: https://optiview.dolby.com/contact/
+    covers:
+      - Dolby OptiView Real-time Streaming (Millicast)
+      - Dolby OptiView Live
     elements:
-      - name: Unlimited / Negotiated Volume
-      - name: 24/7 Dedicated Support
-      - name: Contractual SLA
-      - name: Security & Compliance Review
-      - name: Dedicated Account Manager
-      - name: Custom Data Residency
-      - name: Dolby OptiView Player
-      - name: Dolby OptiView Live
-      - name: Dolby Real-time Streaming (Millicast)
-      - name: Dolby OptiView Ads
-      - name: Dolby OptiView Ad Engine
+      - Real-time interaction
+      - Effortless global scalability
+      - Configurable low latency
+      - Synchronized metadata
+      - Premium tools & features
+  - id: dolby-optiview-playback
+    name: Playback
+    type: enterprise
+    price: custom
+    currency: null
+    billing_period: null
+    quota: null
+    overage: null
+    cta: Request pricing
+    cta_url: https://optiview.dolby.com/contact/
+    covers:
+      - Dolby OptiView Player
+    elements:
+      - Optimized for every platform
+      - Seamless ad experiences
+      - React Native and Flutter support
+      - Customizable player UI
+      - Ads, analytics and DRM connectors
+  - id: dolby-optiview-advertising
+    name: Advertising
+    type: enterprise
+    price: custom
+    currency: null
+    billing_period: null
+    quota: null
+    overage: null
+    cta: Request pricing
+    cta_url: https://optiview.dolby.com/contact/
+    covers:
+      - Dolby OptiView Ads
+      - Dolby OptiView Ad Engine
+    elements:
+      - Innovative ad formats
+      - Optimal inventory use
+      - Increased scalability
+      - Enhanced ad analytics & insights
+      - Personalized ad experiences
+support_commitments:
+  note: >-
+    The pricing page names three commercial commitments that are not tied to a tier - priority
+    support, "assigned account representatives for a guaranteed response time", and access to
+    Dolby engineers. No response-time number and no SLA document is published.
+evidence:
+  - url: https://optiview.dolby.com/plans/
+    status: 200
+    note: >-
+      https://optiview.dolby.com/pricing and https://dolby.io/pricing/ both 301 here. Read
+      2026-09-06.
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com

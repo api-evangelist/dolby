@@ -1,0 +1,35 @@
+generated: '2026-09-06'
+method: generated
+source: >-
+  Grounded in the first-party OpenAPI documents in openapi/ - every operationId cited in these
+  skills was grepped out of a Dolby-published specification - plus the Dolby OptiView docs
+  (full example, pagination, authentication, migration-from-v1) and the REST APIs changelog.
+provider: Dolby
+providerId: dolby
+note: >-
+  No provider-published Agent Skills or AGENTS.md exist on any Dolby host or in
+  github.com/THEOplayer/documentation; these are generated from the contracts.
+skills:
+  - name: dolby-launch-live-channel
+    file: dolby-launch-live-channel.md
+    api: Dolby OptiView Live
+    description: Stand up a THEOlive channel end to end - channel, ingest, engine, distribution - and start it.
+    operations: 9
+  - name: dolby-provision-realtime-stream
+    file: dolby-provision-realtime-stream.md
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    description: Mint publish and subscribe tokens, publish over WHIP, subscribe over WHEP, and wind down safely.
+    operations: 7
+  - name: dolby-clip-live-stream
+    file: dolby-clip-live-stream.md
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    description: Clip a live stream into a media asset using the one idempotent write in the Dolby surface.
+    operations: 5
+  - name: dolby-wire-webhooks
+    file: dolby-wire-webhooks.md
+    api: Dolby OptiView Live, Dolby OptiView Real-time Streaming (Millicast)
+    description: Subscribe to event webhooks on either streaming product, verify signatures and confirm delivery.
+    operations: 6
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

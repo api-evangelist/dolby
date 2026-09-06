@@ -1,0 +1,284 @@
+generated: '2026-09-06'
+method: derived
+source: Derived from $ref links and *Id reference fields across the component schemas of the five first-party
+  OpenAPI documents that declare them.
+provider: Dolby
+providerId: dolby
+note: 'Dolby OptiView has no single shared data model - each product has its own. The most structurally
+  important thing an integrator needs to know is the THEOlive V2 component model: a Channel is a container,
+  and Ingest -> Engine -> Distribution are separate resources that must each be created and wired by id.
+  Creating a working live channel takes four API calls, not one. https://optiview.dolby.com/docs/theolive/api/migration-from-v1/'
+id_conventions:
+  style: opaque string ids, no type prefixes
+  detail: No Stripe-style prefixed identifiers anywhere. THEOlive ids are opaque strings; Millicast mixes
+    integer ids (webhooks, tokens) with string ids (media assets, transcoders); the OptiView Ads API uses
+    UUIDs.
+core_graph:
+- api: Dolby OptiView Live
+  root: Channel
+  relationships:
+  - from: Channel
+    to: Ingest
+    type: has_many
+    via: /channels/{id}/ingests
+  - from: Channel
+    to: Engine
+    type: has_many
+    via: /channels/{id}/engines
+  - from: Channel
+    to: Distribution
+    type: has_many
+    via: /channels/{id}/distributions
+  - from: Engine
+    to: Ingest
+    type: belongs_to
+    via: ingestId
+  - from: Engine
+    to: AbrLadder
+    type: belongs_to
+    via: abrLadderId
+  - from: Engine
+    to: Region
+    type: belongs_to
+    via: region
+  - from: Distribution
+    to: Engine
+    type: has_many
+    via: engineIds
+  - from: Distribution
+    to: SecurityKey
+    type: has_many
+    via: /distributions/{id}/security/keys
+  - from: Channel
+    to: Webhook
+    type: has_many
+    via: webhook event subscriptions
+  - from: Channel
+    to: Scheduler
+    type: has_many
+    via: /schedulers
+- api: Millicast API
+  root: Account
+  relationships:
+  - from: Account
+    to: PublishToken
+    type: has_many
+    via: /api/publish_token
+  - from: Account
+    to: SubscribeToken
+    type: has_many
+    via: /api/subscribe_token
+  - from: PublishToken
+    to: Stream
+    type: has_many
+    via: streams[]
+  - from: Account
+    to: Transcoder
+    type: has_many
+    via: /api/transcoders
+  - from: Transcoder
+    to: TranscoderSchedule
+    type: has_many
+    via: /api/transcoders/schedule
+  - from: Account
+    to: MediaAsset
+    type: has_many
+    via: /api/v3/media/assets
+  - from: MediaAsset
+    to: MediaDistribution
+    type: has_many
+    via: /api/v3/media/distributions
+  - from: Account
+    to: StorageProfile
+    type: has_many
+    via: /api/v3/account/media/storage
+  - from: Account
+    to: Webhook
+    type: has_many
+    via: /api/webhooks
+- api: Dolby OptiView Ads
+  root: Organization
+  relationships:
+  - from: Organization
+    to: Channel
+    type: has_many
+    via: /api/v1/channels
+  - from: Organization
+    to: OrganizationIntegration
+    type: has_many
+    via: /api/v1/organizations/integrations
+  - from: Channel
+    to: Break
+    type: has_many
+    via: /channels/{channelId}/breaks
+  - from: Channel
+    to: Event
+    type: has_many
+    via: /channels/{channelId}/events
+  - from: Channel
+    to: MarkerRule
+    type: has_many
+    via: /channels/{channelId}/marker-rules
+  - from: Channel
+    to: Origin
+    type: has_many
+    via: /channels/{channelId}/origins
+  - from: Channel
+    to: ChannelIntegration
+    type: has_many
+    via: /channels/{channelId}/integrations
+  - from: Event
+    to: Template
+    type: has_many
+    via: /events/{eventId}/templates
+  - from: Channel
+    to: MarkerDetection
+    type: has_many
+    via: /channels/{channelId}/detection-history
+- api: Dolby OptiView Ad Engine
+  root: AdProfile
+  relationships:
+  - from: AdProfile
+    to: ConformJob
+    type: has_many
+    via: /ad-engine/conform
+  - from: ConformJob
+    to: MediaInfo
+    type: has_one
+    via: /media-info
+schema_counts:
+  Dolby OptiView Live: 83
+  Millicast API: 261
+  Dolby OptiView Ads: 0
+  Millicast Director API: 20
+  Dolby OptiView Ad Engine: 4
+derived_reference_edges: 298
+largest_schemas:
+- api: Millicast API
+  name: PublishTokenResponseV1
+  fields: 30
+- api: Millicast API
+  name: PublishTokenResponseV2
+  fields: 29
+- api: Millicast API
+  name: UpdatePublishTokenV2
+  fields: 24
+- api: Millicast API
+  name: UpdatePublishTokenV1
+  fields: 24
+- api: Millicast API
+  name: CreatePublishTokenV1
+  fields: 22
+- api: Millicast API
+  name: FeedDetails
+  fields: 20
+- api: Dolby OptiView Live
+  name: Distribution
+  fields: 17
+- api: Millicast API
+  name: DownloadMediaAssetModel
+  fields: 16
+- api: Millicast API
+  name: DownloadMediaAssetModel2
+  fields: 16
+- api: Millicast API
+  name: SubscribeTokenResponseV1
+  fields: 16
+- api: Dolby OptiView Live
+  name: CreateDistributionBody
+  fields: 15
+- api: Dolby OptiView Live
+  name: UpdateDistributionBody
+  fields: 15
+- api: Millicast API
+  name: MediaAssetResponseModel
+  fields: 15
+- api: Millicast API
+  name: MediaAssetResponseModel2
+  fields: 15
+- api: Millicast API
+  name: SubscribeTokenResponseV2
+  fields: 15
+- api: Millicast API
+  name: FeedSummary
+  fields: 15
+- api: Millicast API
+  name: ClipRequestResponseModel
+  fields: 15
+- api: Millicast API
+  name: CreateMediaAssetModel
+  fields: 14
+- api: Millicast API
+  name: StreamSummary
+  fields: 14
+- api: Millicast API
+  name: StreamDetails
+  fields: 14
+- api: Millicast API
+  name: ClipRequestResponseBaseModel
+  fields: 14
+- api: Dolby OptiView Live
+  name: Channel
+  fields: 13
+- api: Dolby OptiView Live
+  name: Scheduler
+  fields: 13
+- api: Dolby OptiView Live
+  name: CustomEndpoint
+  fields: 13
+- api: Millicast Director API
+  name: EncoderConfigurationSettings
+  fields: 13
+- api: Millicast API
+  name: UpdateSubscribeTokenV2
+  fields: 11
+- api: Millicast API
+  name: StreamBaseSummary
+  fields: 11
+- api: Millicast API
+  name: TranscoderScheduleInfoResponse
+  fields: 11
+- api: Millicast API
+  name: UpdateSubscribeTokenV1
+  fields: 11
+- api: Millicast API
+  name: WebhookModel
+  fields: 11
+- api: Dolby OptiView Live
+  name: Ingest
+  fields: 10
+- api: Dolby OptiView Live
+  name: CreateChannelBody
+  fields: 10
+- api: Dolby OptiView Live
+  name: CreateSchedulerBody
+  fields: 10
+- api: Dolby OptiView Live
+  name: UpdateSchedulerBody
+  fields: 10
+- api: Millicast API
+  name: RecordResponse
+  fields: 10
+- api: Millicast API
+  name: CreateClipRequestModel
+  fields: 10
+- api: Millicast API
+  name: CreateSubscribeTokenV1
+  fields: 10
+- api: Millicast API
+  name: UpdateWebhookModel
+  fields: 10
+- api: Millicast API
+  name: EncodingStats
+  fields: 9
+- api: Millicast API
+  name: RecordFileModel
+  fields: 9
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
+contract_quality_finding: 'The OptiView Ads OpenAPI is fully inlined: components.schemas is EMPTY and
+  the document contains zero $ref. Every request and response body is spelled out in place, with no named,
+  reusable entity and no operationId on any of its 55 operations. The relationships recorded for OptiView
+  Ads below were therefore read from its URL hierarchy, not from schema links - and a code generator pointed
+  at that spec produces anonymous types.'

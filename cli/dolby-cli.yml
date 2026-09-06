@@ -1,0 +1,38 @@
+generated: '2026-09-06'
+method: searched
+source: >-
+  github.com/millicast/millicast-cli and a search of the Dolby OptiView documentation
+  (1,355-page sitemap) and the npm/PyPI/Homebrew registries for a first-party command-line tool.
+provider: Dolby
+providerId: dolby
+note: >-
+  Dolby OptiView ships NO command-line tool for its REST APIs. There is no dolby, optiview or
+  theolive CLI on npm, PyPI or Homebrew, and the documentation has no CLI section for any product.
+  The one first-party CLI that exists is a media-publishing utility, not an API client, and it
+  has not been touched since February 2024.
+clis:
+  - name: millicast-cli
+    official: true
+    api: Dolby OptiView Real-time Streaming (Millicast)
+    scope: media publishing only - not an API management CLI
+    description: >-
+      "The millicast native command line interface to publish from a Windows/Linux/macOS
+      terminal." Captures and publishes a stream to the Millicast platform; it does not wrap the
+      REST API surface (no token, channel, webhook, recording or analytics commands).
+    source: https://github.com/millicast/millicast-cli
+    registry: null
+    version: null
+    published: null
+    last_repo_activity: '2024-02-06'
+    note: >-
+      Not distributed through any package registry, so there is no metadata endpoint to read a
+      version or release date from - the repository's own last-activity date (2024-02-06) is the
+      only currency signal available.
+absent:
+  - name: REST API CLI
+    detail: >-
+      No first-party CLI exists for Dolby OptiView Live, OptiView Ads, the Ad Engine, the
+      Millicast REST API, the Director API or Advanced Analytics. Checked 2026-09-06.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

@@ -1,0 +1,481 @@
+{
+  "x-generator": "NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Advanced Analytics API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://analyticsapi.millicast.com"
+    }
+  ],
+  "paths": {
+    "/api/records/viewers": {
+      "post": {
+        "tags": [
+          "Analytics"
+        ],
+        "summary": "Viewer Records",
+        "description": "Returns a range of viewer connection records, with optional start-time and completion-time filters. Includes ongoing (not yet completed) connections by default. Each ClientId appears as a single record. If a session reconnects after being marked complete, it is returned as one record with duration and bytes accumulated from the original session start.\n\nTo poll for new or updated records, set StartTime to your last checkpoint and advance it on each call. Dedupe results by ClientId.\n\nTo fetch completed records up to a point in time, set Search=Completed with EndTime as the upper bound on completion time. EndTime is one-sided: repeated calls with the same EndTime return every record completed before that time each time, not only the ones newly completed since your last call. Do not use this for non-overlapping usage or billing tallies - use v2's CompletedAfter/CompletedBefore for that.",
+        "operationId": "Records_GetViewerRecords",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetRecordsModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-jsonl": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ViewerRecordModelV1"
+                  }
+                },
+                "examples": {
+                  "": {
+                    "summary": "",
+                    "value": "{\"startTime\":\"2023-01-01T00:30:00.000Z\",\"endTime\":\"2023-01-01T01:00:00.000Z\",\"clientId\":\"ffffffff-ffff-ffff-ffff-ffffffffffff\",\"clusterId\":\"phx-1\",\"country\":\"US\",\"duration\":1800,\"bytes\":450000000,\"ipAddress\":\"127.0.0.1\",\"streamName\":\"teststream\",\"trackingId\":null,\"userAgent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\"}"
+                  }
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ViewerRecordModelV1"
+                  }
+                },
+                "examples": {
+                  "": {
+                    "summary": "",
+                    "value": "StartTime,EndTime,ClientId,ClusterId,Country,Duration,Bytes,IpAddress,StreamName,TrackingId,UserAgent\n2023-01-01T00:30:00.000Z,2023-01-01T01:00:00.000Z,ffffffff-ffff-ffff-ffff-ffffffffffff,phx-1,US,1800,450000000,127.0.0.1,teststream,,\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\"\n"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "API_Secret": []
+          }
+        ]
+      }
+    },
+    "/api/v2/records/viewers": {
+      "post": {
+        "tags": [
+          "Analytics V2"
+        ],
+        "summary": "Viewer Records (V2)",
+        "description": "Returns a range of viewer connection records. Each row is returned as recorded, including separate rows for a session that reconnected after being marked complete. Response includes RecordId and PreviousRecordId; use PreviousRecordId to link a reconnected session's rows back into one logical session. Dedupe/key results by (ClientId, StartTime), not by ClientId alone.\n\nTime range fields:\n- StartedAfter / StartedBefore: bounds on session start time.\n- CompletedAfter / CompletedBefore: bounds on completion time.\n\nTo poll for new or updated records, set StartedAfter to your last checkpoint and advance it on each call. An ongoing session updates the same RecordId; a reconnected session creates a new row with a new StartTime and PreviousRecordId set.\n\nTo fetch only fully-completed records for a window (for example usage or billing tallies), set Search=Completed with CompletedAfter/CompletedBefore. A session that started before the window but completed within it is included, and will not be returned again for a later window.",
+        "operationId": "RecordsV2_GetViewerRecords",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetRecordsV2Model"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-jsonl": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ViewerRecordModel"
+                  }
+                },
+                "examples": {
+                  "": {
+                    "summary": "",
+                    "value": "{\"startTime\":\"2023-01-01T00:30:00.000Z\",\"endTime\":\"2023-01-01T01:00:00.000Z\",\"clientId\":\"ffffffff-ffff-ffff-ffff-ffffffffffff\",\"clusterId\":\"phx-1\",\"country\":\"US\",\"duration\":1800,\"bytes\":450000000,\"ipAddress\":\"127.0.0.1\",\"streamName\":\"teststream\",\"trackingId\":null,\"userAgent\":\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\",\"recordId\":12345,\"previousRecordId\":null}"
+                  }
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ViewerRecordModel"
+                  }
+                },
+                "examples": {
+                  "": {
+                    "summary": "",
+                    "value": "StartTime,EndTime,ClientId,ClusterId,Country,Duration,Bytes,IpAddress,StreamName,TrackingId,UserAgent,RecordId,PreviousRecordId\n2023-01-01T00:30:00.000Z,2023-01-01T01:00:00.000Z,ffffffff-ffff-ffff-ffff-ffffffffffff,phx-1,US,1800,450000000,127.0.0.1,teststream,,\"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36\",12345,\n"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "API_Secret": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ViewerRecordModelV1": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "description": "Start time of connection",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "Expected null for ongoing connections",
+            "format": "date-time",
+            "nullable": true
+          },
+          "clientId": {
+            "type": "string",
+            "description": "Unique id of client connection"
+          },
+          "clusterId": {
+            "type": "string",
+            "description": "ClusterId used by connection"
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO 3166-1 two letter country code"
+          },
+          "customViewerData": {
+            "type": "string",
+            "description": "Custom data associated with viewer",
+            "nullable": true
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Duration of connection in seconds"
+          },
+          "bytes": {
+            "type": "integer",
+            "description": "Total bytes sent/received for connection",
+            "format": "uint64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "description": "Ip address of connection"
+          },
+          "streamName": {
+            "type": "string",
+            "description": "Stream name"
+          },
+          "trackingId": {
+            "type": "string",
+            "description": "tracking id",
+            "nullable": true
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "Useragent of connection"
+          }
+        }
+      },
+      "GetRecordsModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "description": "ISO 8601 format (eg 2020-01-01T00:00:00Z), all times are expected to be UTC. Lower bound of the session start-time range.",
+            "nullable": true
+          },
+          "startOperator": {
+            "description": "Used with StartTime",
+            "default": "GreaterThanOrEqualTo",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DateTimeOperator"
+              }
+            ]
+          },
+          "endTime": {
+            "type": "string",
+            "description": "ISO 8601 format (eg 2020-01-01T00:00:00Z), all times are expected to be UTC. Upper bound of the completion-time range.",
+            "nullable": true
+          },
+          "endOperator": {
+            "description": "Used with EndTime",
+            "default": "LessThan",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DateTimeOperator"
+              }
+            ]
+          },
+          "search": {
+            "description": "What type of records to search for",
+            "default": "Ongoing_Completed",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordSearchType"
+              }
+            ]
+          },
+          "streamNames": {
+            "type": "array",
+            "description": "List of streamNames to only include in response. Mutually exclusive with TrackingIds",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "trackingIds": {
+            "type": "array",
+            "description": "List of trackingIds to only include in response. NULL is allowed here to include records with no trackingId specified. Mutually exclusive with StreamNames",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DateTimeOperator": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "GreaterThanOrEqualTo",
+          "GreaterThan",
+          "LessThanOrEqualTo",
+          "LessThan"
+        ],
+        "enum": [
+          "GreaterThanOrEqualTo",
+          "GreaterThan",
+          "LessThanOrEqualTo",
+          "LessThan"
+        ]
+      },
+      "RecordSearchType": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Completed",
+          "Ongoing",
+          "Ongoing_Completed"
+        ],
+        "enum": [
+          "Completed",
+          "Ongoing",
+          "Ongoing_Completed"
+        ]
+      },
+      "ViewerRecordModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "description": "Start time of connection",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "description": "Expected null for ongoing connections",
+            "format": "date-time",
+            "nullable": true
+          },
+          "clientId": {
+            "type": "string",
+            "description": "Unique id of client connection"
+          },
+          "clusterId": {
+            "type": "string",
+            "description": "ClusterId used by connection"
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO 3166-1 two letter country code"
+          },
+          "customViewerData": {
+            "type": "string",
+            "description": "Custom data associated with viewer",
+            "nullable": true
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Duration of connection in seconds"
+          },
+          "bytes": {
+            "type": "integer",
+            "description": "Total bytes sent/received for connection",
+            "format": "uint64"
+          },
+          "ipAddress": {
+            "type": "string",
+            "description": "Ip address of connection"
+          },
+          "streamName": {
+            "type": "string",
+            "description": "Stream name"
+          },
+          "trackingId": {
+            "type": "string",
+            "description": "tracking id",
+            "nullable": true
+          },
+          "userAgent": {
+            "type": "string",
+            "description": "Useragent of connection"
+          },
+          "recordId": {
+            "type": "integer",
+            "description": "Database record ID",
+            "format": "uint64"
+          },
+          "previousRecordId": {
+            "type": "integer",
+            "description": "Previous record ID if this is a reactivation",
+            "format": "uint64",
+            "nullable": true
+          }
+        }
+      },
+      "GetRecordsV2Model": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "startedAfter": {
+            "type": "string",
+            "description": "ISO 8601 format (eg 2020-01-01T00:00:00Z), all times are expected to be UTC. Lower bound of the session start-time range.",
+            "nullable": true
+          },
+          "startedAfterOperator": {
+            "description": "Used with StartedAfter",
+            "default": "GreaterThanOrEqualTo",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DateTimeOperator"
+              }
+            ]
+          },
+          "startedBefore": {
+            "type": "string",
+            "description": "ISO 8601 format (eg 2020-01-01T00:00:00Z), all times are expected to be UTC. Upper bound of the session start-time range.",
+            "nullable": true
+          },
+          "startedBeforeOperator": {
+            "description": "Used with StartedBefore",
+            "default": "LessThan",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DateTimeOperator"
+              }
+            ]
+          },
+          "completedAfter": {
+            "type": "string",
+            "description": "ISO 8601 format (eg 2020-01-01T00:00:00Z), all times are expected to be UTC. Lower bound of the completion-time range.",
+            "nullable": true
+          },
+          "completedAfterOperator": {
+            "description": "Used with CompletedAfter",
+            "default": "GreaterThanOrEqualTo",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DateTimeOperator"
+              }
+            ]
+          },
+          "completedBefore": {
+            "type": "string",
+            "description": "ISO 8601 format (eg 2020-01-01T00:00:00Z), all times are expected to be UTC. Upper bound of the completion-time range.",
+            "nullable": true
+          },
+          "completedBeforeOperator": {
+            "description": "Used with CompletedBefore",
+            "default": "LessThan",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DateTimeOperator"
+              }
+            ]
+          },
+          "search": {
+            "description": "What type of records to search for",
+            "default": "Ongoing_Completed",
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RecordSearchType"
+              }
+            ]
+          },
+          "streamNames": {
+            "type": "array",
+            "description": "List of streamNames to only include in response. Mutually exclusive with TrackingIds",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "trackingIds": {
+            "type": "array",
+            "description": "List of trackingIds to only include in response. NULL is allowed here to include records with no trackingId specified. Mutually exclusive with StreamNames",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "API_Secret": {
+        "type": "http",
+        "description": "### Usage\n#### Acquire secret from dashboard.\n* Login to the streaming dashboard\n* On the left menu, click on Settings\n* Navigate to the Security tab's sub section API Secrets\n1. \"+ Create\" to generate a new named API Secret if needed\n2. Click on the copy button or the reveal button to access a previously created API Secret\n\n![](../assets/api_secret.png \"Find API Secret\")",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "API_Secret": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Analytics",
+      "description": "Viewer connection analytics records"
+    },
+    {
+      "name": "Analytics V2",
+      "description": "Viewer connection analytics records, including reconnection history"
+    }
+  ],
+  "x-code-samples-replace": {}
+}

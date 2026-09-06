@@ -1,11 +1,11 @@
 aid: dolby
 name: Dolby
-description: >-
-  Dolby Laboratories is a leading technology company specializing in audio and
-  video. The Dolby developer platform (dolby.io / Dolby OptiView) provides
-  APIs and SDKs for media processing, real-time streaming, video playback, and
-  ad delivery. Dolby is responsible for technologies including Dolby Atmos,
-  Dolby Vision, and Dolby Digital.
+description: Dolby Laboratories is an audio and video technology company whose developer platform, Dolby
+  OptiView, is the merged surface of the original dolby.io platform, THEO Technologies (THEOplayer, THEOlive,
+  THEOads) and Millicast. It ships publicly documented REST APIs for real-time WebRTC streaming, live
+  channel orchestration, video playback, server-guided ad insertion and just-in-time ad conformance, alongside
+  player SDKs for web, mobile, smart TV, Roku, React Native and Flutter. Dolby is also responsible for
+  Dolby Atmos, Dolby Vision and Dolby Digital.
 type: Index
 deliveryModel:
   model: unknown
@@ -32,100 +32,272 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
 tags:
-  - Audio
-  - Video
-  - Streaming
-  - Media
-  - Real-Time
+- Audio
+- Video
+- Streaming
+- Media
+- Real-Time
+- WebRTC
+- Advertising
+- Video Player
+- Live Streaming
+- Broadcasting
 url: https://raw.githubusercontent.com/api-evangelist/dolby/refs/heads/main/apis.yml
 created: '2025-03-01'
-modified: '2026-04-28'
+modified: '2026-09-06'
 specificationVersion: '0.23'
 access: 3rd-Party
 position: Consuming
 apis:
-  - aid: dolby:optiview-player
-    name: Dolby OptiView Player
-    description: >-
-      Deploy cutting-edge video playback experiences across web, mobile, and
-      connected devices using the OptiView Player SDK and APIs.
-    humanURL: https://optiview.dolby.com/docs/player/
-    tags:
-      - Video
-      - Player
-      - SDK
-    properties:
-      - type: Documentation
-        url: https://optiview.dolby.com/docs/player/
-  - aid: dolby:optiview-live
-    name: Dolby OptiView Live
-    description: >-
-      Live streaming solution providing consistent playback across audience
-      sizes, with low-latency ingest and global delivery.
-    humanURL: https://optiview.dolby.com/docs/live/
-    tags:
-      - Streaming
-      - Live
-      - Video
-    properties:
-      - type: Documentation
-        url: https://optiview.dolby.com/docs/live/
-  - aid: dolby:real-time-millicast
-    name: Dolby Real-time Streaming (Millicast)
-    description: >-
-      Sub-second, interactive-latency streaming powered by the Millicast
-      platform for two-way audio and video at scale.
-    humanURL: https://optiview.dolby.com/docs/real-time/
-    tags:
-      - Real-Time
-      - WebRTC
-      - Streaming
-    properties:
-      - type: Documentation
-        url: https://optiview.dolby.com/docs/real-time/
-      - type: Legacy Docs
-        url: https://docs.millicast.com
-  - aid: dolby:optiview-ads
-    name: Dolby OptiView Ads
-    description: >-
-      Ad delivery platform for high-quality video advertising experiences
-      across streaming environments.
-    humanURL: https://optiview.dolby.com/docs/ads/
-    tags:
-      - Advertising
-      - Video
-    properties:
-      - type: Documentation
-        url: https://optiview.dolby.com/docs/ads/
-  - aid: dolby:optiview-ad-engine
-    name: Dolby OptiView Ad Engine
-    description: >-
-      Serverless conformance service that transforms ads to match content
-      specifications for seamless playback.
-    humanURL: https://optiview.dolby.com/docs/ad-engine/
-    tags:
-      - Advertising
-      - Transformation
-    properties:
-      - type: Documentation
-        url: https://optiview.dolby.com/docs/ad-engine/
-common:
-  - type: DomainSecurity
-    url: security/dolby-domain-security.yml
-  - type: GitHubOrganization
-    url: https://github.com/dolbylaboratories
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/dolby-laboratories
-  - type: Website
-    url: https://dolby.io
+- aid: dolby:optiview-player
+  name: Dolby OptiView Player
+  description: 'Cross-platform video playback (formerly THEOplayer) for web, Android/Fire TV, iOS/tvOS,
+    Roku, React Native and Flutter, with DRM, ad and analytics connectors. A client-side SDK surface:
+    there is no public REST contract for the player itself.'
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  tags:
+  - Video
+  - Player
+  - SDK
+  properties:
   - type: Documentation
-    url: https://optiview.dolby.com/docs/
-  - type: Company
-    url: https://www.dolby.com
-  - type: Developer
-    url: https://dolby.io/developers/
-  - url: https://optiview.dolby.com/feed/
-    type: Blog
+    url: https://optiview.dolby.com/docs/theoplayer/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theoplayer/web/
+  - type: GettingStarted
+    url: https://optiview.dolby.com/docs/theoplayer/
+  - type: Components
+    url: components/dolby-components.yml
+  - type: Packages
+    url: packages/dolby-packages.yml
+- aid: dolby:optiview-live
+  name: Dolby OptiView Live
+  description: 'THEOlive API v2 - live streaming channel orchestration: channels, ingests, engines, distributions,
+    ABR ladders, schedulers, custom endpoints, webhooks and per-channel analytics. 57 paths / 82 operations
+    over HTTP Basic auth.'
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
+  humanURL: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Streaming
+  - Live
+  - Video
+  properties:
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: OpenAPI
+    url: openapi/dolby-optiview-live-openapi.yml
+  - type: Overlay
+    url: overlays/dolby-optiview-live-overlay.yaml
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+- aid: dolby:real-time-millicast
+  name: Dolby OptiView Real-time Streaming (Millicast)
+  description: 'Millicast API - sub-second WebRTC streaming at scale: publish/subscribe tokens, streams,
+    transcoders, media assets and distributions, recordings, clipping, geo rules, webhooks and analytics.
+    98 paths / 129 operations, 30 of them marked deprecated in the live specification.'
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
+  humanURL: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  baseURL: https://api.millicast.com
+  tags:
+  - Real-Time
+  - WebRTC
+  - Streaming
+  properties:
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: OpenAPI
+    url: openapi/dolby-millicast-api-openapi.yml
+  - type: Overlay
+    url: overlays/dolby-millicast-api-overlay.yaml
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.dolby.io
+- aid: dolby:millicast-director
+  name: Dolby OptiView Director API (Millicast)
+  description: Millicast Director API - the WebRTC/WHIP/WHEP signalling entry point clients call to obtain
+    publish and subscribe endpoints, plus the DRM proxy and multi-track video configuration. 7 paths /
+    7 operations.
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
+  humanURL: https://optiview.dolby.com/docs/millicast/api/director/director-api/
+  baseURL: https://director.millicast.com
+  tags:
+  - Real-Time
+  - WebRTC
+  - Signalling
+  properties:
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: OpenAPI
+    url: openapi/dolby-millicast-director-openapi.yml
+- aid: dolby:millicast-analytics
+  name: Dolby OptiView Advanced Analytics API (Millicast)
+  description: Millicast Advanced Analytics API - viewer records for real-time streams, with a v1 and
+    a v2 records endpoint. 2 paths / 2 operations, authenticated with the account API secret.
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
+  humanURL: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  baseURL: https://analyticsapi.millicast.com
+  tags:
+  - Analytics
+  - Real-Time
+  - Reporting
+  properties:
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: OpenAPI
+    url: openapi/dolby-millicast-analytics-openapi.yml
+- aid: dolby:optiview-ads
+  name: Dolby OptiView Ads
+  description: 'OptiView Ads API (THEOads) - server-guided ad insertion: channels, ad breaks, events,
+    marker rules, SCTE marker detection, origins, templates and organization integrations. 28 paths /
+    55 operations under /api/v1, plus the legacy v1 monetized-stream signalling contract.'
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
+  humanURL: https://optiview.dolby.com/docs/ads/api/
+  baseURL: https://us.ads.optiview.dolby.com
+  tags:
+  - Advertising
+  - Video
+  - SGAI
+  properties:
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: OpenAPI
+    url: openapi/dolby-optiview-ads-openapi.yml
+  - type: OpenAPI
+    url: openapi/dolby-optiview-ads-signaling-v1-openapi.yml
+  - type: Overlay
+    url: overlays/dolby-optiview-ads-overlay.yaml
+- aid: dolby:optiview-ad-engine
+  name: Dolby OptiView Ad Engine
+  description: Just-in-time serverless ad conformance service that transcodes an ad from its master format
+    into a streaming format matching the primary content stream. 9 paths / 12 operations, authenticated
+    with an x-rasp-auth-token API key.
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
+  humanURL: https://optiview.dolby.com/docs/ad-engine/
+  baseURL: https://api.galaxy.dolbyrasp.com
+  tags:
+  - Advertising
+  - Transformation
+  - Transcoding
+  properties:
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+  - type: OpenAPI
+    url: openapi/dolby-optiview-ad-engine-openapi.yml
+  - type: Overlay
+    url: overlays/dolby-optiview-ad-engine-overlay.yaml
+common:
+- type: Website
+  url: https://optiview.dolby.com
+- type: ParentCompany
+  url: https://www.dolby.com
+- type: DeveloperPortal
+  url: https://optiview.dolby.com/docs/
+- type: Documentation
+  url: https://optiview.dolby.com/docs/
+- type: APIReference
+  url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+- type: GettingStarted
+  url: https://optiview.dolby.com/docs/theolive/api/full-example/
+- type: Support
+  url: https://support.dolby.io/hc/en-au
+- type: Blog
+  url: https://optiview.dolby.com/resources/blog/
+- type: BlogRSS
+  url: https://optiview.dolby.com/feed/
+- type: GitHubOrganization
+  url: https://github.com/THEOplayer
+- type: GitHubOrganization
+  url: https://github.com/millicast
+- type: GitHubOrganization
+  url: https://github.com/DolbyIO
+- type: GitHubOrganization
+  url: https://github.com/dolbylaboratories
+- type: Pricing
+  url: https://optiview.dolby.com/plans/
+- type: Login
+  url: https://portal.theoplayer.com/login
+- type: TermsOfService
+  url: https://optiview.dolby.com/policies/terms-of-service/
+- type: PrivacyPolicy
+  url: https://optiview.dolby.com/policies/privacy-policy/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/dolbyoptiview
+- type: StatusPage
+  url: https://status.dolby.io
+- type: ChangeLog
+  url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+- type: LLMsTxt
+  url: llms/dolby-llms.txt
+- type: WellKnown
+  url: well-known/dolby-well-known.yml
+- type: SecurityTxt
+  url: well-known/dolby-security.txt
+- type: Security
+  url: security/dolby-vulnerability-disclosure.yml
+- type: VulnerabilityDisclosure
+  url: security/dolby-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/dolby-domain-security.yml
+- type: Packages
+  url: packages/dolby-packages.yml
+- type: SDKs
+  url: packages/dolby-packages.yml
+- type: Components
+  url: components/dolby-components.yml
+- type: CLI
+  url: cli/dolby-cli.yml
+- type: Authentication
+  url: authentication/dolby-authentication.yml
+- type: Conventions
+  url: conventions/dolby-conventions.yml
+- type: Idempotency
+  url: conventions/dolby-conventions.yml
+- type: ErrorCatalog
+  url: errors/dolby-problem-types.yml
+- type: DataModel
+  url: data-model/dolby-data-model.yml
+- type: Lifecycle
+  url: lifecycle/dolby-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/dolby-lifecycle.yml
+- type: Conformance
+  url: conformance/dolby-conformance.yml
+- type: Webhooks
+  url: asyncapi/dolby-webhooks.yml
+- type: MCPServer
+  url: mcp/dolby-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: ChangeLog
+  url: changelog/dolby-changelog.yml
+- type: Plans
+  url: plans/dolby-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/dolby-rate-limits.yml
+- type: FinOps
+  url: finops/dolby-finops.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-09-06'
+  status: enriched
+  artifacts_added: 39
+  pass: local-v3

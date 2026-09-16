@@ -51,9 +51,10 @@ position: Consuming
 apis:
 - aid: dolby:optiview-player
   name: Dolby OptiView Player
-  description: 'Cross-platform video playback (formerly THEOplayer) for web, Android/Fire TV, iOS/tvOS,
-    Roku, React Native and Flutter, with DRM, ad and analytics connectors. A client-side SDK surface:
-    there is no public REST contract for the player itself.'
+  description: >-
+    Cross-platform video playback (formerly THEOplayer) for web, Android/Fire TV, iOS/tvOS, Roku, React
+    Native and Flutter, with DRM, ad and analytics connectors. A client-side SDK surface: there is no
+    public REST contract for the player itself.
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
   humanURL: https://optiview.dolby.com/docs/theoplayer/
   tags:
@@ -71,138 +72,1455 @@ apis:
     url: components/dolby-components.yml
   - type: Packages
     url: packages/dolby-packages.yml
-- aid: dolby:optiview-live
-  name: Dolby OptiView Live
-  description: 'THEOlive API v2 - live streaming channel orchestration: channels, ingests, engines, distributions,
-    ABR ladders, schedulers, custom endpoints, webhooks and per-channel analytics. 57 paths / 82 operations
-    over HTTP Basic auth.'
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
-  humanURL: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+- aid: dolby:dolby-abr-ladders-api
+  name: Dolby ABR Ladders API
+  description: The ABR Ladders API from Dolby — 1 operation(s) for abr ladders.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
   baseURL: https://api.theo.live/v2
   tags:
-  - Streaming
-  - Live
-  - Video
+  - ABR Ladders
   properties:
+  - type: OpenAPI
+    url: openapi/dolby-abr-ladders-api-openapi.yml
   - type: Documentation
     url: https://optiview.dolby.com/docs/theolive/
   - type: APIReference
     url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
-  - type: OpenAPI
-    url: openapi/dolby-optiview-live-openapi.yml
-  - type: Overlay
-    url: overlays/dolby-optiview-live-overlay.yaml
   - type: Authentication
     url: https://optiview.dolby.com/docs/theolive/api/authentication/
   - type: Webhooks
     url: asyncapi/dolby-webhooks.yml
   - type: StatusPage
     url: https://status.theo.live
-- aid: dolby:real-time-millicast
-  name: Dolby OptiView Real-time Streaming (Millicast)
-  description: 'Millicast API - sub-second WebRTC streaming at scale: publish/subscribe tokens, streams,
-    transcoders, media assets and distributions, recordings, clipping, geo rules, webhooks and analytics.
-    98 paths / 129 operations, 30 of them marked deprecated in the live specification.'
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
-  humanURL: https://optiview.dolby.com/docs/millicast/api/millicast-api/
-  baseURL: https://api.millicast.com
-  tags:
-  - Real-Time
-  - WebRTC
-  - Streaming
-  properties:
   - type: Documentation
     url: https://optiview.dolby.com/docs/millicast/
   - type: APIReference
     url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
-  - type: OpenAPI
-    url: openapi/dolby-millicast-api-openapi.yml
-  - type: Overlay
-    url: overlays/dolby-millicast-api-overlay.yaml
   - type: ChangeLog
     url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
-  - type: Webhooks
-    url: asyncapi/dolby-webhooks.yml
   - type: StatusPage
     url: https://status.dolby.io
-- aid: dolby:millicast-director
-  name: Dolby OptiView Director API (Millicast)
-  description: Millicast Director API - the WebRTC/WHIP/WHEP signalling entry point clients call to obtain
-    publish and subscribe endpoints, plus the DRM proxy and multi-track video configuration. 7 paths /
-    7 operations.
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
-  humanURL: https://optiview.dolby.com/docs/millicast/api/director/director-api/
-  baseURL: https://director.millicast.com
-  tags:
-  - Real-Time
-  - WebRTC
-  - Signalling
-  properties:
-  - type: Documentation
-    url: https://optiview.dolby.com/docs/millicast/
-  - type: OpenAPI
-    url: openapi/dolby-millicast-director-openapi.yml
-- aid: dolby:millicast-analytics
-  name: Dolby OptiView Advanced Analytics API (Millicast)
-  description: Millicast Advanced Analytics API - viewer records for real-time streams, with a v1 and
-    a v2 records endpoint. 2 paths / 2 operations, authenticated with the account API secret.
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
-  humanURL: https://optiview.dolby.com/docs/millicast/api/millicast-api/
-  baseURL: https://analyticsapi.millicast.com
-  tags:
-  - Analytics
-  - Real-Time
-  - Reporting
-  properties:
-  - type: Documentation
-    url: https://optiview.dolby.com/docs/millicast/
-  - type: OpenAPI
-    url: openapi/dolby-millicast-analytics-openapi.yml
-- aid: dolby:optiview-ads
-  name: Dolby OptiView Ads
-  description: 'OptiView Ads API (THEOads) - server-guided ad insertion: channels, ad breaks, events,
-    marker rules, SCTE marker detection, origins, templates and organization integrations. 28 paths /
-    55 operations under /api/v1, plus the legacy v1 monetized-stream signalling contract.'
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
-  humanURL: https://optiview.dolby.com/docs/ads/api/
-  baseURL: https://us.ads.optiview.dolby.com
-  tags:
-  - Advertising
-  - Video
-  - SGAI
-  properties:
   - type: Documentation
     url: https://optiview.dolby.com/docs/ads/
   - type: APIReference
     url: https://optiview.dolby.com/docs/ads/api/
-  - type: OpenAPI
-    url: openapi/dolby-optiview-ads-openapi.yml
-  - type: OpenAPI
-    url: openapi/dolby-optiview-ads-signaling-v1-openapi.yml
-  - type: Overlay
-    url: overlays/dolby-optiview-ads-overlay.yaml
-- aid: dolby:optiview-ad-engine
-  name: Dolby OptiView Ad Engine
-  description: Just-in-time serverless ad conformance service that transcodes an ad from its master format
-    into a streaming format matching the primary content stream. 9 paths / 12 operations, authenticated
-    with an x-rasp-auth-token API key.
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/dolby.png
-  humanURL: https://optiview.dolby.com/docs/ad-engine/
-  baseURL: https://api.galaxy.dolbyrasp.com
-  tags:
-  - Advertising
-  - Transformation
-  - Transcoding
-  properties:
   - type: Documentation
     url: https://optiview.dolby.com/docs/ad-engine/
   - type: APIReference
     url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-account-api
+  name: Dolby Account API
+  description: The Account API from Dolby — 9 operation(s) for account.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Account
+  properties:
   - type: OpenAPI
-    url: openapi/dolby-optiview-ad-engine-openapi.yml
-  - type: Overlay
-    url: overlays/dolby-optiview-ad-engine-overlay.yaml
+    url: openapi/dolby-account-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-ad-engine-api
+  name: Dolby Ad Engine API
+  description: The Ad Engine API from Dolby — 7 operation(s) for ad engine.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Ad Engine
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-ad-engine-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-analytics-api
+  name: Dolby Analytics API
+  description: Viewer connection analytics records
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Analytics
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-analytics-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-analytics-v2-api
+  name: Dolby Analytics V2 API
+  description: Viewer connection analytics records, including reconnection history
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Analytics V2
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-analytics-v2-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-beta-api
+  name: Dolby Beta API
+  description: The Beta API from Dolby — 10 operation(s) for beta.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Beta
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-beta-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-channels-api
+  name: Dolby Channels API
+  description: The Channels API from Dolby — 44 operation(s) for channels.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Channels
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-channels-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-cloud-preview-api
+  name: Dolby Cloud Preview API
+  description: The Cloud Preview API from Dolby — 5 operation(s) for cloud preview.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Cloud Preview
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-cloud-preview-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-cluster-api
+  name: Dolby Cluster API
+  description: The Cluster API from Dolby — 1 operation(s) for cluster.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Cluster
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-cluster-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-custom-endpoints-api
+  name: Dolby Custom Endpoints API
+  description: The Custom Endpoints API from Dolby — 2 operation(s) for custom endpoints.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Custom Endpoints
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-custom-endpoints-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-director-api
+  name: Dolby Director API
+  description: The Director API from Dolby — 2 operation(s) for director.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Director
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-director-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-distributions-api
+  name: Dolby Distributions API
+  description: The Distributions API from Dolby — 13 operation(s) for distributions.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Distributions
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-distributions-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-drmlicence-api
+  name: Dolby Drm Licence API
+  description: The DrmLicence API from Dolby — 2 operation(s) for drmlicence.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - DrmLicence
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-drmlicence-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-encoderprofile-api
+  name: Dolby Encoder Profile API
+  description: The EncoderProfile API from Dolby — 1 operation(s) for encoderprofile.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - EncoderProfile
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-encoderprofile-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-engines-api
+  name: Dolby Engines API
+  description: The Engines API from Dolby — 6 operation(s) for engines.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Engines
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-engines-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-image-api
+  name: Dolby Image API
+  description: The Image API from Dolby — 1 operation(s) for image.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Image
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-image-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-ingests-api
+  name: Dolby Ingests API
+  description: The Ingests API from Dolby — 3 operation(s) for ingests.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Ingests
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-ingests-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-media-info-api
+  name: Dolby Media Info API
+  description: The Media Info API from Dolby — 1 operation(s) for media info.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Media Info
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-media-info-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-mediaassets-api
+  name: Dolby Media Assets API
+  description: The MediaAssets API from Dolby — 5 operation(s) for mediaassets.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - MediaAssets
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-mediaassets-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-mediadistributions-api
+  name: Dolby Media Distributions API
+  description: The MediaDistributions API from Dolby — 4 operation(s) for mediadistributions.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - MediaDistributions
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-mediadistributions-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-monetized-stream-api
+  name: Dolby Monetized Stream API
+  description: The Monetized-Stream API from Dolby — 7 operation(s) for monetized-stream.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Monetized-Stream
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-monetized-stream-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-monetized-stream-v2-api
+  name: Dolby Monetized Stream V2 API
+  description: The Monetized-Stream-V2 API from Dolby — 3 operation(s) for monetized-stream-v2.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Monetized-Stream-V2
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-monetized-stream-v2-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-monitoring-api
+  name: Dolby Monitoring API
+  description: The Monitoring API from Dolby — 9 operation(s) for monitoring.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Monitoring
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-monitoring-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-multitrackvideo-api
+  name: Dolby Multi Track Video API
+  description: The MultiTrackVideo API from Dolby — 1 operation(s) for multitrackvideo.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - MultiTrackVideo
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-multitrackvideo-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-organizations-api
+  name: Dolby Organizations API
+  description: The Organizations API from Dolby — 3 operation(s) for organizations.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Organizations
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-organizations-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-publishtokenv1-api
+  name: Dolby Publish Token V1 API
+  description: The PublishTokenV1 API from Dolby — 9 operation(s) for publishtokenv1.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - PublishTokenV1
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-publishtokenv1-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-publishtokenv2-api
+  name: Dolby Publish Token V2 API
+  description: The PublishTokenV2 API from Dolby — 1 operation(s) for publishtokenv2.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - PublishTokenV2
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-publishtokenv2-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-recordfiles-api
+  name: Dolby Record Files API
+  description: The RecordFiles API from Dolby — 8 operation(s) for recordfiles.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - RecordFiles
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-recordfiles-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-regions-api
+  name: Dolby Regions API
+  description: The Regions API from Dolby — 4 operation(s) for regions.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Regions
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-regions-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-schedulers-api
+  name: Dolby Schedulers API
+  description: The Schedulers API from Dolby — 2 operation(s) for schedulers.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Schedulers
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-schedulers-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-stream-api
+  name: Dolby Stream API
+  description: The Stream API from Dolby — 3 operation(s) for stream.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Stream
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-stream-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-subscribetokenv1-api
+  name: Dolby Subscribe Token V1 API
+  description: The SubscribeTokenV1 API from Dolby — 4 operation(s) for subscribetokenv1.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - SubscribeTokenV1
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-subscribetokenv1-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-subscribetokenv2-api
+  name: Dolby Subscribe Token V2 API
+  description: The SubscribeTokenV2 API from Dolby — 1 operation(s) for subscribetokenv2.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - SubscribeTokenV2
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-subscribetokenv2-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-templates-api
+  name: Dolby Templates API
+  description: The Templates API from Dolby — 2 operation(s) for templates.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Templates
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-templates-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-thumbnails-api
+  name: Dolby Thumbnails API
+  description: The Thumbnails API from Dolby — 1 operation(s) for thumbnails.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Thumbnails
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-thumbnails-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-transcoder-api
+  name: Dolby Transcoder API
+  description: The Transcoder API from Dolby — 7 operation(s) for transcoder.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Transcoder
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-transcoder-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-transcoderscheduler-api
+  name: Dolby Transcoder Scheduler API
+  description: The TranscoderScheduler API from Dolby — 4 operation(s) for transcoderscheduler.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - TranscoderScheduler
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-transcoderscheduler-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-webhooks-api
+  name: Dolby Webhooks API
+  description: The Webhooks API from Dolby — 8 operation(s) for webhooks.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-webhooks-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-whep-api
+  name: Dolby Whep API
+  description: The Whep API from Dolby — 1 operation(s) for whep.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Whep
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-whep-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-whip-api
+  name: Dolby Whip API
+  description: The Whip API from Dolby — 1 operation(s) for whip.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Whip
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-whip-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
 common:
+- type: Overlay
+  url: overlays/dolby-optiview-live-overlay.yaml
+- type: Overlay
+  url: overlays/dolby-millicast-api-overlay.yaml
+- type: Overlay
+  url: overlays/dolby-optiview-ads-overlay.yaml
+- type: Overlay
+  url: overlays/dolby-optiview-ad-engine-overlay.yaml
 - type: Website
   url: https://optiview.dolby.com
 - type: ParentCompany

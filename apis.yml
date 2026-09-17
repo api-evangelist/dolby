@@ -720,42 +720,6 @@ apis:
     url: https://optiview.dolby.com/docs/ad-engine/
   - type: APIReference
     url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
-- aid: dolby:dolby-mediaassets-api
-  name: Dolby Media Assets API
-  description: The MediaAssets API from Dolby — 5 operation(s) for mediaassets.
-  humanURL: https://optiview.dolby.com/docs/theoplayer/
-  baseURL: https://api.theo.live/v2
-  tags:
-  - MediaAssets
-  properties:
-  - type: OpenAPI
-    url: openapi/dolby-mediaassets-api-openapi.yml
-  - type: Documentation
-    url: https://optiview.dolby.com/docs/theolive/
-  - type: APIReference
-    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
-  - type: Authentication
-    url: https://optiview.dolby.com/docs/theolive/api/authentication/
-  - type: Webhooks
-    url: asyncapi/dolby-webhooks.yml
-  - type: StatusPage
-    url: https://status.theo.live
-  - type: Documentation
-    url: https://optiview.dolby.com/docs/millicast/
-  - type: APIReference
-    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
-  - type: ChangeLog
-    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
-  - type: StatusPage
-    url: https://status.dolby.io
-  - type: Documentation
-    url: https://optiview.dolby.com/docs/ads/
-  - type: APIReference
-    url: https://optiview.dolby.com/docs/ads/api/
-  - type: Documentation
-    url: https://optiview.dolby.com/docs/ad-engine/
-  - type: APIReference
-    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
 - aid: dolby:dolby-mediadistributions-api
   name: Dolby Media Distributions API
   description: The MediaDistributions API from Dolby — 4 operation(s) for mediadistributions.
@@ -1486,6 +1450,42 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/dolby-whip-api-openapi.yml
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/theolive/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/theolive/api/theolive-api/
+  - type: Authentication
+    url: https://optiview.dolby.com/docs/theolive/api/authentication/
+  - type: Webhooks
+    url: asyncapi/dolby-webhooks.yml
+  - type: StatusPage
+    url: https://status.theo.live
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/millicast/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/millicast/api/millicast-api/
+  - type: ChangeLog
+    url: https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/
+  - type: StatusPage
+    url: https://status.dolby.io
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ads/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ads/api/
+  - type: Documentation
+    url: https://optiview.dolby.com/docs/ad-engine/
+  - type: APIReference
+    url: https://optiview.dolby.com/docs/ad-engine/reference/dolby-optiview-ad-engine/
+- aid: dolby:dolby-media-assets-api
+  name: Dolby Media Assets API
+  description: The Media Assets API from Dolby — 5 operation(s) for media assets.
+  humanURL: https://optiview.dolby.com/docs/theoplayer/
+  baseURL: https://api.theo.live/v2
+  tags:
+  - Media Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/dolby-media-assets-api-openapi.yml
   - type: Documentation
     url: https://optiview.dolby.com/docs/theolive/
   - type: APIReference

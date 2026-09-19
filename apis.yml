@@ -906,6 +906,8 @@ apis:
   humanURL: https://optiview.dolby.com/docs/theoplayer/
   baseURL: https://api.theo.live/v2
   tags:
+  - Organization
+  tags_raw:
   - Organizations
   properties:
   - type: OpenAPI
@@ -1374,6 +1376,8 @@ apis:
   humanURL: https://optiview.dolby.com/docs/theoplayer/
   baseURL: https://api.theo.live/v2
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
@@ -1410,6 +1414,8 @@ apis:
   humanURL: https://optiview.dolby.com/docs/theoplayer/
   baseURL: https://api.theo.live/v2
   tags:
+  - WHEP
+  tags_raw:
   - Whep
   properties:
   - type: OpenAPI
@@ -1446,6 +1452,8 @@ apis:
   humanURL: https://optiview.dolby.com/docs/theoplayer/
   baseURL: https://api.theo.live/v2
   tags:
+  - WHIP
+  tags_raw:
   - Whip
   properties:
   - type: OpenAPI

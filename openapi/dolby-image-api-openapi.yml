@@ -1,0 +1,83 @@
+openapi: 3.2.0
+info:
+  title: Dolby OptiView Ad Engine Image API
+  version: 1.0.0
+servers:
+- url: https://api.galaxy.dolbyrasp.com
+tags:
+- name: Image
+paths:
+  /image:
+    get:
+      operationId: image
+      tags:
+      - Image
+      summary: Image
+      responses:
+        '200':
+          description: OK
+      parameters:
+      - name: url
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uri
+        description: URL of the media file
+      - name: format
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - png
+          - jpeg
+          default: jpeg
+        description: The image format to return
+      - name: width
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 16
+          maximum: 3840
+        description: The width of the image in pixels. If not specified, will be calcualted based on the source dimension.
+      - name: height
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 16
+          maximum: 2160
+        description: The height of the image in pixels. If not specified, will be calcualted based on the source dimension.
+      - name: offset_percent
+        in: query
+        required: false
+        schema:
+          type: number
+          minimum: 0
+          maximum: 100
+          default: 10
+        description: The percentage offset into the video to capture the image from.
+      - name: credentials_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The key of the stored credentials to use when accessing the URL.
+      - name: x-rasp-auth-token
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Authentication token.
+      x-displayName: Image
+      security:
+      - ApiKeyAuth: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rasp-auth-token
+      description: API authentication token

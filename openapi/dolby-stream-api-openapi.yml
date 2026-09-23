@@ -1,0 +1,326 @@
+openapi: 3.2.0
+info:
+  title: Millicast Stream API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: Stream
+paths:
+  /api/stream/stop:
+    post:
+      tags:
+      - Stream
+      summary: Stop an active stream
+      description: Stop an active stream by its Stream ID
+      operationId: Stream_StopStream
+      requestBody:
+        x-name: stopStreamRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StopStreamRequest'
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessStopStreamResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/stream/stop \\\n     -X POST -d '{\n    \"streamId\":\"pBMpcY/lk80jny\"\n}'"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing Newtonsoft.Json;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/stream/stop\";\n\nvar data = {\n    \"streamId\":\"pBMpcY/lk80jny\"\n};\nvar httpContent = new StringContent(JsonConvert.SerializeObject(data),\n  Encoding.UTF8,\n  \"application/json\");\nvar response = await client.PostAsync(url, httpContent);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/stream/stop\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestProperty(\"Content-Type\", \"application/json\");\nconn.setRequestMethod(\"POST\");\n\nconn.setDoOutput(true);\nDataOutputStream wr = new DataOutputStream(conn.getOutputStream());\nwr.writeBytes(\"{\n    \"streamId\":\"pBMpcY/lk80jny\"\n}\");\nwr.close();\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/stream/stop');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n  }\n};\nopts['method'] = 'POST';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nvar data = {\n    \"streamId\":\"pBMpcY/lk80jny\"\n};\nreq.write(JSON.stringify(data));\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/stream/stop';\n$headers = array(\n  'Authorization: Bearer your_api_secret',\n  'Content-Type: application/json'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$data = {\n    \"streamId\":\"pBMpcY/lk80jny\"\n};\ncurl_setopt($ch, CURLOPT_POST, TRUE);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\nimport json\n\nurl = 'https://api.millicast.com/api/stream/stop'\nheaders = {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n}\nreq = urllib.request.Request(url, headers=headers)\nreq.method = 'POST'\ndata = {\n    \"streamId\":\"pBMpcY/lk80jny\"\n}\nreq.data = json.dumps(data).encode('utf8')\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/stream/stop')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\n    \"streamId\":\"pBMpcY/lk80jny\"\n}\nres = http.post(uri, data.to_json, headers)\nputs res.body"
+  /api/stream/stop/all:
+    post:
+      tags:
+      - Stream
+      summary: Stop all active streams
+      description: Stop all currently active streams associated with your account
+      operationId: Stream_StopByAccount
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessStopStreamResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/stream/stop/all \\\n     -X POST -d '__REQUEST_BODY__'"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing Newtonsoft.Json;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/stream/stop/all\";\n\nvar data = __REQUEST_BODY__;\nvar httpContent = new StringContent(JsonConvert.SerializeObject(data),\n  Encoding.UTF8,\n  \"application/json\");\nvar response = await client.PostAsync(url, httpContent);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/stream/stop/all\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestProperty(\"Content-Type\", \"application/json\");\nconn.setRequestMethod(\"POST\");\n\nconn.setDoOutput(true);\nDataOutputStream wr = new DataOutputStream(conn.getOutputStream());\nwr.writeBytes(\"__REQUEST_BODY__\");\nwr.close();\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/stream/stop/all');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n  }\n};\nopts['method'] = 'POST';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nvar data = __REQUEST_BODY__;\nreq.write(JSON.stringify(data));\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/stream/stop/all';\n$headers = array(\n  'Authorization: Bearer your_api_secret',\n  'Content-Type: application/json'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$data = __REQUEST_BODY__;\ncurl_setopt($ch, CURLOPT_POST, TRUE);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\nimport json\n\nurl = 'https://api.millicast.com/api/stream/stop/all'\nheaders = {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n}\nreq = urllib.request.Request(url, headers=headers)\nreq.method = 'POST'\ndata = __REQUEST_BODY__\nreq.data = json.dumps(data).encode('utf8')\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/stream/stop/all')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = __REQUEST_BODY__\nres = http.post(uri, data.to_json, headers)\nputs res.body"
+  /api/stream/reprioritize:
+    post:
+      tags:
+      - Stream
+      summary: Reprioritize an active stream
+      description: 'Update stream priority specified in token and restart stream to re-assign priority.
+
+
+        Use List Tokens By Name and filter by `StreamName` to identify the tokenId associated with the target stream.'
+      operationId: Stream_ReprioritizeStream
+      requestBody:
+        x-name: request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReprioritizeStreamRequest'
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfReprioritizeStreamResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/stream/reprioritize \\\n     -X POST -d '{\n    \"tokenId\":0\n    \"updatePriority\":100\n}'"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing Newtonsoft.Json;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/stream/reprioritize\";\n\nvar data = {\n    \"tokenId\":0\n    \"updatePriority\":100\n};\nvar httpContent = new StringContent(JsonConvert.SerializeObject(data),\n  Encoding.UTF8,\n  \"application/json\");\nvar response = await client.PostAsync(url, httpContent);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/stream/reprioritize\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestProperty(\"Content-Type\", \"application/json\");\nconn.setRequestMethod(\"POST\");\n\nconn.setDoOutput(true);\nDataOutputStream wr = new DataOutputStream(conn.getOutputStream());\nwr.writeBytes(\"{\n    \"tokenId\":0\n    \"updatePriority\":100\n}\");\nwr.close();\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/stream/reprioritize');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n  }\n};\nopts['method'] = 'POST';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nvar data = {\n    \"tokenId\":0\n    \"updatePriority\":100\n};\nreq.write(JSON.stringify(data));\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/stream/reprioritize';\n$headers = array(\n  'Authorization: Bearer your_api_secret',\n  'Content-Type: application/json'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$data = {\n    \"tokenId\":0\n    \"updatePriority\":100\n};\ncurl_setopt($ch, CURLOPT_POST, TRUE);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\nimport json\n\nurl = 'https://api.millicast.com/api/stream/reprioritize'\nheaders = {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n}\nreq = urllib.request.Request(url, headers=headers)\nreq.method = 'POST'\ndata = {\n    \"tokenId\":0\n    \"updatePriority\":100\n}\nreq.data = json.dumps(data).encode('utf8')\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/stream/reprioritize')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\n    \"tokenId\":0\n    \"updatePriority\":100\n}\nres = http.post(uri, data.to_json, headers)\nputs res.body"
+components:
+  schemas:
+    ReprioritizeStreamRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - tokenId
+      - updatePriority
+      properties:
+        tokenId:
+          type: integer
+          description: 'Specify the token associated with stream that requires an updated priority.
+
+            Please ensure that the token is assign a single streamId by calling [Read Token](#operation/PublishTokenV1_ReadToken), otherwise unexpected streams will be assigned the new priority on reconnection.'
+        updatePriority:
+          type: integer
+          format: int32
+    StopStreamRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - streamId
+      properties:
+        streamId:
+          type: string
+          minLength: 1
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessStopStreamResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/LevelStreamStopped'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    StreamStoppingLevel:
+      type: string
+      description: ''
+      x-enumNames:
+      - Account
+      - Stream
+      - Feed
+      - Server
+      - Token
+      - None
+      enum:
+      - Account
+      - Stream
+      - Feed
+      - Server
+      - Token
+      - None
+    SuccessResponseOfReprioritizeStreamResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/ReprioritizeStreamResponse'
+    LevelStreamStopped:
+      type: object
+      additionalProperties: false
+      properties:
+        stoppingLevel:
+          oneOf:
+          - $ref: '#/components/schemas/StreamStoppingLevel'
+    ReprioritizeStreamResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        stoppingLevel:
+          oneOf:
+          - $ref: '#/components/schemas/StreamStoppingLevel'
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

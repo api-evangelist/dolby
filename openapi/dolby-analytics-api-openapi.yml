@@ -1,0 +1,3058 @@
+openapi: 3.2.0
+info:
+  title: Dolby Analytics API
+  version: 1.0.0
+  description: 'Operations tagged Analytics across 2 of this provider''s published API definitions: dolby-millicast-analytics-openapi-original.json, dolby-millicast-api-openapi-original.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://analyticsapi.millicast.com
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: Analytics
+  description: Viewer connection analytics records
+paths:
+  /api/records/viewers:
+    post:
+      tags:
+      - Analytics
+      summary: Viewer Records
+      description: 'Returns a range of viewer connection records, with optional start-time and completion-time filters. Includes ongoing (not yet completed) connections by default. Each ClientId appears as a single record. If a session reconnects after being marked complete, it is returned as one record with duration and bytes accumulated from the original session start.
+
+
+        To poll for new or updated records, set StartTime to your last checkpoint and advance it on each call. Dedupe results by ClientId.
+
+
+        To fetch completed records up to a point in time, set Search=Completed with EndTime as the upper bound on completion time. EndTime is one-sided: repeated calls with the same EndTime return every record completed before that time each time, not only the ones newly completed since your last call. Do not use this for non-overlapping usage or billing tallies - use v2''s CompletedAfter/CompletedBefore for that.'
+      operationId: Records_GetViewerRecords
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetRecordsModel'
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/x-jsonl:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ViewerRecordModelV1'
+              examples:
+                ? ''
+                : summary: ''
+                  value: '{"startTime":"2023-01-01T00:30:00.000Z","endTime":"2023-01-01T01:00:00.000Z","clientId":"ffffffff-ffff-ffff-ffff-ffffffffffff","clusterId":"phx-1","country":"US","duration":1800,"bytes":450000000,"ipAddress":"127.0.0.1","streamName":"teststream","trackingId":null,"userAgent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"}'
+            text/csv:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ViewerRecordModelV1'
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'StartTime,EndTime,ClientId,ClusterId,Country,Duration,Bytes,IpAddress,StreamName,TrackingId,UserAgent
+
+                    2023-01-01T00:30:00.000Z,2023-01-01T01:00:00.000Z,ffffffff-ffff-ffff-ffff-ffffffffffff,phx-1,US,1800,450000000,127.0.0.1,teststream,,"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36"
+
+                    '
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://analyticsapi.millicast.com
+  /api/analytics/account/total:
+    get:
+      tags:
+      - Analytics
+      summary: Account Total
+      description: Get total usage on account over a date range.
+      operationId: Analytics_AccountTotal
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountBandwidthTotalAnalyticModel'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      bytesOut: 250000
+                      bytesIn: 500000000
+                      standardStream:
+                        bytesOut: 100000
+                        bytesIn: 500000000
+                      restream:
+                        secondsUsed: 10
+                        bytesOut: 50000
+                        bytesIn: 0
+                      geoCascade:
+                        bytesOut: 100000
+                        bytesIn: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/analytics/account/total \\\n     -G -d \"startDate=2020-01-01&stopDate=2020-04-01\""
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/account/series:
+    get:
+      tags:
+      - Analytics
+      summary: Account Series
+      description: 'Get usage as a time series on account over a date range.
+
+        Response keys are ISO 8601 dates from requested resolution.'
+      operationId: Analytics_AccountSeries
+      parameters:
+      - name: resolution
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/AnalyticsResolution'
+        x-position: 1
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountBandwidthSeriesAnalyticModel'
+              examples:
+                month:
+                  summary: month
+                  value:
+                    status: success
+                    data:
+                      bandwidth:
+                        '2020-01-01T00:00:00Z':
+                          bytesOut: 20150
+                          bytesIn: 5000
+                        '2020-02-01T00:00:00Z':
+                          bytesOut: 400
+                          bytesIn: 50
+                      standardStream:
+                        '2020-01-01T00:00:00Z':
+                          bytesOut: 10000
+                          bytesIn: 5000
+                        '2020-02-01T00:00:00Z':
+                          bytesOut: 100
+                          bytesIn: 50
+                      restream:
+                        '2020-01-01T00:00:00Z':
+                          secondsUsed: 10
+                          bytesOut: 150
+                          bytesIn: 0
+                        '2020-02-01T00:00:00Z':
+                          secondsUsed: 12
+                          bytesOut: 200
+                          bytesIn: 0
+                      geoCascade:
+                        '2020-01-01T00:00:00Z':
+                          bytesOut: 10000
+                          bytesIn: 0
+                        '2020-02-01T00:00:00Z':
+                          bytesOut: 100
+                          bytesIn: 0
+                day:
+                  summary: day
+                  value:
+                    status: success
+                    data:
+                      bandwidth:
+                        '2020-03-01T00:00:00Z':
+                          bytesOut: 20150
+                          bytesIn: 5000
+                        '2020-03-02T00:00:00Z':
+                          bytesOut: 400
+                          bytesIn: 50
+                      standardStream:
+                        '2020-03-01T00:00:00Z':
+                          bytesOut: 10000
+                          bytesIn: 5000
+                        '2020-03-02T00:00:00Z':
+                          bytesOut: 100
+                          bytesIn: 50
+                      restream:
+                        '2020-03-01T00:00:00Z':
+                          secondsUsed: 10
+                          bytesOut: 150
+                          bytesIn: 0
+                        '2020-03-02T00:00:00Z':
+                          secondsUsed: 12
+                          bytesOut: 200
+                          bytesIn: 0
+                      geoCascade:
+                        '2020-03-01T00:00:00Z':
+                          bytesOut: 10000
+                          bytesIn: 0
+                        '2020-03-02T00:00:00Z':
+                          bytesOut: 100
+                          bytesIn: 0
+                hour:
+                  summary: hour
+                  value:
+                    status: success
+                    data:
+                      bandwidth:
+                        '2020-03-01T00:00:00Z':
+                          bytesOut: 20150
+                          bytesIn: 5000
+                        '2020-03-01T01:00:00Z':
+                          bytesOut: 400
+                          bytesIn: 50
+                      standardStream:
+                        '2020-03-01T00:00:00Z':
+                          bytesOut: 10000
+                          bytesIn: 5000
+                        '2020-03-01T01:00:00Z':
+                          bytesOut: 100
+                          bytesIn: 50
+                      restream:
+                        '2020-03-01T00:00:00Z':
+                          secondsUsed: 10
+                          bytesOut: 150
+                          bytesIn: 0
+                        '2020-03-01T01:00:00Z':
+                          secondsUsed: 12
+                          bytesOut: 200
+                          bytesIn: 0
+                      geoCascade:
+                        '2020-03-01T00:00:00Z':
+                          bytesOut: 10000
+                          bytesIn: 0
+                        '2020-03-01T01:00:00Z':
+                          bytesOut: 100
+                          bytesIn: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/analytics/account/series \\\n     -G -d \"startDate=2020-01-01&stopDate=2020-04-01&resolution=Month\""
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/account/geo_total:
+    get:
+      tags:
+      - Analytics
+      summary: Account Geo Total
+      description: 'Get bandwidth and duration per country code on account over a date range.
+
+        Response keys are ISO 3166-1 alpha-2 country codes.'
+      operationId: Analytics_AccountGeoTotal
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountGeoTotalAnalyticModel'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      geo:
+                        US:
+                          bytesOut: 100000000
+                          bytesIn: 50000000
+                          duration: 135
+                        MX:
+                          bytesOut: 50000000
+                          bytesIn: 2500000
+                          duration: 112
+                        CA:
+                          bytesOut: 200000000
+                          bytesIn: 10000000
+                          duration: 50
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/analytics/account/geo_total \\\n     -G -d \"startDate=2020-01-01&stopDate=2020-04-01\""
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/account/geo_series:
+    get:
+      tags:
+      - Analytics
+      summary: Account Geo Series
+      description: 'Get bandwidth, duration, publishes, and views as a time series per country code on account over a date range.
+
+        Response keys are ISO 8601 dates from requested resolution, followed by keys for ISO 3166-1 alpha-2 country codes.'
+      operationId: Analytics_AccountGeoSeries
+      parameters:
+      - name: resolution
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/StreamsAnalyticsResolution'
+        x-position: 1
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountGeoSeriesAnalyticModel'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      geo:
+                        '2020-03-01T00:00:00Z':
+                          US:
+                            bytesOut: 500000000
+                            bytesIn: 40000000
+                            duration: 135
+                            publishes: 1
+                            views: 5
+                          MX:
+                            bytesOut: 400000000
+                            bytesIn: 0
+                            duration: 185
+                            publishes: 0
+                            views: 4
+                          CA:
+                            bytesOut: 100000000
+                            bytesIn: 0
+                            duration: 59
+                            publishes: 0
+                            views: 1
+                        '2020-03-01T01:00:00Z':
+                          US:
+                            bytesOut: 200000000
+                            bytesIn: 30000000
+                            duration: 135
+                            publishes: 1
+                            views: 2
+                          MX:
+                            bytesOut: 300000000
+                            bytesIn: 0
+                            duration: 135
+                            publishes: 0
+                            views: 3
+                          CA:
+                            bytesOut: 100000000
+                            bytesIn: 0
+                            duration: 39
+                            publishes: 0
+                            views: 1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/analytics/account/geo_series \\\n     -G -d \"startDate=2020-01-01&stopDate=2020-04-01&resolution=Hour\""
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/streams/total:
+    get:
+      tags:
+      - Analytics
+      summary: Streams Total
+      description: 'Get total usage on specified streamnames over a date range.
+
+        Response keys are requested streamnames.'
+      operationId: Analytics_StreamsTotal
+      parameters:
+      - name: streamNames
+        in: query
+        style: form
+        explode: true
+        required: true
+        description: Each string must be <= 128 characters
+        schema:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+        x-position: 1
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessStreamsBandwidthTotalAnalyticModel'
+              examples:
+                single:
+                  summary: single
+                  value:
+                    status: success
+                    data:
+                      stream1:
+                        bytesOut: 250000
+                        bytesIn: 500000000
+                        standardStream:
+                          bytesOut: 100000
+                          bytesIn: 500000000
+                        restream:
+                          secondsUsed: 50
+                          bytesOut: 500000
+                          bytesIn: 0
+                        geoCascade:
+                          bytesOut: 100000
+                          bytesIn: 0
+                multi:
+                  summary: multi
+                  value:
+                    status: success
+                    data:
+                      mystream:
+                        bytesOut: 250000
+                        bytesIn: 500000000
+                        standardStream:
+                          bytesOut: 100000
+                          bytesIn: 500000000
+                        restream:
+                          secondsUsed: 50
+                          bytesOut: 500000
+                          bytesIn: 0
+                        geoCascade:
+                          bytesOut: 100000
+                          bytesIn: 0
+                      otherstream:
+                        bytesOut: 350000
+                        bytesIn: 600000000
+                        standardStream:
+                          bytesOut: 200000
+                          bytesIn: 600000000
+                        restream:
+                          secondsUsed: 50
+                          bytesOut: 500000
+                          bytesIn: 0
+                        geoCascade:
+                          bytesOut: 100000
+                          bytesIn: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/analytics/streams/total \\\n     -G -d \"startDate=2020-01-01&stopDate=2020-04-01&streamNames=mystream&streamNames=otherstream\""
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/streams/series:
+    get:
+      tags:
+      - Analytics
+      summary: Streams Series
+      description: 'Get usage as a time series on specified streamnames over a date range.
+
+        Response keys are requested streamnames, followed by keys for ISO 8601 dates from requested resolution.'
+      operationId: Analytics_StreamsSeries
+      parameters:
+      - name: resolution
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/StreamsAnalyticsResolution'
+        x-position: 1
+      - name: streamNames
+        in: query
+        style: form
+        explode: true
+        required: true
+        description: Each string must be <= 128 characters
+        schema:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+        x-position: 2
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 4
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessStreamsBandwidthSeriesAnalyticModel'
+              examples:
+                day:
+                  summary: day
+                  value:
+                    status: success
+                    data:
+                      mystream:
+                        bandwidth:
+                          '2020-03-01T00:00:00Z':
+                            bytesOut: 300
+                            bytesIn: 50
+                          '2020-03-02T00:00:00Z':
+                            bytesOut: 1300
+                            bytesIn: 300
+                        standardStream:
+                          '2020-03-01T00:00:00Z':
+                            bytesOut: 100
+                            bytesIn: 50
+                          '2020-03-02T00:00:00Z':
+                            bytesOut: 400
+                            bytesIn: 300
+                        restream:
+                          '2020-03-01T00:00:00Z':
+                            secondsUsed: 8
+                            bytesOut: 100
+                            bytesIn: 0
+                          '2020-03-02T00:00:00Z':
+                            secondsUsed: 30
+                            bytesOut: 500
+                            bytesIn: 0
+                        geoCascade:
+                          '2020-03-01T00:00:00Z':
+                            bytesOut: 100
+                            bytesIn: 0
+                          '2020-03-02T00:00:00Z':
+                            bytesOut: 400
+                            bytesIn: 0
+                hour:
+                  summary: hour
+                  value:
+                    status: success
+                    data:
+                      mystream:
+                        bandwidth:
+                          '2020-03-01T00:00:00Z':
+                            bytesOut: 300
+                            bytesIn: 50
+                          '2020-03-01T01:00:00Z':
+                            bytesOut: 1300
+                            bytesIn: 300
+                        standardStream:
+                          '2020-03-01T00:00:00Z':
+                            bytesOut: 100
+                            bytesIn: 50
+                          '2020-03-01T01:00:00Z':
+                            bytesOut: 400
+                            bytesIn: 300
+                        restream:
+                          '2020-03-01T00:00:00Z':
+                            secondsUsed: 8
+                            bytesOut: 100
+                            bytesIn: 0
+                          '2020-03-01T01:00:00Z':
+                            secondsUsed: 30
+                            bytesOut: 500
+                            bytesIn: 0
+                        geoCascade:
+                          '2020-03-01T00:00:00Z':
+                            bytesOut: 100
+                            bytesIn: 0
+                          '2020-03-01T01:00:00Z':
+                            bytesOut: 400
+                            bytesIn: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/analytics/streams/series \\\n     -G -d \"startDate=2020-03-01T00:00:00Z&stopDate=2020-03-01T05:00:00Z&streamNames=mystream&resolution=Hour\""
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/streams/geo_total:
+    get:
+      tags:
+      - Analytics
+      summary: Streams Geo Total
+      description: 'Get bandwidth and duration per country code on specified streamnames over a date range.
+
+        Response keys are requested streamnames, followed by keys for ISO 3166-1 alpha-2 country codes.'
+      operationId: Analytics_StreamsGeoTotal
+      parameters:
+      - name: streamNames
+        in: query
+        style: form
+        explode: true
+        required: true
+        description: Each string must be <= 128 characters
+        schema:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+        x-position: 1
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessStreamsGeoTotalAnalyticModel'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      geo:
+                        mystream:
+                          US:
+                            bytesOut: 500000000
+                            bytesIn: 300000000
+                            duration: 188
+                          MX:
+                            bytesOut: 100000000
+                            bytesIn: 0
+                            duration: 66
+                          CA:
+                            bytesOut: 300000000
+                            bytesIn: 100000000
+                            duration: 96
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/analytics/streams/geo_total \\\n     -G -d \"startDate=2020-01-01&stopDate=2020-04-01&streamNames=mystream\""
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/streams/geo_series:
+    get:
+      tags:
+      - Analytics
+      summary: Streams Geo Series
+      description: 'Get bandwidth, duration, publishes, and views as a time series per country code on specified streamnames over a date range.
+
+        Response keys are requested streamnames, followed by keys for ISO 8601 dates from requested resolution, followed by keys for ISO 3166-1 alpha-2 country codes.'
+      operationId: Analytics_StreamsGeoSeries
+      parameters:
+      - name: resolution
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/StreamsAnalyticsResolution'
+        x-position: 1
+      - name: streamNames
+        in: query
+        style: form
+        explode: true
+        required: true
+        description: Each string must be <= 128 characters
+        schema:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+        x-position: 2
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 4
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessStreamsGeoSeriesAnalyticModel'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      geo:
+                        mystream:
+                          '2020-03-01T00:00:00Z':
+                            US:
+                              bytesOut: 500000000
+                              bytesIn: 60000000
+                              duration: 135
+                              publishes: 1
+                              views: 5
+                            MX:
+                              bytesOut: 40000000
+                              bytesIn: 0
+                              duration: 55
+                              publishes: 0
+                              views: 1
+                            CA:
+                              bytesOut: 75000000
+                              bytesIn: 0
+                              duration: 62
+                              publishes: 0
+                              views: 2
+                          '2020-03-01T01:00:00Z':
+                            US:
+                              bytesOut: 500000000
+                              bytesIn: 60000000
+                              duration: 135
+                              publishes: 1
+                              views: 5
+                            MX:
+                              bytesOut: 40000000
+                              bytesIn: 0
+                              duration: 55
+                              publishes: 0
+                              views: 1
+                            CA:
+                              bytesOut: 75000000
+                              bytesIn: 0
+                              duration: 62
+                              publishes: 0
+                              views: 2
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/analytics/streams/geo_series \\\n     -G -d \"startDate=2020-01-01&stopDate=2020-04-01&resolution=Hour&streamNames=mystream\""
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/account/geo:
+    get:
+      tags:
+      - Analytics
+      summary: Account Geo
+      description: 'Get bandwidth and views per country code on account over a date range.
+
+        Response keys are ISO 3166-1 alpha-2 country codes.'
+      operationId: Analytics_AccountGeo
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountGeoCountryAnalyticModel'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      geo:
+                        US:
+                          bytes: 100000000
+                          views: 30
+                        MX:
+                          bytes: 50000000
+                          views: 15
+                        CA:
+                          bytes: 200000000
+                          views: 60
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/streams/geo:
+    get:
+      tags:
+      - Analytics
+      summary: Streams Geo
+      description: 'Get bandwidth and views per country code on specified streamnames over a date range.
+
+        Response keys are requested streamnames, followed by keys for ISO 3166-1 alpha-2 country codes.'
+      operationId: Analytics_StreamsGeo
+      parameters:
+      - name: streamNames
+        in: query
+        style: form
+        explode: true
+        required: true
+        description: Each string must be <= 128 characters
+        schema:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+        x-position: 1
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessStreamsGeoCountryAnalyticModel'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      mystream:
+                        geo:
+                          US:
+                            bytes: 100000000
+                            views: 30
+                          MX:
+                            bytes: 50000000
+                            views: 15
+                          CA:
+                            bytes: 200000000
+                            views: 60
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/tracking/streams/total:
+    get:
+      tags:
+      - Analytics
+      summary: Total bandwidth per TrackingID per stream
+      description: Get total bandwidth for each TrackingID associated with specified streamNames over a date range. Response keys are requested streamnames.
+      operationId: Analytics_GetTrackingTotalForStreams
+      parameters:
+      - name: streamNames
+        in: query
+        style: form
+        explode: true
+        required: true
+        description: Each string must be <= 128 characters
+        schema:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+        x-position: 1
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessTrackingTotalForStreams'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      lday0h9i:
+                      - bytesOut: 3836187144
+                        bytesIn: 82409106
+                      - trackingId: customTrackingId
+                        bytesOut: 0
+                        bytesIn: 323288624
+                      - trackingId: test-e2e
+                        bytesOut: 0
+                        bytesIn: 453184689
+                      - trackingId: trackingId1
+                        bytesOut: 0
+                        bytesIn: 193646639
+                      - trackingId: trackingId2
+                        bytesOut: 0
+                        bytesIn: 25702807
+                      teststream2: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/tracking/streams/series:
+    get:
+      tags:
+      - Analytics
+      summary: Series bandwidth per TrackingID per stream
+      description: Get bandwidth used as a time series on specified streamnames over a date range. Response keys are requested streamnames, followed by keys for ISO 8601 dates from requested
+      operationId: Analytics_GetTrackingSeriesForStreams
+      parameters:
+      - name: resolution
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/StreamsAnalyticsResolution'
+        x-position: 1
+      - name: streamNames
+        in: query
+        style: form
+        explode: true
+        required: true
+        description: Each string must be <= 128 characters
+        schema:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+        x-position: 2
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 4
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessTrackingSeriesForStreams'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      lday0h9i:
+                        '2023-01-26T00:00:00Z':
+                        - trackingId: ''
+                          bytesOut: 82409106
+                          bytesIn: 3836187144
+                        - trackingId: customTrackingId
+                          bytesOut: 323288624
+                          bytesIn: 0
+                        - trackingId: test-e2e
+                          bytesOut: 453184689
+                          bytesIn: 0
+                        - trackingId: trackingId1
+                          bytesOut: 193646639
+                          bytesIn: 0
+                        - trackingId: trackingId2
+                          bytesOut: 25702807
+                          bytesIn: 0
+                        '2023-01-27T00:00:00Z': []
+                        '2023-01-28T00:00:00Z': []
+                        '2023-01-29T00:00:00Z': []
+                        '2023-01-30T00:00:00Z': []
+                        '2023-01-31T00:00:00Z': []
+                        '2023-02-01T00:00:00Z': []
+                        '2023-02-02T00:00:00Z': []
+                        '2023-02-03T00:00:00Z': []
+                        '2023-02-04T00:00:00Z': []
+                        '2023-02-05T00:00:00Z': []
+                        '2023-02-06T00:00:00Z': []
+                        '2023-02-07T00:00:00Z': []
+                      teststream2:
+                        '2023-01-26T00:00:00Z': []
+                        '2023-01-27T00:00:00Z': []
+                        '2023-01-28T00:00:00Z': []
+                        '2023-01-29T00:00:00Z': []
+                        '2023-01-30T00:00:00Z': []
+                        '2023-01-31T00:00:00Z': []
+                        '2023-02-01T00:00:00Z': []
+                        '2023-02-02T00:00:00Z': []
+                        '2023-02-03T00:00:00Z': []
+                        '2023-02-04T00:00:00Z': []
+                        '2023-02-05T00:00:00Z': []
+                        '2023-02-06T00:00:00Z': []
+                        '2023-02-07T00:00:00Z': []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/tracking/total:
+    get:
+      tags:
+      - Analytics
+      summary: Total bandwidth for streams specified by TrackingID
+      description: Get total bandwidth for TrackingIDs specified on a stream-by-stream basis. Response keys are requested TrackingIDs.
+      operationId: Analytics_GetTotalBandwidthForTrackingId
+      parameters:
+      - name: trackingIds
+        in: query
+        style: form
+        explode: true
+        required: true
+        schema:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+        x-position: 1
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessTotalBandwidthPerStreamForTrackingIds'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      test-e2e:
+                      - streamName: lday0h9i
+                        bytesOut: 453184689
+                        bytesIn: 0
+                      trackingId1:
+                      - streamName: lday0h9i
+                        bytesOut: 193646639
+                        bytesIn: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/tracking/series:
+    get:
+      tags:
+      - Analytics
+      summary: Series bandwidth for streams specified by TrackingID
+      description: Get bandwidth information used as a time series on specified TrackingIDs over a date range on a stream-by-stream basis. Response keys are requested TrackingIDs, followed by keys for ISO 8601 dates from requested
+      operationId: Analytics_GetSeriesBandwidthForTrackingId
+      parameters:
+      - name: resolution
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/StreamsAnalyticsResolution'
+        x-position: 1
+      - name: trackingIds
+        in: query
+        style: form
+        explode: true
+        required: true
+        schema:
+          type: array
+          maxItems: 10
+          items:
+            type: string
+        x-position: 2
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 3
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 4
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessSeriesBandwidthPerStreamForTrackingIds'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      trackingId1:
+                        '2023-01-26T00:00:00Z':
+                        - streamName: lday0h9i
+                          bytesOut: 453184689
+                          bytesIn: 0
+                        '2023-01-27T00:00:00Z': []
+                        '2023-01-28T00:00:00Z': []
+                        '2023-01-29T00:00:00Z': []
+                        '2023-01-30T00:00:00Z': []
+                        '2023-01-31T00:00:00Z': []
+                        '2023-02-01T00:00:00Z': []
+                        '2023-02-02T00:00:00Z': []
+                        '2023-02-03T00:00:00Z': []
+                        '2023-02-04T00:00:00Z': []
+                        '2023-02-05T00:00:00Z': []
+                        '2023-02-06T00:00:00Z': []
+                        '2023-02-07T00:00:00Z': []
+                      trackingId2:
+                        '2023-01-26T00:00:00Z':
+                        - streamName: lday0h9i
+                          bytesOut: 193646639
+                          bytesIn: 0
+                        '2023-01-27T00:00:00Z': []
+                        '2023-01-28T00:00:00Z': []
+                        '2023-01-29T00:00:00Z': []
+                        '2023-01-30T00:00:00Z': []
+                        '2023-01-31T00:00:00Z': []
+                        '2023-02-01T00:00:00Z': []
+                        '2023-02-02T00:00:00Z': []
+                        '2023-02-03T00:00:00Z': []
+                        '2023-02-04T00:00:00Z': []
+                        '2023-02-05T00:00:00Z': []
+                        '2023-02-06T00:00:00Z': []
+                        '2023-02-07T00:00:00Z': []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/transcoder/total:
+    get:
+      tags:
+      - Analytics
+      summary: Get Total Transcoder Minutes
+      description: 'Lists total transcoder uptime in minutes calculated between two date ranges for an account.
+
+
+        Note: Transcoding billing is calculated once per day for the previous day, so you may not see an entry for today yet.'
+      operationId: Analytics_GetTotalTranscoderMinutesForAccount
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessTranscoderTotalMinutes'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      streamAccountId: PbyMpY
+                      startDate: '2024-03-03T00:00:00Z'
+                      endDate: '2024-03-04T00:00:00Z'
+                      transcoderMinutesUsed: 250000000
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/transcoder/series:
+    get:
+      tags:
+      - Analytics
+      summary: Get Transcoder Minutes Series
+      description: 'List Transcoder uptime in minutes calculated between two date ranges for an account. The data will show a list of dates each with corresponding transcoder minutes for that specific day.
+
+
+        Note: the current day''s data may not be available yet.'
+      operationId: Analytics_GetSeriesTranscoderMinutesForAccount
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessTranscoderSeriesMinutes'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      streamAccountId: PbyMpY
+                      transcoder:
+                        '2024-03-01T00:00:00Z':
+                        - transcoderId: 100000000
+                          minutesUsed: 50000000
+                        '2024-03-02T00:00:00Z':
+                        - transcoderId: 100000000
+                          minutesUsed: 50000000
+                        '2024-03-03T00:00:00Z':
+                        - transcoderId: 100000000
+                          minutesUsed: 50000000
+                        20240-03-04T00:00:00Z:
+                        - transcoderId: 100000000
+                          minutesUsed: 50000000
+                        '2024-03-05T00:00:00Z':
+                        - transcoderId: 100000000
+                          minutesUsed: 50000000
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/clip/series:
+    get:
+      tags:
+      - Analytics
+      summary: Get Clip Minutes Series
+      description: 'Lists daily clip usage in minutes between two dates for an account. The data is a map of dates to clip minutes for that day. This series is sparse: days with no clip activity are omitted from the response.'
+      operationId: Analytics_GetClipSeries
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessClipSeriesResponse'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      series:
+                        '2024-03-01': 12
+                        '2024-03-03': 47
+                        '2024-03-04': 5
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/storage/series:
+    get:
+      tags:
+      - Analytics
+      summary: Get Storage GB-hours Series
+      description: 'Lists daily stored-media usage in GB-hours between two dates for an account. The data is a map of dates to GB-hours (byte-hours / 1,000,000,000) for that day. This series is sparse: days with no storage data are omitted.'
+      operationId: Analytics_GetStorageSeries
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessStorageSeriesResponse'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      series:
+                        '2024-03-01': 1024.5
+                        '2024-03-02': 1050.25
+                        '2024-03-03': 1100.0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/media/storage/usage:
+    get:
+      tags:
+      - Analytics
+      summary: Usage
+      description: Returns the total number of bytes used to store all media assets. The total is inclusive of all contributing media types including recordings, clips, and timelines.
+      operationId: Analytics_MediaAssetUsage
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfMediaAssetUsage'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/media/storage/usage/billing:
+    get:
+      tags:
+      - Analytics
+      summary: Usage Billable
+      description: Returns the number of gigabyte hours of storage used for a given date range. The total is inclusive of all contributing media types including recordings, clips, and timelines.
+      operationId: Analytics_MediaAssetUsageBillable
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfMediaAssetBillableUsage'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/drm/series:
+    get:
+      tags:
+      - Analytics
+      summary: DRM Daily Usage
+      description: Get DRM daily license requests and their status over a date range.
+      operationId: Analytics_GetDrmDailyUsage
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DrmDetailedUsageResponse'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      license:
+                        totals:
+                          ok: 1021
+                          fail: 4
+                          denied: 20
+                        details:
+                          '2024-07-31T00:00:00Z':
+                            playReady:
+                              ok: 4
+                              fail: 0
+                              denied: 0
+                            widevine:
+                              ok: 1005
+                              fail: 0
+                              denied: 20
+                            fairPlay:
+                              ok: 1
+                              fail: 0
+                              denied: 0
+                          '2024-07-27T00:00:00Z':
+                            playReady:
+                              ok: 0
+                              fail: 0
+                              denied: 0
+                            widevine:
+                              ok: 11
+                              fail: 4
+                              denied: 0
+                            fairPlay:
+                              ok: 0
+                              fail: 0
+                              denied: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/analytics/drm/total:
+    get:
+      tags:
+      - Analytics
+      summary: DRM Total Usage
+      description: Get DRM total license requests and their status over a date range.
+      operationId: Analytics_GetDrmTotalUsage
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DrmTotalUsageResponse'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      license:
+                        totals:
+                          ok: 1017
+                          fail: 0
+                          denied: 0
+                        details:
+                          playReady:
+                            ok: 0
+                            fail: 0
+                            denied: 0
+                          widevine:
+                            ok: 1016
+                            fail: 0
+                            denied: 0
+                          fairPlay:
+                            ok: 1
+                            fail: 0
+                            denied: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+components:
+  schemas:
+    ViewerRecordModelV1:
+      type: object
+      additionalProperties: false
+      properties:
+        startTime:
+          type: string
+          description: Start time of connection
+          format: date-time
+        endTime:
+          type:
+          - string
+          - 'null'
+          description: Expected null for ongoing connections
+          format: date-time
+        clientId:
+          type: string
+          description: Unique id of client connection
+        clusterId:
+          type: string
+          description: ClusterId used by connection
+        country:
+          type: string
+          description: ISO 3166-1 two letter country code
+        customViewerData:
+          type:
+          - string
+          - 'null'
+          description: Custom data associated with viewer
+        duration:
+          type: integer
+          description: Duration of connection in seconds
+        bytes:
+          type: integer
+          description: Total bytes sent/received for connection
+          format: uint64
+        ipAddress:
+          type: string
+          description: Ip address of connection
+        streamName:
+          type: string
+          description: Stream name
+        trackingId:
+          type:
+          - string
+          - 'null'
+          description: tracking id
+        userAgent:
+          type: string
+          description: Useragent of connection
+    GetRecordsModel:
+      type: object
+      additionalProperties: false
+      properties:
+        startTime:
+          type:
+          - string
+          - 'null'
+          description: ISO 8601 format (eg 2020-01-01T00:00:00Z), all times are expected to be UTC. Lower bound of the session start-time range.
+        startOperator:
+          description: Used with StartTime
+          default: GreaterThanOrEqualTo
+          oneOf:
+          - $ref: '#/components/schemas/DateTimeOperator'
+        endTime:
+          type:
+          - string
+          - 'null'
+          description: ISO 8601 format (eg 2020-01-01T00:00:00Z), all times are expected to be UTC. Upper bound of the completion-time range.
+        endOperator:
+          description: Used with EndTime
+          default: LessThan
+          oneOf:
+          - $ref: '#/components/schemas/DateTimeOperator'
+        search:
+          description: What type of records to search for
+          default: Ongoing_Completed
+          oneOf:
+          - $ref: '#/components/schemas/RecordSearchType'
+        streamNames:
+          type:
+          - array
+          - 'null'
+          description: List of streamNames to only include in response. Mutually exclusive with TrackingIds
+          items:
+            type: string
+        trackingIds:
+          type:
+          - array
+          - 'null'
+          description: List of trackingIds to only include in response. NULL is allowed here to include records with no trackingId specified. Mutually exclusive with StreamNames
+          items:
+            type: string
+    RecordSearchType:
+      type: string
+      description: ''
+      x-enumNames:
+      - Completed
+      - Ongoing
+      - Ongoing_Completed
+      enum:
+      - Completed
+      - Ongoing
+      - Ongoing_Completed
+    DateTimeOperator:
+      type: string
+      description: ''
+      x-enumNames:
+      - GreaterThanOrEqualTo
+      - GreaterThan
+      - LessThanOrEqualTo
+      - LessThan
+      enum:
+      - GreaterThanOrEqualTo
+      - GreaterThan
+      - LessThanOrEqualTo
+      - LessThan
+    SuccessStreamsBandwidthSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/BandwidthSeriesAnalyticModel'
+            x-additionalPropertiesName: StreamName
+    UsagePerStatus:
+      type: object
+      additionalProperties: false
+      properties:
+        ok:
+          type: integer
+          description: Successful license delivery
+        fail:
+          type: integer
+          description: Failed license delivery due to an error
+        denied:
+          type: integer
+          description: Denied license delivery (Not authorized)
+    SuccessStreamsBandwidthTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/BandwidthTotalAnalyticModel'
+            x-additionalPropertiesName: StreamName
+    StreamTrackingTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          format: int64
+        bytesIn:
+          type: integer
+          format: int64
+        standardStream:
+          description: Traffic attributed to standard streaming broadcasts and playback.
+          oneOf:
+          - $ref: '#/components/schemas/BaseBandwidthModel2'
+        restream:
+          description: Traffic attributed to use of re-streaming across multiple platforms.
+          oneOf:
+          - $ref: '#/components/schemas/UsageWithDurationModel2'
+        geoCascade:
+          description: Traffic attributed to use of geo-cascading across multiple regions.
+          oneOf:
+          - $ref: '#/components/schemas/BaseBandwidthModel2'
+        trackingId:
+          type:
+          - string
+          - 'null'
+    SuccessTrackingTotalForStreams:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/StreamTrackingTotalAnalyticModel'
+    AnalyticsResolution:
+      type: string
+      description: ''
+      x-enumNames:
+      - Hour
+      - Day
+      - Month
+      enum:
+      - Hour
+      - Day
+      - Month
+    SuccessAccountBandwidthSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/BandwidthSeriesAnalyticModel'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessClipSeriesResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/ClipSeriesResult'
+    StorageSeriesResult:
+      type: object
+      additionalProperties: false
+      properties:
+        series:
+          type:
+          - object
+          - 'null'
+          description: Sparse dictionary of UTC date (yyyy-MM-dd) to storage GB-hours (byte-hours / 1,000,000,000). Days with no storage data are omitted.
+          additionalProperties:
+            type: number
+            format: double
+    AccountGeoSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        geo:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/BaseStreamDataWithViewsModel'
+              x-additionalPropertiesName: CountryCode
+            x-additionalPropertiesName: Time
+    BaseStreamDataModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          description: Output bytes.
+          format: int64
+        bytesIn:
+          type: integer
+          description: Input bytes.
+          format: int64
+        publishDuration:
+          type: integer
+          format: int64
+        viewDuration:
+          type: integer
+          format: int64
+    StreamGeoSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        geo:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/BaseStreamDataWithViewsModel'
+                x-additionalPropertiesName: CountryCode
+              x-additionalPropertiesName: Time
+            x-additionalPropertiesName: StreamName
+    SuccessStreamsGeoTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/StreamGeoTotalAnalyticModel'
+    SuccessAccountBandwidthTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/BandwidthTotalAnalyticModel'
+    ClipSeriesResult:
+      type: object
+      additionalProperties: false
+      properties:
+        series:
+          type:
+          - object
+          - 'null'
+          description: Sparse dictionary of UTC date (yyyy-MM-dd) to clip minutes. Days with no clip activity are omitted.
+          additionalProperties:
+            type: integer
+            format: int64
+    BaseGeoDataModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytes:
+          type: integer
+          format: uint64
+        views:
+          type: integer
+          format: uint64
+    UsageWithDurationModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          format: int64
+        bytesIn:
+          type: integer
+          format: int64
+        duration:
+          type: integer
+          format: int64
+    BaseBandwidthModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          format: int64
+        bytesIn:
+          type: integer
+          format: int64
+    StreamGeoTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        geo:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/BaseStreamDataModel'
+              x-additionalPropertiesName: CountryCode
+            x-additionalPropertiesName: StreamName
+    SuccessTrackingSeriesForStreams:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/StreamTrackingTotalAnalyticModel'
+    TranscoderTotalAnalyticsResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        streamAccountId:
+          type:
+          - string
+          - 'null'
+          description: The account we have queried for.
+        startDate:
+          type: string
+          description: The start date of the query.
+          format: date-time
+        endDate:
+          type: string
+          description: The end date of the query.
+          format: date-time
+        transcoderMinutesUsed:
+          type: integer
+          description: The total transcoder minutes used between the two dates.
+          format: int64
+    SuccessResponseOfMediaAssetBillableUsage:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/MediaAssetBillableUsage'
+    StreamsAnalyticsResolution:
+      type: string
+      description: ''
+      x-enumNames:
+      - Hour
+      - Day
+      enum:
+      - Hour
+      - Day
+    MediaAssetUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        totalBytes:
+          type: integer
+          description: Total storage usage reported in bytes
+          format: uint64
+        recordings:
+          type: integer
+          description: Storage usage of recordings reported in bytes
+          format: uint64
+        clips:
+          type: integer
+          description: Storage usage of clips reported in bytes
+          format: uint64
+        timelines:
+          type: integer
+          description: Storage usage of timelines reported in bytes
+          format: uint64
+        vod:
+          type: integer
+          description: Storage usage of VOD assets reported in bytes
+          format: uint64
+    SuccessStorageSeriesResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/StorageSeriesResult'
+    LicenseUsageTotal:
+      type: object
+      additionalProperties: false
+      properties:
+        totals:
+          description: Total license requests
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+        details:
+          description: License requests per DRM system
+          oneOf:
+          - $ref: '#/components/schemas/DrmSchemaUsage'
+    BandwidthSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bandwidth:
+          type: object
+          description: Total bandwidth (in bytes) egress and ingress for all traffic types.
+          additionalProperties:
+            $ref: '#/components/schemas/BaseBandwidthModel'
+            x-additionalPropertiesName: Time
+        standardStream:
+          type: object
+          description: 'Traffic attributed to standard streaming broadcasts and playback.
+
+            '
+          additionalProperties:
+            $ref: '#/components/schemas/BaseBandwidthModel'
+            x-additionalPropertiesName: Time
+        restream:
+          type:
+          - object
+          - 'null'
+          description: Traffic attributed to use of re-streaming across multiple platforms.
+          additionalProperties:
+            $ref: '#/components/schemas/UsageWithDurationModel'
+            x-additionalPropertiesName: Time
+        geoCascade:
+          type:
+          - object
+          - 'null'
+          description: Traffic attributed to use of geo-cascading across multiple regions.
+          additionalProperties:
+            $ref: '#/components/schemas/BaseBandwidthModel'
+            x-additionalPropertiesName: Time
+    BaseStreamDataWithViewsModel:
+      type: object
+      additionalProperties: false
+      properties:
+        publishDuration:
+          type: integer
+          format: int64
+        viewDuration:
+          type: integer
+          format: int64
+        bytesOut:
+          type: integer
+          description: Output bytes.
+          format: int64
+        bytesIn:
+          type: integer
+          description: Input bytes.
+          format: int64
+        publishes:
+          type: integer
+          format: int64
+        views:
+          type: integer
+          format: int64
+    SuccessSeriesBandwidthPerStreamForTrackingIds:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/TrackingIdTotalAnalyticModel'
+    SuccessAccountGeoSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/AccountGeoSeriesAnalyticModel'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    GeoTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        geo:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/BaseStreamDataModel'
+            x-additionalPropertiesName: CountryCode
+    SuccessTranscoderSeriesMinutes:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderSeriesAnalyticsResponse'
+    DrmSchemaUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        playReady:
+          description: License request status for PlayReady
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+        widevine:
+          description: License request status for Widevine
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+        fairPlay:
+          description: License request status for FairPlay
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+    SuccessResponseOfMediaAssetUsage:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/MediaAssetUsage'
+    TrackingIdTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          format: int64
+        bytesIn:
+          type: integer
+          format: int64
+        standardStream:
+          description: Traffic attributed to standard streaming broadcasts and playback.
+          oneOf:
+          - $ref: '#/components/schemas/BaseBandwidthModel2'
+        restream:
+          description: Traffic attributed to use of re-streaming across multiple platforms.
+          oneOf:
+          - $ref: '#/components/schemas/UsageWithDurationModel2'
+        geoCascade:
+          description: Traffic attributed to use of geo-cascading across multiple regions.
+          oneOf:
+          - $ref: '#/components/schemas/BaseBandwidthModel2'
+        streamName:
+          type:
+          - string
+          - 'null'
+    DrmDetailedUsageResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        license:
+          description: DRM license usage
+          oneOf:
+          - $ref: '#/components/schemas/LicenseUsageSeries'
+    MediaAssetBillableUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        gigabyteHours:
+          type: integer
+          description: Measured as binary gigabytes (1024^3) per hour
+          format: uint64
+        recordings:
+          type: integer
+          description: Billable storage usage of recordings measured as binary gigabytes (1024^3) per hour
+          format: uint64
+        clips:
+          type: integer
+          description: Billable storage usage of clips measured as binary gigabytes (1024^3) per hour
+          format: uint64
+        timelines:
+          type: integer
+          description: Billable storage usage of timelines measured as binary gigabytes (1024^3) per hour
+          format: uint64
+        vod:
+          type: integer
+          description: Billable storage usage of VOD assets measured as binary gigabytes (1024^3) per hour
+          format: uint64
+    GeoCountryAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        geo:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/BaseGeoDataModel'
+            x-additionalPropertiesName: CountryCode
+    BaseBandwidthModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          description: Output bytes.
+          format: int64
+        bytesIn:
+          type: integer
+          description: Input bytes.
+          format: int64
+    UsageWithDurationModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          description: Output bytes.
+          format: int64
+        bytesIn:
+          type: integer
+          description: Input bytes.
+          format: int64
+        secondsUsed:
+          type: integer
+          description: Usage duration in seconds.
+          format: int64
+    SuccessStreamsGeoCountryAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/GeoCountryAnalyticModel'
+            x-additionalPropertiesName: StreamName
+    SuccessTotalBandwidthPerStreamForTrackingIds:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/TrackingIdTotalAnalyticModel'
+    LicenseUsageSeries:
+      type: object
+      additionalProperties: false
+      properties:
+        totals:
+          description: Total license requests
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+        details:
+          type:
+          - object
+          - 'null'
+          description: Daily license requests per DRM system
+          additionalProperties:
+            $ref: '#/components/schemas/DrmSchemaUsage'
+    SuccessAccountGeoCountryAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/GeoCountryAnalyticModel'
+    TranscoderSeriesAnalyticsResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        streamAccountId:
+          type:
+          - string
+          - 'null'
+          description: The account that was queried.
+        transcoder:
+          type:
+          - object
+          - 'null'
+          description: Date associated transcoder analytics.
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/TranscoderAnalyticsDetail'
+    DrmTotalUsageResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        license:
+          description: DRM license usage
+          oneOf:
+          - $ref: '#/components/schemas/LicenseUsageTotal'
+    BandwidthTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          description: Total bandwidth (in bytes) egress for all traffic types.
+          format: int64
+        bytesIn:
+          type: integer
+          description: Total bandwidth (in bytes) ingress for all traffic types.
+          format: int64
+        standardStream:
+          description: Traffic attributed to standard streaming broadcasts and playback.
+          oneOf:
+          - $ref: '#/components/schemas/BaseBandwidthModel'
+        restream:
+          description: Traffic attributed to use of re-streaming across multiple platforms.
+          oneOf:
+          - $ref: '#/components/schemas/UsageWithDurationModel'
+        geoCascade:
+          description: Traffic attributed to use of geo-cascading across multiple regions.
+          oneOf:
+          - $ref: '#/components/schemas/BaseBandwidthModel'
+    TranscoderAnalyticsDetail:
+      type: object
+      additionalProperties: false
+      properties:
+        transcoderId:
+          type:
+          - string
+          - 'null'
+        minutesUsed:
+          type: integer
+          format: int64
+    SuccessStreamsGeoSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/StreamGeoSeriesAnalyticModel'
+    SuccessTranscoderTotalMinutes:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderTotalAnalyticsResponse'
+    SuccessAccountGeoTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/GeoTotalAnalyticModel'
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-refined-from:
+- dolby-millicast-analytics-openapi-original.json
+- dolby-millicast-api-openapi-original.json
+x-generator: NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

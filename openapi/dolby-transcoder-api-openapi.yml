@@ -1,0 +1,1396 @@
+openapi: 3.2.0
+info:
+  title: Millicast Transcoder API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: Transcoder
+paths:
+  /api/transcoders/{transcoderId}:
+    get:
+      tags:
+      - Transcoder
+      summary: Get Transcoder
+      description: Returns the configuration of a Transcoder and any individual host instances for the given transcoderId.
+      operationId: Transcoder_GetTranscoder
+      parameters:
+      - name: transcoderId
+        in: path
+        required: true
+        description: The unique identifier for the transcoder.
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseTranscoderRecord'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      transcoderId: abcd-efgh
+                      name: simple_transcoder
+                      cluster: phx-1
+                      dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                      profile:
+                        profileId: simple_profile
+                        name: simple profile
+                        description: simple profile
+                        height: 240
+                        frameRate: 60
+                        passThrough: true
+                        layers:
+                        - height: 240
+                          fps: 24
+                          codec: h264
+                          bitrate: 350
+                          intraPeriod: 24
+                      createdOn: '2024-02-08T04:55:48.449Z'
+                      instance:
+                        id: mnop-qrst
+                        publicIp: 123.45.67.89
+                        dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                        createdOn: '2024-02-08T04:55:48.449Z'
+                        status: Active
+                      status: Active
+                      publishUrls:
+                        rtmp: rtmp://abcd-efgh-ijkl.transcoder.millicast.com:1935/v2/pub
+                        rtmps: rtmps://abcd-efgh-ijkl.transcoder.millicast.com:443/v2/pub
+                        srt: srt://abcd-efgh-ijkl.transcoder.millicast.com:10000
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    put:
+      tags:
+      - Transcoder
+      summary: Update Transcoder
+      description: 'Make changes to the configuration of an existing Transcoder. Changes should take effect without requiring a server restart except for DNS prefix and cluster, which can only be updated when the transcoder is in a shutdown state.
+
+
+        Changing the profile will require either a profile id or the height, frameRate, and passThrough. If you specify both, only the profile will be used. See the ''List Transcoder Profiles'' endpoint to find available Transcoder profiles.'
+      operationId: Transcoder_UpdateTranscoder
+      parameters:
+      - name: transcoderId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 2
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTranscoder'
+            examples:
+              simple:
+                summary: simple
+                value:
+                  name: simple_transcoder
+                  dnsPrefix: abcd-efgh
+                  cluster: phx-1
+                  height: 240
+                  frameRate: 60
+                  passThrough: true
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseTranscoderRecord'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      transcoderId: abcd-efgh
+                      name: simple_transcoder
+                      cluster: phx-1
+                      dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                      profile:
+                        profileId: simple_profile
+                        name: simple profile
+                        description: simple profile
+                        height: 240
+                        frameRate: 60
+                        passThrough: true
+                        layers:
+                        - height: 240
+                          fps: 24
+                          codec: h264
+                          bitrate: 350
+                          intraPeriod: 24
+                      createdOn: '2024-02-08T04:55:48.449Z'
+                      instance:
+                        id: mnop-qrst
+                        publicIp: 123.45.67.89
+                        dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                        createdOn: '2024-02-08T04:55:48.449Z'
+                        status: Active
+                      status: Active
+                      publishUrls:
+                        rtmp: rtmp://abcd-efgh-ijkl.transcoder.millicast.com:1935/v2/pub
+                        rtmps: rtmps://abcd-efgh-ijkl.transcoder.millicast.com:443/v2/pub
+                        srt: srt://abcd-efgh-ijkl.transcoder.millicast.com:10000
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    delete:
+      tags:
+      - Transcoder
+      summary: Delete Transcoder
+      description: Delete the configuration of a Transcoder and any instances for it for the given transcoderId. If the Transcoder is still running it will be shutdown immediately.
+      operationId: Transcoder_DeleteTranscoder
+      parameters:
+      - name: transcoderId
+        in: path
+        required: true
+        description: The unique identifier for the transcoder.
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseBoolean'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/transcoders:
+    post:
+      tags:
+      - Transcoder
+      summary: Create Transcoder
+      description: 'Create a Cloud Transcoder to enable Adaptive Bitrate (ABR) Simulcast streams without requiring multiple broadcast contribution sources.
+
+
+        A Transcoder represents the configuration of your bitrate ladder from a pre-defined profile or by setting the maximum height and frameRate you''d like to target. See the ''List Transcoder Profiles'' endpoint to find available Transcoder profiles. If you specify both a profile id and height/frameRate settings only the profile will be used.
+
+
+        You should update any broadcast encoders to use this new origin server as configured by the DNS of the Transcoder which can be found in the response data.
+
+
+        There are additional charges for a Transcoder so you should use the Stop Transcoder and Start Transcoder endpoints to enable cloud transcoding only when you need to broadcast.'
+      operationId: Transcoder_CreateTranscoder
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTranscoderRecord'
+            examples:
+              simple:
+                summary: simple
+                value:
+                  name: simple_transcoder
+                  dnsPrefix: testing-transcoder
+                  cluster: phx-1
+                  height: 240
+                  frameRate: 60
+                  startNow: false
+                  passThrough: true
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseTranscoderRecord'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      transcoderId: abcd-efgh
+                      name: simple_transcoder
+                      cluster: phx-1
+                      dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                      profile:
+                        profileId: simple_profile
+                        name: simple profile
+                        description: simple profile
+                        height: 240
+                        frameRate: 60
+                        passThrough: true
+                        layers:
+                        - height: 240
+                          fps: 24
+                          codec: h264
+                          bitrate: 350
+                          intraPeriod: 24
+                      createdOn: '2024-02-08T04:55:48.449Z'
+                      endedOn: '2024-02-08T04:55:48.449Z'
+                      instance:
+                        id: mnop-qrst
+                        dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                        createdOn: '2024-02-08T04:55:48.449Z'
+                        status: Provisioning
+                      publishUrls:
+                        rtmp: rtmp://abcd-efgh-ijkl.transcoder.millicast.com:1935/v2/pub
+                        rtmps: rtmps://abcd-efgh-ijkl.transcoder.millicast.com:443/v2/pub
+                        srt: srt://abcd-efgh-ijkl.transcoder.millicast.com:10000
+                      status: Provisioning
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    get:
+      tags:
+      - Transcoder
+      summary: List Transcoders
+      description: Return the Transcoders that have been configured for your account. You can use query parameters to filter, sort, or paginate the results returned.
+      operationId: Transcoder_ListTranscoders
+      parameters:
+      - name: sortBy
+        in: query
+        description: Order in which to return the list of Transcoders. The default is by CreatedDate.
+        schema:
+          default: CreatedDate
+          oneOf:
+          - $ref: '#/components/schemas/ListTranscoderRecordsSortBy'
+        x-position: 1
+      - name: status
+        in: query
+        style: form
+        explode: true
+        description: Returns only Transcoders that match the given status. If empty, will return all but Deleted.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TranscoderDisplayStatus'
+        x-position: 2
+      - name: cluster
+        in: query
+        style: form
+        explode: true
+        description: Returns only Transcoders for the given cluster(s).
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        x-position: 3
+      - name: transcoderName
+        in: query
+        description: Returns only Transcoders that match the given string. Will include partial sub-string matches.
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 4
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 5
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 6
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 7
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseListTranscoderRecords'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                    - transcoderId: abcd-efgh
+                      name: simple_transcoder
+                      cluster: phx-1
+                      dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                      profile:
+                        profileId: simple_profile
+                        name: simple profile
+                        description: simple profile
+                        height: 240
+                        frameRate: 60
+                        passThrough: true
+                        layers:
+                        - height: 240
+                          fps: 24
+                          codec: h264
+                          bitrate: 350
+                          intraPeriod: 24
+                      createdOn: '2024-02-08T04:55:48.449Z'
+                      instance:
+                        id: mnop-qrst
+                        publicIp: 123.45.67.89
+                        dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                        createdOn: '2024-02-08T04:55:48.449Z'
+                        status: Active
+                      status: Active
+                      publishUrls:
+                        rtmp: rtmp://abcd-efgh-ijkl.transcoder.millicast.com:1935/v2/pub
+                        rtmps: rtmps://abcd-efgh-ijkl.transcoder.millicast.com:443/v2/pub
+                        srt: srt://abcd-efgh-ijkl.transcoder.millicast.com:10000
+                    - transcoderId: abcd-efgh
+                      name: simple_transcoder
+                      cluster: phx-1
+                      dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                      profile:
+                        profileId: simple_profile
+                        name: simple profile
+                        description: simple profile
+                        height: 240
+                        frameRate: 60
+                        passThrough: true
+                        layers:
+                        - height: 240
+                          fps: 24
+                          codec: h264
+                          bitrate: 350
+                          intraPeriod: 24
+                      createdOn: '2024-02-08T04:55:48.449Z'
+                      endedOn: '2024-02-08T04:55:48.449Z'
+                      instance:
+                        id: mnop-qrst
+                        dnsName: abcd-efgh-ijkl.transcoder.millicast.com
+                        createdOn: '2024-02-08T04:55:48.449Z'
+                        status: Provisioning
+                      publishUrls:
+                        rtmp: rtmp://abcd-efgh-ijkl.transcoder.millicast.com:1935/v2/pub
+                        rtmps: rtmps://abcd-efgh-ijkl.transcoder.millicast.com:443/v2/pub
+                        srt: srt://abcd-efgh-ijkl.transcoder.millicast.com:10000
+                      status: Provisioning
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/transcoders/start/{transcoderId}:
+    put:
+      tags:
+      - Transcoder
+      summary: Start Transcoder
+      description: Enable a Transcoder by ID to accept incoming broadcast sources.
+      operationId: Transcoder_StartTranscoder
+      parameters:
+      - name: transcoderId
+        in: path
+        required: true
+        description: The unique identifier for the transcoder.
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseBoolean'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/transcoders/stop/{transcoderId}:
+    put:
+      tags:
+      - Transcoder
+      summary: Stop Transcoder
+      description: Disable a Transcoder by ID so that it will shutdown and no longer accept incoming broadcast sources.
+      operationId: Transcoder_StopTranscoder
+      parameters:
+      - name: transcoderId
+        in: path
+        required: true
+        description: The unique identifier for the transcoder.
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseBoolean'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/transcoders/instances/{instanceId}:
+    get:
+      tags:
+      - Transcoder
+      summary: Get Transcoder Instance
+      description: Get transcoder instance information by Transcoder Instance ID. Instances can be listed and filtered using the List Transcoder Instances endpoint.
+      operationId: Transcoder_GetTranscoderInstance
+      parameters:
+      - name: instanceId
+        in: path
+        required: true
+        description: The unique identifier for the instance.
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseTranscoderInstance'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      id: mnop-qrst
+                      transcoderId: abcd-efgh
+                      dnsName: abcd-efgh-ijkl.transcoder.millcast.com
+                      createdOn: '2024-02-08T04:55:48.449Z'
+                      endedOn: '2024-02-08T04:55:48.449Z'
+                      status: Deleted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/transcoders/instances:
+    get:
+      tags:
+      - Transcoder
+      summary: List Transcoder Instances
+      description: A Transcoder Instance is an individual host within a cluster that has been configured based on the Transcoder settings. By default, Deleted instances are returned unless specified with Status parameter. This can be used to get historical instance information.
+      operationId: Transcoder_ListTranscoderInstances
+      parameters:
+      - name: transcoderId
+        in: query
+        description: Returns only Instances for a given Transcoder ID.
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 1
+      - name: startDate
+        in: query
+        description: Returns Instances that were created after the given date. The date is of the format is `YYYY-MM-DD`.
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 2
+      - name: endDate
+        in: query
+        description: Returns Instances that were shutdown prior to the given date. The data is of the format is `YYYY-MM-DD`.
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 3
+      - name: sortBy
+        in: query
+        description: Order in which to return the list of Transcoder Instances. The default is by Creation Date.
+        schema:
+          default: CreatedDate
+          oneOf:
+          - $ref: '#/components/schemas/ListTranscoderInstancesSortBy'
+        x-position: 4
+      - name: status
+        in: query
+        style: form
+        explode: true
+        description: Returns only Transcoder Instances that match the given status. If empty, all the instances including Deleted are return.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TranscoderStatus'
+        x-position: 5
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 6
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 7
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 8
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseListTranscoderInstances'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                    - id: mnop-qrst
+                      transcoderId: abcd-efgh
+                      dnsName: abcd-efgh-ijkl.transcoder.millcast.com
+                      createdOn: '2024-02-08T04:55:48.449Z'
+                      endedOn: '2024-02-08T04:55:48.449Z'
+                      status: Deleted
+                    - id: uvwx-yzab
+                      publicIp: 123.45.67.89
+                      transcoderId: cdef-ghij
+                      dnsName: cdef-ghij-klmn.transcoder.millcast.com
+                      createdOn: '2024-02-08T04:55:48.449Z'
+                      status: Active
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/transcoders/profiles:
+    get:
+      tags:
+      - Transcoder
+      summary: List Transcoder Profiles
+      description: A Transcoder Profile is a pre-defined configuration for how to direct the bitrate ladder in distributing individual layers.
+      operationId: Transcoder_ListTranscoderProfiles
+      parameters:
+      - name: sortBy
+        in: query
+        description: Order in which to return the list of Profiles. The default is by Name.
+        schema:
+          default: Name
+          oneOf:
+          - $ref: '#/components/schemas/ListProfileSortBy'
+        x-position: 1
+      - name: height
+        in: query
+        style: form
+        explode: true
+        description: The height to filter the profiles by.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+        x-position: 2
+      - name: frameRate
+        in: query
+        style: form
+        explode: true
+        description: The framerate to filter the profiles by.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            type: number
+            format: decimal
+        x-position: 3
+      - name: passthrough
+        in: query
+        description: The passthrough value to filter by.
+        schema:
+          type:
+          - boolean
+          - 'null'
+        x-position: 4
+      - name: isDefault
+        in: query
+        description: Used to filter for profiles that are either custom or provided by default.
+        schema:
+          type:
+          - boolean
+          - 'null'
+        x-position: 5
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 6
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 7
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 8
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseListTranscoderProfiles'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                    - profileId: millicast_240p60_h264
+                      name: 240p 60fps h264
+                      description: Profile for 240p 60fps h264
+                      height: 240
+                      frameRate: 60
+                      passThrough: true
+                      layers:
+                      - height: 240
+                        fps: 24
+                        codec: h264
+                        bitrate: 350
+                        intraPeriod: 24
+                    - profileId: millicast_240p60_h264_np
+                      name: 240p 60fps h264 no passthrough
+                      description: Profile for 240p 60fps h264 with no passthrough
+                      height: 240
+                      frameRate: 60
+                      passThrough: false
+                      layers:
+                      - height: 240
+                        fps: 24
+                        codec: h264
+                        bitrate: 350
+                        intraPeriod: 24
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+components:
+  schemas:
+    SuccessResponseListTranscoderRecords:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordResponse'
+    SuccessResponseListTranscoderInstances:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstanceResponse'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessResponseTranscoderRecord:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordResponse'
+    PublishUrlsResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        rtmp:
+          type: string
+        rtmps:
+          type: string
+        srt:
+          type: string
+    SuccessResponseTranscoderInstance:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/InstanceResponse'
+    TranscoderProfileLayer:
+      type: object
+      additionalProperties: false
+      properties:
+        height:
+          type:
+          - integer
+          - 'null'
+          description: The height for this layer.
+          format: int32
+        width:
+          type:
+          - integer
+          - 'null'
+          description: The width for this layer.
+          format: int32
+        fps:
+          type:
+          - number
+          - 'null'
+          description: The target frames-per-second for this layer.
+          format: decimal
+        codec:
+          type: string
+          description: The codec used for this layer.
+        bitrate:
+          type:
+          - integer
+          - 'null'
+          description: The target bitrate for this layer.
+          format: int32
+        intraPeriod:
+          type:
+          - integer
+          - 'null'
+          description: The I-Frame interval for this layer.
+          format: int32
+        allowTransrating:
+          type:
+          - boolean
+          - 'null'
+          description: Allow transrating of layer
+    TranscoderDisplayStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+      enum:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+    SuccessResponseListTranscoderProfiles:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProfileResponse'
+    InstanceStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+      - ActiveError
+      - ShutdownError
+      - DeletingError
+      enum:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+      - ActiveError
+      - ShutdownError
+      - DeletingError
+    ProfileResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        profileId:
+          type: string
+          description: A unique identifier for the profile configuration.
+        name:
+          type: string
+          description: Name of the profile.
+        description:
+          type: string
+          description: Description to identify the purpose of the profile.
+        height:
+          type: integer
+          description: The maximum height to use for the frame resolution.
+        frameRate:
+          type: number
+          description: The targeted frames per second.
+          format: decimal
+        passThrough:
+          type: boolean
+          description: Indicates that the top layer is used as is and bypasses transcoding without additional processing.
+        layers:
+          type: array
+          description: The layers the Transcoder will produce for distribution. These values are pre-determined following the Millicast bitrate ladder as step-down layers from the overall Transcoder configuration.
+          items:
+            $ref: '#/components/schemas/TranscoderProfileLayer'
+    ListTranscoderInstancesSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - CreatedDate
+      enum:
+      - CreatedDate
+    TranscoderStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+      enum:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+    ListTranscoderRecordsSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - CreatedDate
+      - TranscoderName
+      enum:
+      - CreatedDate
+      - TranscoderName
+    SuccessResponseBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
+    CreateTranscoderRecord:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      - cluster
+      properties:
+        name:
+          type: string
+          description: Use a label to help with identifying this Transcoder.
+          minLength: 1
+        dnsPrefix:
+          type:
+          - string
+          - 'null'
+          description: Choose a string that will be used to prefix the DNS entry for the Transcoder origin endpoint. You can only use alphabetic (A-Z), numeric (0-9), and a dash in your dns prefix. Used to construct the DNS name which follows the format of `dnsPrefix`-`accountId`.transcoder.millicast.com. Note that underscores (_) are invalid characters.
+        cluster:
+          type: string
+          description: Set the cluster region that will be used for the Transcoder to be deployed to. You should choose a cluster that is closest to the broadcast sources.
+          minLength: 1
+        height:
+          type:
+          - integer
+          - 'null'
+          description: Set the resolution for the maximum height to be used in the stream. If a pre-configured profile is chosen the height value will be used from the profile.
+        frameRate:
+          type:
+          - number
+          - 'null'
+          description: 'Update the maximum frames per second to be used in transcoding. If a pre-configured profile is chosen the frame rate value will be used from the profile. Must be one of: [24, 25, 29.97, 30, 50, 59.94, 60].'
+          format: decimal
+        profile:
+          type:
+          - string
+          - 'null'
+          description: Update to use a pre-configured profile by id. The ’List Transcoder Profiles’ endpoint can be used to find available profiles.
+        startNow:
+          type: boolean
+          description: Indicates whether instances should be provisioned and started immediately once the Transcoder is created.
+          default: false
+        passThrough:
+          type:
+          - boolean
+          - 'null'
+          description: Set whether or not the top layer of the contribution source should bypass transcoding and be distributed without processing.
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    UpdateTranscoder:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Update display name for transcoder.
+        dnsPrefix:
+          type:
+          - string
+          - 'null'
+          description: Update DNS prefix for the transcoder publisher. Used to construct the DNS name which follows the format of `dnsPrefix`-`accountId`.transcoder.millicast.com.
+        cluster:
+          type:
+          - string
+          - 'null'
+          description: Update cluster that transcoder will be deployed to.
+        height:
+          type:
+          - integer
+          - 'null'
+          description: Update resolution of input stream specified in video height. New default profile will be selected unless specified.
+        frameRate:
+          type:
+          - number
+          - 'null'
+          description: Update frame rate of input stream. New default profile will be selected unless specified.
+          format: decimal
+        profile:
+          type:
+          - string
+          - 'null'
+          description: Specify a profile id to select the corresponding transcoder profile. You can retrieve all system pre-defined profile ids by calling the ’List Transcoder Profiles’ endpoint.
+        passThrough:
+          type:
+          - boolean
+          - 'null'
+          description: Update whether the top layer is passed through or transcoded.
+    ListProfileSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - Name
+      - Height
+      - FrameRate
+      enum:
+      - Name
+      - Height
+      - FrameRate
+    RecordResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        transcoderId:
+          type: string
+          description: A unique identifier for a transcoder.
+        name:
+          type: string
+          description: A label to help distinguish between multiple transcoders.
+        cluster:
+          type: string
+          description: The cluster region used as the origin for ingesting the source stream.
+        dnsName:
+          type: string
+          description: 'A DNS record for routing to the transcode server. It follows the pattern: `dnsPrefix`-`accountId`.transcoder.millicast.com.'
+        profile:
+          description: Configuration for the output stream from the Transcoder. This may be a pre-defined profile or derived from custom resolution and frame rate settings.
+          oneOf:
+          - $ref: '#/components/schemas/ProfileResponse'
+        createdOn:
+          type: string
+          description: A timestamp for when this Transcoder was created.
+          format: date-time
+        endedOn:
+          type:
+          - string
+          - 'null'
+          description: A timestamp for when this Transcoder was shutdown.
+          format: date-time
+        instance:
+          description: Information on the most recent transcoder instance. The transcoder may run multiple instances to support the scale of the broadcast streams.
+          oneOf:
+          - $ref: '#/components/schemas/InstanceResponse'
+        status:
+          description: The status for this Transcoder.
+          oneOf:
+          - $ref: '#/components/schemas/TranscoderDisplayStatus'
+        publishUrls:
+          description: The discrete ingest URLs for each broadcast protocol (RTMP, RTMPS, SRT).
+          oneOf:
+          - $ref: '#/components/schemas/PublishUrlsResponse'
+    InstanceResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        transcoderId:
+          type: string
+          description: The unique identifier of the Transcoder.
+        id:
+          type: string
+          description: The unique identifier for this instance of the Transcoder.
+        publicIp:
+          type: string
+          description: The public IP address for the host that is processing the stream.
+        dnsName:
+          type: string
+          description: 'A DNS record for routing to the transcoder instance server(s). It follows the pattern: `dnsPrefix`-`accountId`.transcoder.millicast.com.'
+        createdOn:
+          type: string
+          description: A timestamp for when this Transcoder instance was created.
+          format: date-time
+        endedOn:
+          type:
+          - string
+          - 'null'
+          description: A timestamp for when this Transcoder instance was shutdown.
+          format: date-time
+        status:
+          description: The status for this Transcoder instance.
+          oneOf:
+          - $ref: '#/components/schemas/InstanceStatus'
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

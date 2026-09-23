@@ -1,0 +1,295 @@
+openapi: 3.2.0
+info:
+  title: THEOlive Regions API
+  version: v2
+servers:
+- url: https://api.theo.live/v2
+  description: V2 API
+- url: https://api.theo.live
+  description: Base (for /v1 endpoints)
+security:
+- BasicAuth: []
+tags:
+- name: Regions
+paths:
+  /regions:
+    get:
+      tags:
+      - Regions
+      operationId: get-regions
+      summary: Get all regions available for your organization
+      responses:
+        '200':
+          description: List of regions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionListResult'
+  /regions/{regionId}:
+    get:
+      tags:
+      - Regions
+      operationId: get-region
+      summary: Get a region by ID
+      parameters:
+      - schema:
+          type: string
+          description: Region ID
+        required: true
+        description: Region ID
+        name: regionId
+        in: path
+      responses:
+        '200':
+          description: The requested region
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionResult'
+        '404':
+          description: Region not found or not available for your organization
+  /regions/{regionId}/sdi:
+    get:
+      tags:
+      - Regions
+      operationId: get-region-sdi-devices
+      summary: Get the SDI devices of an on-prem region
+      parameters:
+      - schema:
+          type: string
+          description: Region ID
+        required: true
+        description: Region ID
+        name: regionId
+        in: path
+      responses:
+        '200':
+          description: List of SDI devices in the region
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdiDeviceListResult'
+        '400':
+          description: Region is not an on-prem region
+        '404':
+          description: Region not found or not available for your organization
+  /regions/{regionId}/ndi:
+    get:
+      tags:
+      - Regions
+      operationId: get-region-ndi-sources
+      summary: Get the NDI sources of an on-prem region
+      parameters:
+      - schema:
+          type: string
+          description: Region ID
+        required: true
+        description: Region ID
+        name: regionId
+        in: path
+      responses:
+        '200':
+          description: List of NDI sources in the region
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NdiSourceListResult'
+        '400':
+          description: Region is not an on-prem region
+        '404':
+          description: Region not found or not available for your organization
+components:
+  schemas:
+    SdiDeviceListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SdiDevice'
+          description: List of SDI devices in the region
+      required:
+      - data
+    SdiDevice:
+      type: object
+      properties:
+        persistentId:
+          type: string
+          description: Persistent identifier of the SDI device
+        model:
+          type: string
+          description: Model name of the SDI device
+        driverVersion:
+          type: string
+          description: Driver version of the SDI device
+        available:
+          type: boolean
+          description: Whether the SDI device is available for use and has a signal present
+        profile:
+          type: string
+          description: Active profile (sub-device layout) of the SDI device
+        signal:
+          type: object
+          properties:
+            present:
+              type: boolean
+              description: Whether a signal is present on the SDI device
+            mode:
+              type: string
+              description: Detected signal mode
+            resolution:
+              type: object
+              properties:
+                width:
+                  type: number
+                  description: Width in pixels
+                height:
+                  type: number
+                  description: Height in pixels
+              required:
+              - width
+              - height
+              description: Detected resolution of the signal
+            frameRate:
+              type: number
+              description: Detected frame rate of the signal
+            pixelFormat:
+              type: string
+              description: Detected pixel format of the signal
+            videoMode:
+              type: string
+              description: Detected video mode of the signal
+            videoFormat:
+              type: string
+              description: Detected video format of the signal
+          required:
+          - present
+          description: Detected signal on the SDI device
+      required:
+      - persistentId
+      - model
+      - driverVersion
+      - available
+      - profile
+    NdiSource:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the NDI source
+        name:
+          type: string
+          description: Name of the NDI source
+        url:
+          type: string
+          description: Current URL of the NDI source
+        lastSeen:
+          type: string
+          description: Timestamp the NDI source was last seen
+        stale:
+          type: boolean
+          description: Whether the NDI source has not been seen recently and may no longer be available
+        inUse:
+          type: boolean
+          description: Whether the NDI source is already connected to a non-deleted ingest
+      required:
+      - id
+      - name
+      - url
+      - lastSeen
+      - stale
+      - inUse
+    NdiSourceListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NdiSource'
+          description: List of NDI sources in the region
+      required:
+      - data
+    RegionListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Unique identifier of the region
+              name:
+                type: string
+                description: Display name of the region
+              type:
+                type: string
+                enum:
+                - cloud
+                - onprem
+                description: Type of the region
+              supportedIngestTypes:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - srt-pull
+                  - rtmp-pull
+                  - srt-push
+                  - rtmp-push
+                  - rtsp-pull
+                  - ndi-pull
+                  - sdi-pull
+                description: Ingest types supported in this region (rtsp-pull, ndi-pull and sdi-pull are only available on on-prem regions; ndi-pull and sdi-pull additionally require the NDI/SDI capability on the region)
+            required:
+            - id
+            - name
+            - type
+            - supportedIngestTypes
+          description: List of regions
+      required:
+      - data
+    RegionResult:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Unique identifier of the region
+            name:
+              type: string
+              description: Display name of the region
+            type:
+              type: string
+              enum:
+              - cloud
+              - onprem
+              description: Type of the region
+            supportedIngestTypes:
+              type: array
+              items:
+                type: string
+                enum:
+                - srt-pull
+                - rtmp-pull
+                - srt-push
+                - rtmp-push
+                - rtsp-pull
+                - ndi-pull
+                - sdi-pull
+              description: Ingest types supported in this region (rtsp-pull, ndi-pull and sdi-pull are only available on on-prem regions; ndi-pull and sdi-pull additionally require the NDI/SDI capability on the region)
+          required:
+          - id
+          - name
+          - type
+          - supportedIngestTypes
+          description: The requested region
+      required:
+      - data
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic

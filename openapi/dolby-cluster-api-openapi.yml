@@ -1,0 +1,291 @@
+openapi: 3.2.0
+info:
+  title: Millicast Cluster API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: Cluster
+paths:
+  /api/cluster:
+    get:
+      tags:
+      - Cluster
+      summary: Read Clusters
+      description: Default cluster and list of available clusters.
+      operationId: Cluster_GetClustersInfo
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessClusterInfoModel'
+              examples:
+                standard:
+                  summary: standard
+                  value:
+                    status: success
+                    data:
+                      defaultCluster: ams-1
+                      availableClusters:
+                      - id: ams-1
+                        name: Amsterdam
+                        rtmp: rtmp-ams-1.millicast.com
+                        srt: srt-ams-1.millicast.com
+                        location:
+                          city: Amsterdam
+                          region: North Holland
+                          country: Netherlands
+                        features:
+                          transcoding: false
+                      - id: phx-1
+                        name: Phoenix
+                        rtmp: rtmp-phx-1.millicast.com
+                        srt: srt-phx-1.millicast.com
+                        location:
+                          city: Phoenix
+                          region: Arizona
+                          country: United States of America
+                        features:
+                          transcoding: true
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    put:
+      tags:
+      - Cluster
+      summary: Update Cluster
+      description: Update default cluster on account.
+      operationId: Cluster_UpdateClusterInfo
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClusterInfoModel'
+            examples:
+              standard:
+                summary: standard
+                value:
+                  defaultCluster: ams-1
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessClusterInfoModel'
+              examples:
+                standard:
+                  summary: standard
+                  value:
+                    status: success
+                    data:
+                      defaultCluster: ams-1
+                      availableClusters:
+                      - id: ams-1
+                        name: Amsterdam
+                        rtmp: rtmp-ams-1.millicast.com
+                        srt: srt-ams-1.millicast.com
+                        location:
+                          city: Amsterdam
+                          region: North Holland
+                          country: Netherlands
+                        features:
+                          transcoding: false
+                      - id: phx-1
+                        name: Phoenix
+                        rtmp: rtmp-phx-1.millicast.com
+                        srt: srt-phx-1.millicast.com
+                        location:
+                          city: Phoenix
+                          region: Arizona
+                          country: United States of America
+                        features:
+                          transcoding: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+components:
+  schemas:
+    ClustersInfoModel:
+      type: object
+      additionalProperties: false
+      properties:
+        defaultCluster:
+          type: string
+          description: Used as cluster when not explicitly specified during Token creation.
+        availableClusters:
+          type: array
+          description: List of available clusters.
+          items:
+            $ref: '#/components/schemas/ClusterModel'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    LocationModel:
+      type: object
+      additionalProperties: false
+      properties:
+        city:
+          type:
+          - string
+          - 'null'
+          description: City for cluster
+        region:
+          type:
+          - string
+          - 'null'
+          description: Region for cluster
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country for cluster
+    ClustersFeaturesModel:
+      type: object
+      additionalProperties: false
+      properties:
+        transcoding:
+          type: boolean
+          description: Indicates whether the Transcoder feature is supported in the corresponding cluster.
+    ClusterModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Unique identifier of cluster.
+        name:
+          type: string
+          description: Display name.
+        rtmp:
+          type: string
+          description: RTMP publish domain for cluster.
+        srt:
+          type: string
+          description: Srt publish domain for cluster.
+        location:
+          description: Physical location of the cluster.
+          oneOf:
+          - $ref: '#/components/schemas/LocationModel'
+        features:
+          description: The features supported in this cluster.
+          oneOf:
+          - $ref: '#/components/schemas/ClustersFeaturesModel'
+    UpdateClusterInfoModel:
+      type: object
+      additionalProperties: false
+      required:
+      - defaultCluster
+      properties:
+        defaultCluster:
+          type: string
+          description: Used as cluster when not explicitly specified during Token creation.
+          minLength: 1
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    SuccessClusterInfoModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/ClustersInfoModel'
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

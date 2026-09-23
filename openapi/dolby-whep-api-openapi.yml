@@ -1,0 +1,119 @@
+openapi: 3.2.0
+info:
+  title: Director Whep API
+  version: 1.0.0
+servers:
+- url: https://director.millicast.com
+security:
+- Token: []
+tags:
+- name: Whep
+paths:
+  /api/whep/{streamAccountId}/{streamName}:
+    post:
+      tags:
+      - Whep
+      summary: WHEP
+      description: 'WHEP endpoint for subscribers. Request body is SDP Offer. Response body will contain SDP Answer. Location header contains remote WHEP endpoint url.
+
+
+        All errors are returned as plain text. If you send a request with the Accept header you must allow both mime types `application/sdp, text/plain`.'
+      operationId: Whep_WhepSubscribe
+      parameters:
+      - name: streamAccountId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      - name: streamName
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 2
+      - name: sourceId
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 4
+      requestBody:
+        x-name: sdpOffer
+        content:
+          application/sdp:
+            schema:
+              type: string
+            examples:
+              ? ''
+              : summary: ''
+                value: 'v=0\r\no=- ident1234 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0 1\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS ident5678\r\n...'
+        required: true
+        x-position: 3
+      responses:
+        '201':
+          description: Success
+          content:
+            application/sdp:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'v=0\r\no=- ident1234 1 IN IP4 127.0.0.1\r\ns=semantic-sdp\r\nc=IN IP4 0.0.0.0\r\nt=0 0\r\na=ice-lite\r\na=msid-semantic: WMS *\r\na=group:BUNDLE 0 1\r\n...'
+        '400':
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'Validation errors:
+
+                    A non-empty request body is required.'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: 'Unauthorized: authentication_error_reason'
+        '409':
+          description: Conflict
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                ? ''
+                : summary: ''
+                  value: Stream not found
+        '500':
+          description: Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+      security:
+      - Token: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/sdp\" \\\n     https://director.millicast.com/api/whep/abc123/my_stream \\\n     -d 'v=0\\r\\no=- ident1234 2 IN IP4 127.0.0.1\\r\\ns=-\\r\\nt=0 0\\r\\na=group:BUNDLE 0 1\\r\\na=extmap-allow-mixed\\r\\na=msid-semantic: WMS ident5678\\r\\n...'"
+components:
+  securitySchemes:
+    Token:
+      type: http
+      description: '### Usage
+
+        #### Acquire token from dashboard or api.
+
+        Token will be specific to publishing or subscribing.'
+      scheme: bearer
+x-generator: NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

@@ -1,0 +1,891 @@
+openapi: 3.2.0
+info:
+  title: Millicast Record Files API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: RecordFiles
+paths:
+  /api/record_files/{recordFileId}:
+    get:
+      tags:
+      - RecordFiles
+      summary: Read File
+      description: '**Please refer to Read Media Assets**
+
+
+        Gets file specified by record file id. Includes temporary download link.'
+      operationId: RecordFiles_GetRecordFile
+      parameters:
+      - name: recordFileId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessRecordFileModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+    delete:
+      tags:
+      - RecordFiles
+      summary: Delete File
+      description: '**Please refer to Delete Media Assets**
+
+
+        Deletes recorded file from storage.'
+      operationId: RecordFiles_DeleteRecordFile
+      parameters:
+      - name: recordFileId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseBoolean'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+  /api/record_files/delete:
+    post:
+      tags:
+      - RecordFiles
+      summary: Delete Files
+      description: '**Please refer to Delete Media Assets**
+
+
+        Deletes multiple recorded file from storage.'
+      operationId: RecordFiles_DeleteRecordFiles
+      requestBody:
+        x-name: recordFiles
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveRecordFilesModel'
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseBoolean'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+  /api/record_files/delete/all:
+    post:
+      tags:
+      - RecordFiles
+      summary: Delete All Files
+      description: '**Please refer to Delete All Media Assets**
+
+
+        Deletes all recorded files from storage.'
+      operationId: RecordFiles_DeleteAllRecordFiles
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseBoolean'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+  /api/record_files/list:
+    get:
+      tags:
+      - RecordFiles
+      summary: List Files
+      description: '**Please refer to List Media Assets**
+
+
+        List files for account with specific sorting and pagination. If response array is empty, you have reached the end of the list ordering.'
+      operationId: RecordFiles_ListRecordFiles
+      parameters:
+      - name: sortBy
+        in: query
+        schema:
+          default: RecordedOn
+          oneOf:
+          - $ref: '#/components/schemas/ListSortBy3'
+        x-position: 1
+      - name: status
+        in: query
+        style: form
+        explode: true
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilterByRecordFileStatus'
+        x-position: 2
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 3
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 4
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 5
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessListRecordFileModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+  /api/record_files/list_by_token:
+    get:
+      tags:
+      - RecordFiles
+      summary: List Files By Token
+      description: '**Please refer to List Media Assets and query using the `tokenId` parameter**
+
+
+        List files using a token with specific sorting and pagination. If response array is empty, you have reached the end of the list ordering.'
+      operationId: RecordFiles_ListRecordFilesByToken
+      parameters:
+      - name: token
+        in: query
+        required: true
+        description: Either token or tokenId must be specified.
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 1
+      - name: tokenId
+        in: query
+        description: Either token or tokenId must be specified. Legacy name token_id.
+        schema:
+          type:
+          - integer
+          - 'null'
+        x-position: 2
+      - name: sortBy
+        in: query
+        schema:
+          default: RecordedOn
+          oneOf:
+          - $ref: '#/components/schemas/ListSortBy3'
+        x-position: 3
+      - name: status
+        in: query
+        style: form
+        explode: true
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilterByRecordFileStatus'
+        x-position: 4
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 5
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 6
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 7
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessListRecordFileModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+  /api/record_files/list_by_stream:
+    get:
+      tags:
+      - RecordFiles
+      summary: List Files By Stream
+      description: '**Please refer to List Media Assets and query using the `streamName`parameter**
+
+
+        List files using a streamname with specific sorting and pagination. If response array is empty, you have reached the end of the list ordering.'
+      operationId: RecordFiles_ListRecordFilesByStream
+      parameters:
+      - name: streamname
+        in: query
+        required: true
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 128
+        x-position: 1
+      - name: sortBy
+        in: query
+        schema:
+          default: RecordedOn
+          oneOf:
+          - $ref: '#/components/schemas/ListSortBy3'
+        x-position: 2
+      - name: status
+        in: query
+        style: form
+        explode: true
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilterByRecordFileStatus'
+        x-position: 3
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 4
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 5
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 6
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessListRecordFileModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+  /api/record_files/usage:
+    get:
+      tags:
+      - RecordFiles
+      summary: Usage
+      description: '**Please refer to Usage**
+
+
+        Get current total bytes of recorded files in storage.'
+      operationId: RecordFiles_RecordFileUsage
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessRecordFileUsageModel'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+  /api/record_files/usage_billing:
+    get:
+      tags:
+      - RecordFiles
+      summary: Usage Billable
+      description: '**Please refer to Usage Billable**
+
+
+        Get total number of gigabyte hours of storage used within date range.'
+      operationId: RecordFiles_RecordFileUsageBillable
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: The start date of the query. In the format of `YYYY-MM-DD`.
+        schema:
+          type: string
+          format: date
+        x-position: 1
+      - name: stopDate
+        in: query
+        required: true
+        description: The exclusive end of the date range for the query. Data is returned up to, but not including, this date. In the format of `YYYY-MM-DD`. ISO 8601 format is also supported (e.g., 2021-02-01T00:00:00Z).
+        schema:
+          type: string
+          format: date
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessRecordFileBillableUsageModel'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+components:
+  schemas:
+    RecordFileModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+        tokenId:
+          type:
+          - integer
+          - 'null'
+        token:
+          type: string
+        streamName:
+          type: string
+        recordedOn:
+          type: string
+          format: date-time
+        removedOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        status:
+          $ref: '#/components/schemas/MediaAssetStatus2'
+        metadata:
+          oneOf:
+          - $ref: '#/components/schemas/RecordMetadata'
+        download:
+          oneOf:
+          - $ref: '#/components/schemas/RecordDownloadUrl2'
+    MediaAssetStatus2:
+      type: string
+      description: ''
+      x-enumNames:
+      - Started
+      - Transcode
+      - InProgress
+      - Deleted
+      - Invalid
+      - Expiring
+      - Complete
+      - Deleting
+      - Error
+      enum:
+      - Started
+      - Transcode
+      - InProgress
+      - Deleted
+      - Invalid
+      - Expiring
+      - Complete
+      - Deleting
+      - Error
+    SuccessResponseBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
+    RecordMediaTrack:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+        codec:
+          type: string
+        bitrate:
+          type: integer
+        width:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        height:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        framerate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        channels:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        samplerate:
+          type:
+          - integer
+          - 'null'
+          format: int64
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    RemoveRecordFilesModel:
+      type: object
+      additionalProperties: false
+      required:
+      - recordFileIds
+      properties:
+        recordFileIds:
+          type: array
+          minItems: 1
+          items:
+            type: integer
+    ListRecordFileModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+        tokenId:
+          type:
+          - integer
+          - 'null'
+        token:
+          type: string
+        streamName:
+          type: string
+        recordedOn:
+          type: string
+          format: date-time
+        removedOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        status:
+          $ref: '#/components/schemas/MediaAssetStatus2'
+        metadata:
+          oneOf:
+          - $ref: '#/components/schemas/RecordMetadata'
+    SuccessListRecordFileModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListRecordFileModel'
+    RecordDownloadUrl2:
+      type: object
+      additionalProperties: false
+      properties:
+        downloadUrl:
+          type: string
+        downloadExpiresOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    SuccessRecordFileUsageModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordFileUsage'
+    SuccessRecordFileBillableUsageModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordFileBillableUsage'
+    SuccessRecordFileModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordFileModel'
+    RecordMetadata:
+      type: object
+      additionalProperties: false
+      required:
+      - tracks
+      - thumbnails
+      properties:
+        format:
+          type: string
+        sizes:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: integer
+            format: uint64
+        duration:
+          type: integer
+          description: Duration of this asset, in seconds.
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordMediaTrack'
+        thumbnails:
+          type: array
+          description: The list of thumbnails.
+          items:
+            type: string
+        fileCount:
+          type:
+          - integer
+          - 'null'
+          description: The number of files.
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    RecordFileUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        totalBytes:
+          type: integer
+          description: Total storage usage reported in bytes
+          format: uint64
+    FilterByRecordFileStatus:
+      type: string
+      description: ''
+      x-enumFlags: true
+      x-enumNames:
+      - Started
+      - Transcode
+      - Complete
+      - Deleting
+      - Error
+      enum:
+      - Started
+      - Transcode
+      - Complete
+      - Deleting
+      - Error
+    ListSortBy3:
+      type: string
+      description: ''
+      x-enumNames:
+      - RecordedOn
+      - StreamName
+      - Token
+      enum:
+      - RecordedOn
+      - StreamName
+      - Token
+    RecordFileBillableUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        gigabyteHours:
+          type: integer
+          description: Measured as binary gigabytes (1024^3) per hour
+          format: uint64
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

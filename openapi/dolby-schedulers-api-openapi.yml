@@ -1,0 +1,364 @@
+openapi: 3.2.0
+info:
+  title: THEOlive Schedulers API
+  version: v2
+servers:
+- url: https://api.theo.live/v2
+  description: V2 API
+- url: https://api.theo.live
+  description: Base (for /v1 endpoints)
+security:
+- BasicAuth: []
+tags:
+- name: Schedulers
+paths:
+  /schedulers:
+    get:
+      tags:
+      - Schedulers
+      operationId: get-schedulers
+      summary: List all schedulers
+      parameters:
+      - schema:
+          type: string
+          description: Pagination cursor
+        required: false
+        description: Pagination cursor
+        name: cursor
+        in: query
+      - schema:
+          type:
+          - number
+          - 'null'
+          maximum: 100
+          description: Maximum number of schedulers to return (max 100)
+        required: false
+        description: Maximum number of schedulers to return (max 100)
+        name: limit
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of statuses to filter by (idle, starting, active, stopping, terminated)
+        required: false
+        description: Comma-separated list of statuses to filter by (idle, starting, active, stopping, terminated)
+        name: status
+        in: query
+      - schema:
+          type: string
+          enum:
+          - name
+          - status
+          - startDate
+          - startTime
+          description: Sort field
+        required: false
+        description: Sort field
+        name: sortBy
+        in: query
+      - schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          description: Sort direction
+        required: false
+        description: Sort direction
+        name: sortDirection
+        in: query
+      responses:
+        '200':
+          description: List of schedulers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSchedulerResult'
+    post:
+      tags:
+      - Schedulers
+      operationId: create-scheduler
+      summary: Create a scheduler
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSchedulerBody'
+      responses:
+        '200':
+          description: Created scheduler
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerObjectResult'
+  /schedulers/{id}:
+    get:
+      tags:
+      - Schedulers
+      operationId: get-scheduler
+      summary: Get a scheduler by ID
+      parameters:
+      - schema:
+          type: string
+          description: Scheduler ID
+        required: true
+        description: Scheduler ID
+        name: id
+        in: path
+      responses:
+        '200':
+          description: The requested scheduler
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerObjectResult'
+    patch:
+      tags:
+      - Schedulers
+      operationId: update-scheduler
+      summary: Update a scheduler by ID
+      parameters:
+      - schema:
+          type: string
+          description: Scheduler ID
+        required: true
+        description: Scheduler ID
+        name: id
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSchedulerBody'
+      responses:
+        '200':
+          description: Updated scheduler
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SchedulerObjectResult'
+    delete:
+      tags:
+      - Schedulers
+      operationId: delete-scheduler
+      summary: Delete a scheduler by ID
+      parameters:
+      - schema:
+          type: string
+          description: Scheduler ID
+        required: true
+        description: Scheduler ID
+        name: id
+        in: path
+      responses:
+        '204':
+          description: Empty response
+components:
+  schemas:
+    SchedulerChannelSelection:
+      type: object
+      properties:
+        channelId:
+          type: string
+          description: Channel ID
+        engineIds:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: Engine IDs of this channel to start/stop. Omit to include all engines of the channel.
+      required:
+      - channelId
+      additionalProperties: false
+    CreateSchedulerBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the scheduler
+        startDate:
+          type: string
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          description: Start date (YYYY-MM-DD)
+        startTime:
+          type: string
+          pattern: ^\d{2}:\d{2}$
+          description: Start time (HH:mm)
+        timeZone:
+          type: string
+          description: IANA time zone (e.g. "UTC", "Europe/Brussels")
+        endDate:
+          type: string
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          description: End date (YYYY-MM-DD)
+        endTime:
+          type: string
+          pattern: ^\d{2}:\d{2}$
+          description: End time (HH:mm)
+        recurrence:
+          type: string
+          description: RRULE recurrence string
+        channelIds:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: Channel IDs (deprecated, use channels instead). All engines of each channel are scheduled.
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchedulerChannelSelection'
+          minItems: 1
+          description: Channels with optional engine selection. Use instead of channelIds.
+        enabled:
+          type: boolean
+          description: Whether the scheduler is enabled
+      required:
+      - name
+      - startDate
+      - startTime
+      additionalProperties: false
+    Scheduler:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the scheduler
+        name:
+          type: string
+          description: Name of the scheduler
+        createdAt:
+          type: string
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          description: Last update timestamp
+        enabled:
+          type: boolean
+          description: Whether the scheduler is enabled
+        startDate:
+          type: string
+          description: Start date (YYYY-MM-DD)
+        startTime:
+          type: string
+          description: Start time (HH:mm)
+        endDate:
+          type: string
+          description: End date (YYYY-MM-DD)
+        endTime:
+          type: string
+          description: End time (HH:mm)
+        recurrence:
+          type: string
+          description: RRULE recurrence string
+        timeZone:
+          type: string
+          description: IANA time zone
+        channelIds:
+          type: array
+          items:
+            type: string
+          description: Channel IDs
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchedulerChannelSelection'
+          description: Channels with optional engine selection (engineIds omitted = all engines)
+      required:
+      - id
+      - name
+      - createdAt
+      - updatedAt
+      - enabled
+      - startDate
+      - startTime
+      - timeZone
+      - channelIds
+      - channels
+    PaginatedSchedulerResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Scheduler'
+          description: List of schedulers
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
+    SchedulerObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Scheduler'
+          - description: Scheduler object
+      required:
+      - data
+    UpdateSchedulerBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the scheduler
+        startDate:
+          type: string
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          description: Start date (YYYY-MM-DD)
+        startTime:
+          type: string
+          pattern: ^\d{2}:\d{2}$
+          description: Start time (HH:mm)
+        timeZone:
+          type: string
+          description: IANA time zone (e.g. "UTC", "Europe/Brussels")
+        endDate:
+          type:
+          - string
+          - 'null'
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          description: End date (YYYY-MM-DD). Set to null to unset.
+        endTime:
+          type:
+          - string
+          - 'null'
+          pattern: ^\d{2}:\d{2}$
+          description: End time (HH:mm). Set to null to unset.
+        recurrence:
+          type:
+          - string
+          - 'null'
+          description: RRULE recurrence string. Set to null to unset.
+        channelIds:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: Channel IDs (deprecated, use channels instead). All engines of each channel are scheduled.
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchedulerChannelSelection'
+          minItems: 1
+          description: Channels with optional engine selection. Use instead of channelIds.
+        enabled:
+          type: boolean
+          description: Whether the scheduler is enabled
+      additionalProperties: false
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic

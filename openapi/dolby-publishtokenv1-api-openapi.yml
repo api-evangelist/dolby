@@ -1,0 +1,2263 @@
+openapi: 3.2.0
+info:
+  title: Millicast Publish Token V1 API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: PublishTokenV1
+paths:
+  /api/publish_token/{tokenId}:
+    get:
+      tags:
+      - PublishTokenV1
+      summary: Read Token
+      description: Gets token specified by token id.
+      operationId: PublishTokenV1_ReadToken
+      parameters:
+      - name: tokenId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponsePublishTokenV1'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      name: My Cool Token
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      id: 61864
+                      label: label_no_348
+                      token: my-magic-token-93
+                      addedOn: '2024-12-02T23:51:39Z'
+                      isActive: true
+                      streams:
+                      - streamName: cooked
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      originCluster: ''
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - blr-1
+                          - iad-1
+                          - lon-1
+                          - phx-1
+                          - sgp-1
+                          - syd-1
+                regex:
+                  summary: regex
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      name: regex_token
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: true
+                      lowLatencyRtmp: false
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      geoCascade:
+                        isEnabled: true
+                        clusters:
+                        - syd-1
+                        - sgp-1
+                      id: 97942
+                      label: label_no_35
+                      token: my-magic-token-69
+                      addedOn: '2024-12-03T00:37:48Z'
+                      isActive: false
+                      streams:
+                      - streamName: container1/.+
+                        isRegex: true
+                      - streamName: master_stream
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - syd-1
+                          - sgp-1
+                expiring:
+                  summary: expiring
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      name: Token 03/Dec/2024 13:57:32
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      id: 18719
+                      label: label_no_705
+                      token: my-magic-token-28
+                      addedOn: '2024-12-03T02:57:58Z'
+                      expiresOn: '2025-01-03T02:57:56Z'
+                      isActive: true
+                      streams:
+                      - streamName: myStreamName
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      originCluster: ''
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - blr-1
+                          - iad-1
+                          - lon-1
+                          - phx-1
+                          - sgp-1
+                          - syd-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+              examples:
+                does not exist:
+                  summary: does not exist
+                  value:
+                    status: fail
+                    data:
+                      tokenId: 'No publish token with id: 99'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     https://api.millicast.com/api/publish_token/100"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/100\";\n\nvar response = await client.GetAsync(url);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/100\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestMethod(\"GET\");\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/100');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret'\n  }\n};\nopts['method'] = 'GET';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/100';\n$headers = array(\n  'Authorization: Bearer your_api_secret'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\n\nurl = 'https://api.millicast.com/api/publish_token/100'\nheaders = {\n    'Authorization': 'Bearer your_api_secret'\n}\nreq = urllib.request.Request(url, headers=headers)\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\n\nuri = URI('https://api.millicast.com/api/publish_token/100')\nheaders = {\n  'Authorization': 'Bearer your_api_secret'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\nres = http.get(uri, headers)\nputs res.body"
+    delete:
+      tags:
+      - PublishTokenV1
+      summary: Delete Token
+      description: Deletes token specified by the token's ID. The Token ID can be found using the List Tokens API or in the API response of Create Token API.
+      operationId: PublishTokenV1_DeleteToken
+      parameters:
+      - name: tokenId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseBoolean'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     https://api.millicast.com/api/publish_token/100 \\\n     -X DELETE"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/100\";\n\nvar response = await client.DeleteAsync(url);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/100\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestMethod(\"DELETE\");\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/100');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret'\n  }\n};\nopts['method'] = 'DELETE';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/100';\n$headers = array(\n  'Authorization: Bearer your_api_secret'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\n\nurl = 'https://api.millicast.com/api/publish_token/100'\nheaders = {\n    'Authorization': 'Bearer your_api_secret'\n}\nreq = urllib.request.Request(url, headers=headers)\nreq.method = 'DELETE'\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\n\nuri = URI('https://api.millicast.com/api/publish_token/100')\nheaders = {\n  'Authorization': 'Bearer your_api_secret'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\nres = http.delete(uri, headers)\nputs res.body"
+    put:
+      tags:
+      - PublishTokenV1
+      summary: Update Token
+      description: Update token stream information as well as updates token itself.
+      operationId: PublishTokenV1_UpdateToken
+      parameters:
+      - name: tokenId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePublishTokenV1'
+            examples:
+              simple:
+                summary: simple
+                value:
+                  label: new_label_name
+                  refreshToken: true
+              complex:
+                summary: complex
+                value:
+                  label: new_regex_token_name
+                  subscribeRequiresAuth: true
+                  addTokenStreams:
+                  - streamName: newStream1
+                  - streamName: special_regex_stream[0-9]+
+                    isRegex: true
+                  removeTokenStreams:
+                  - container1/.+
+        required: true
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponsePublishTokenV1'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      name: new_label_name
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      id: 38083
+                      label: label_no_574
+                      token: my-magic-token-36
+                      addedOn: '2024-12-03T02:57:58Z'
+                      expiresOn: '2025-01-03T02:57:56Z'
+                      isActive: true
+                      streams:
+                      - streamName: myStreamName
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      originCluster: ''
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - blr-1
+                          - iad-1
+                          - lon-1
+                          - phx-1
+                          - sgp-1
+                          - syd-1
+                complex:
+                  summary: complex
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      name: new_regex_token_name
+                      subscribeRequiresAuth: true
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      id: 15951
+                      label: label_no_328
+                      token: my-magic-token-48
+                      addedOn: '2024-12-03T02:57:58Z'
+                      expiresOn: '2025-01-03T02:57:56Z'
+                      isActive: true
+                      streams:
+                      - streamName: myStreamName
+                        isRegex: false
+                      - streamName: newStream1
+                        isRegex: false
+                      - streamName: special_regex_stream[0-9]+
+                        isRegex: true
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      originCluster: ''
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - blr-1
+                          - iad-1
+                          - lon-1
+                          - phx-1
+                          - sgp-1
+                          - syd-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+              examples:
+                validation:
+                  summary: validation
+                  value:
+                    status: fail
+                    data:
+                      token: No properties specified to update.
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/publish_token/100 \\\n     -X PUT -d '{\"label\": \"new_label_name\", \"refreshToken\": true}'"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing Newtonsoft.Json;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/100\";\n\nvar data = new { label = \"new_label_name\", refreshToken = true };\nvar httpContent = new StringContent(JsonConvert.SerializeObject(data),\n  Encoding.UTF8,\n  \"application/json\");\nvar response = await client.PutAsync(url, httpContent);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/100\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestProperty(\"Content-Type\", \"application/json\");\nconn.setRequestMethod(\"PUT\");\n\nconn.setDoOutput(true);\nDataOutputStream wr = new DataOutputStream(conn.getOutputStream());\nwr.writeBytes(\"{\\\"label\\\": \\\"new_label_name\\\", \\\"refreshToken\\\": true}\");\nwr.close();\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/100');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n  }\n};\nopts['method'] = 'PUT';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nvar data = {\"label\": \"new_label_name\", \"refreshToken\": true};\nreq.write(JSON.stringify(data));\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/100';\n$headers = array(\n  'Authorization: Bearer your_api_secret',\n  'Content-Type: application/json'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$data = array(\"label\" => \"new_label_name\", \"refreshToken\" => TRUE );\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\nimport json\n\nurl = 'https://api.millicast.com/api/publish_token/100'\nheaders = {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n}\nreq = urllib.request.Request(url, headers=headers)\nreq.method = 'PUT'\ndata = {\"label\": \"new_label_name\", \"refreshToken\": True}\nreq.data = json.dumps(data).encode('utf8')\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/publish_token/100')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\"label\": \"new_label_name\", \"refreshToken\": true}\nres = http.put(uri, data.to_json, headers)\nputs res.body"
+  /api/publish_token/list:
+    get:
+      tags:
+      - PublishTokenV1
+      summary: List Tokens
+      description: List all tokens with specific sorting and pagination. If response array is empty, you have reached the end of the list ordering.
+      operationId: PublishTokenV1_ListTokens
+      parameters:
+      - name: sortBy
+        in: query
+        schema:
+          default: Name
+          oneOf:
+          - $ref: '#/components/schemas/ListSortBy2'
+        x-position: 1
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 2
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 3
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 4
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseListPublishTokenV1'
+              examples:
+                list:
+                  summary: list
+                  value:
+                    status: success
+                    data:
+                    - allowedCountries: []
+                      deniedCountries: []
+                      name: My 2nd Cool Token
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      id: 82232
+                      label: label_no_701
+                      token: my-magic-token-95
+                      addedOn: '2024-12-03T00:01:16Z'
+                      isActive: true
+                      streams:
+                      - streamName: Cooked or Cooking??
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      originCluster: ''
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - blr-1
+                          - iad-1
+                          - lon-1
+                          - phx-1
+                          - sgp-1
+                          - syd-1
+                    - allowedCountries: []
+                      deniedCountries: []
+                      name: new_regex_token_name
+                      subscribeRequiresAuth: true
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: true
+                      lowLatencyRtmp: true
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      id: 4068
+                      label: label_no_127
+                      token: my-magic-token-36
+                      addedOn: '2024-12-02T00:36:08Z'
+                      isActive: true
+                      streams:
+                      - streamName: myStreamName
+                        isRegex: false
+                      - streamName: newStream1
+                        isRegex: false
+                      - streamName: special_regex_stream[0-9]+
+                        isRegex: true
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - blr-1
+                          - iad-1
+                          - lon-1
+                          - phx-1
+                          - sgp-1
+                          - syd-1
+                    - allowedCountries: []
+                      deniedCountries: []
+                      name: new_regex_token_name
+                      subscribeRequiresAuth: true
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      id: 77344
+                      label: label_no_406
+                      token: my-magic-token-20
+                      addedOn: '2024-12-03T02:57:58Z'
+                      expiresOn: '2025-01-03T02:57:56Z'
+                      isActive: true
+                      streams:
+                      - streamName: myStreamName
+                        isRegex: false
+                      - streamName: newStream1
+                        isRegex: false
+                      - streamName: special_regex_stream[0-9]+
+                        isRegex: true
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      originCluster: ''
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - blr-1
+                          - iad-1
+                          - lon-1
+                          - phx-1
+                          - sgp-1
+                          - syd-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+              examples:
+                validation:
+                  summary: validation
+                  value:
+                    status: fail
+                    data:
+                      errors:
+                        page:
+                        - A value for the 'page' parameter or property was not provided.
+                        itemsOnPage:
+                        - A value for the 'itemsOnPage' parameter or property was not provided.
+                      message: Validation errors
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     https://api.millicast.com/api/publish_token/list \\\n     -G -d \"page=1&itemsOnPage=10\""
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/list?page=1&itemsOnPage=10\";\n\nvar response = await client.GetAsync(url);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/list?page=1&itemsOnPage=10\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestMethod(\"GET\");\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/list?page=1&itemsOnPage=10');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret'\n  }\n};\nopts['method'] = 'GET';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/list?page=1&itemsOnPage=10';\n$headers = array(\n  'Authorization: Bearer your_api_secret'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\n\nurl = 'https://api.millicast.com/api/publish_token/list?page=1&itemsOnPage=10'\nheaders = {\n    'Authorization': 'Bearer your_api_secret'\n}\nreq = urllib.request.Request(url, headers=headers)\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\n\nuri = URI('https://api.millicast.com/api/publish_token/list?page=1&itemsOnPage=10')\nheaders = {\n  'Authorization': 'Bearer your_api_secret'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\nres = http.get(uri, headers)\nputs res.body"
+  /api/publish_token/list_by_name:
+    get:
+      tags:
+      - PublishTokenV1
+      summary: List Tokens By Name
+      description: List all tokens with specific sorting and pagination that matches given token name or stream name. Tokens with wildcard stream names are excluded from the responses. If response array is empty, you have reached the end of the list ordering.
+      operationId: PublishTokenV1_ListTokensByName
+      parameters:
+      - name: name
+        in: query
+        required: true
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 1
+      - name: filterBy
+        in: query
+        schema:
+          default: TokenOrStreamName
+          oneOf:
+          - $ref: '#/components/schemas/ListFilterBy'
+        x-position: 2
+      - name: sortBy
+        in: query
+        schema:
+          default: Name
+          oneOf:
+          - $ref: '#/components/schemas/ListSortBy2'
+        x-position: 3
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 4
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 5
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 6
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseListPublishTokenV1'
+              examples:
+                list_by_name:
+                  summary: list_by_name
+                  value:
+                    status: success
+                    data:
+                    - id: 101
+                      label: temp_token
+                      token: abcdefghijklmnopqrstuvwxyz0123456789
+                      addedOn: '2018-01-01T00:00:00Z'
+                      expiresOn: null
+                      isActive: true
+                      subscribeRequiresAuth: false
+                      streams:
+                      - streamName: container1/.+
+                        isRegex: true
+                      - streamName: master_stream
+                        isRegex: false
+                      integrationId: None
+                      displaySrtPassphrase: true
+                      srtPassphrase: abcdefghijk
+                      allowedCountries: []
+                      deniedCountries: []
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      geoCascade:
+                        isEnabled: true
+                        clusters:
+                        - phx-1
+                        - sgp-1
+                      restream:
+                      - label: restream feed 1
+                        url: rtmp://testrtmp.com
+                        key: 5ce4d599cfd4a44131e422eaeede2929
+                      name: temp_token
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      bindIpsOnUsage: null
+                      originCluster: auto
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - phx-1
+                          - sgp-1
+                    - id: 100
+                      label: simple_token
+                      token: abcdefghijklmnopqrstuvwxyz0123456789
+                      addedOn: '2018-01-01T00:00:00Z'
+                      expiresOn: null
+                      isActive: true
+                      subscribeRequiresAuth: false
+                      streams:
+                      - streamName: stream_name_temp_1
+                        isRegex: false
+                      integrationId: None
+                      displaySrtPassphrase: true
+                      srtPassphrase: abcdefghijk
+                      allowedCountries: []
+                      deniedCountries: []
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      geoCascade: null
+                      restream:
+                      - label: restream my webcam
+                        url: rtmp://testrtmp.com
+                        key: 5ce4d599cfd4a44131e422eaeede2929
+                      name: simple_token
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      bindIpsOnUsage: null
+                      originCluster: auto
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - ams-1
+                          - blr-1
+                          - iad-1
+                          - phx-1
+                          - sgp-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+              examples:
+                validation:
+                  summary: validation
+                  value:
+                    status: fail
+                    data:
+                      errors:
+                        name:
+                        - The Name field is required.
+                        page:
+                        - The field Page must be between 1 and 2147483647.
+                        filterBy:
+                        - The value ''Unknown'' is not valid for FilterBy.
+                        itemsOnPage:
+                        - The field ItemsOnPage must be between 1 and 100.
+                      message: Validation errors
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     https://api.millicast.com/api/publish_token/list_by_name \\\n     -G -d \"page=1&itemsOnPage=10&name=temp\""
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/list_by_name?page=1&itemsOnPage=10&name=temp\";\n\nvar response = await client.GetAsync(url);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/list_by_name?page=1&itemsOnPage=10&name=temp\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestMethod(\"GET\");\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/list_by_name?page=1&itemsOnPage=10&name=temp');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret'\n  }\n};\nopts['method'] = 'GET';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/list_by_name?page=1&itemsOnPage=10&name=temp';\n$headers = array(\n  'Authorization: Bearer your_api_secret'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\n\nurl = 'https://api.millicast.com/api/publish_token/list_by_name?page=1&itemsOnPage=10&name=temp'\nheaders = {\n    'Authorization': 'Bearer your_api_secret'\n}\nreq = urllib.request.Request(url, headers=headers)\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\n\nuri = URI('https://api.millicast.com/api/publish_token/list_by_name?page=1&itemsOnPage=10&name=temp')\nheaders = {\n  'Authorization': 'Bearer your_api_secret'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\nres = http.get(uri, headers)\nputs res.body"
+  /api/publish_token/list_by_cluster:
+    get:
+      tags:
+      - PublishTokenV1
+      summary: List Tokens By Cluster
+      description: List all tokens with specific sorting and pagination that matches given cluster region. If response array is empty, you have reached the end of the list ordering.
+      operationId: PublishTokenV1_ListTokensByCluster
+      parameters:
+      - name: cluster
+        in: query
+        required: true
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 1
+      - name: sortBy
+        in: query
+        schema:
+          default: Name
+          oneOf:
+          - $ref: '#/components/schemas/ListSortBy2'
+        x-position: 2
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 3
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 4
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 5
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseListPublishTokenV1'
+              examples:
+                list_by_cluster:
+                  summary: list_by_cluster
+                  value:
+                    status: success
+                    data:
+                    - allowedCountries: []
+                      deniedCountries: []
+                      name: My Second Ams
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      restream: []
+                      id: 33849
+                      label: label_no_431
+                      token: my-magic-token-33
+                      addedOn: '2024-12-03T22:51:05Z'
+                      isActive: true
+                      streams:
+                      - streamName: myStreamName
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      originCluster: ams-1
+                      effectiveSettings:
+                        originCluster: ams-1
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - blr-1
+                          - iad-1
+                          - lon-1
+                          - phx-1
+                          - sgp-1
+                          - syd-1
+                          - ams-1
+                    - allowedCountries: []
+                      deniedCountries: []
+                      name: AMS Cluster Region Test
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: false
+                      lowLatencyRtmp: true
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      restream: []
+                      id: 1011
+                      label: label_no_177
+                      token: my-magic-token-0
+                      addedOn: '2024-12-03T22:49:26Z'
+                      isActive: true
+                      streams:
+                      - streamName: My stream in AMS
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      originCluster: ams-1
+                      effectiveSettings:
+                        originCluster: ams-1
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - blr-1
+                          - iad-1
+                          - lon-1
+                          - phx-1
+                          - sgp-1
+                          - syd-1
+                          - ams-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+              examples:
+                validation:
+                  summary: validation
+                  value:
+                    status: fail
+                    data:
+                      page: The field Page must be between 1 and 2147483647.
+                      itemsOnPage: The field ItemsOnPage must be between 1 and 100.
+                      cluster: The Cluster field is required.
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     https://api.millicast.com/api/publish_token/list_by_cluster \\\n     -G -d \"page=1&itemsOnPage=10&cluster=ams-1\""
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/list_by_cluster?page=1&itemsOnPage=10&cluster=ams-1\";\n\nvar response = await client.GetAsync(url);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/list_by_cluster?page=1&itemsOnPage=10&cluster=ams-1\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestMethod(\"GET\");\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/list_by_cluster?page=1&itemsOnPage=10&cluster=ams-1');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret'\n  }\n};\nopts['method'] = 'GET';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/list_by_cluster?page=1&itemsOnPage=10&cluster=ams-1';\n$headers = array(\n  'Authorization: Bearer your_api_secret'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\n\nurl = 'https://api.millicast.com/api/publish_token/list_by_cluster?page=1&itemsOnPage=10&cluster=ams-1'\nheaders = {\n    'Authorization': 'Bearer your_api_secret'\n}\nreq = urllib.request.Request(url, headers=headers)\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\n\nuri = URI('https://api.millicast.com/api/publish_token/list_by_cluster?page=1&itemsOnPage=10&cluster=ams-1')\nheaders = {\n  'Authorization': 'Bearer your_api_secret'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\nres = http.get(uri, headers)\nputs res.body"
+  /api/publish_token:
+    post:
+      tags:
+      - PublishTokenV1
+      summary: Create Token
+      description: Creates new token given a label and associated stream name(s). Stream names are limited to 128 characters.
+      operationId: PublishTokenV1_CreateToken
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePublishTokenV1'
+            examples:
+              simple:
+                summary: simple
+                value:
+                  label: simple_token
+                  streams:
+                  - streamName: stream1
+                    isRegex: false
+                  geoCascade:
+                    isEnabled: true
+                    clusters:
+                    - phx-1
+                    - sgp-1
+                  restream:
+                  - label: rtmp restream config
+                    url: rtmp://testrtmp.com
+                    key: 5ce4d599cfd4a44131e422eaeede2929
+              regex:
+                summary: regex
+                value:
+                  label: regex_token
+                  streams:
+                  - streamName: container1/.+
+                    isRegex: true
+                  - streamName: master_stream
+                    isRegex: false
+                  geoCascade:
+                    isEnabled: true
+                    clusters:
+                    - phx-1
+                    - sgp-1
+                  restream:
+                  - label: rtmp restream config
+                    url: rtmp://testrtmp.com
+                    key: 5ce4d599cfd4a44131e422eaeede2929
+              expiring:
+                summary: expiring
+                value:
+                  label: temp_token
+                  expires: 3600
+                  streams:
+                  - streamName: temp_stream
+                    isRegex: false
+                  geoCascade:
+                    isEnabled: true
+                    clusters:
+                    - phx-1
+                    - sgp-1
+                  restream:
+                  - label: rtmp restream config
+                    url: rtmp://testrtmp.com
+                    key: 5ce4d599cfd4a44131e422eaeede2929
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponsePublishTokenV1'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      name: simple_token
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: true
+                      lowLatencyRtmp: false
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      geoCascade:
+                        isEnabled: true
+                        clusters:
+                        - phx-1
+                        - sgp-1
+                      restream:
+                      - label: label_no_60
+                        url: rtmp://testrtmp.com
+                        key: 5ce4d599cfd4a44131e422eaeede2929
+                      id: 67646
+                      label: label_no_555
+                      token: my-magic-token-8
+                      addedOn: '2024-12-03T06:02:58.052266Z'
+                      isActive: true
+                      streams:
+                      - streamName: stream1
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - phx-1
+                          - sgp-1
+                regex:
+                  summary: regex
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      name: regex_token
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: true
+                      lowLatencyRtmp: false
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      geoCascade:
+                        isEnabled: true
+                        clusters:
+                        - phx-1
+                        - sgp-1
+                      restream:
+                      - label: label_no_449
+                        url: rtmp://testrtmp.com
+                        key: 5ce4d599cfd4a44131e422eaeede2929
+                      id: 80063
+                      label: label_no_388
+                      token: my-magic-token-47
+                      addedOn: '2024-12-03T06:05:53.927019Z'
+                      isActive: true
+                      streams:
+                      - streamName: container1/.+
+                        isRegex: true
+                      - streamName: master_stream
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - phx-1
+                          - sgp-1
+                expiring:
+                  summary: expiring
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      name: temp_token
+                      subscribeRequiresAuth: false
+                      record: false
+                      clip: false
+                      multisource: true
+                      enableThumbnails: true
+                      lowLatencyRtmp: false
+                      integrationId: None
+                      displaySrtPassphrase: false
+                      drm: false
+                      geoCascade:
+                        isEnabled: true
+                        clusters:
+                        - phx-1
+                        - sgp-1
+                      restream:
+                      - label: label_no_937
+                        url: rtmp://testrtmp.com
+                        key: 5ce4d599cfd4a44131e422eaeede2929
+                      id: 33682
+                      label: label_no_428
+                      token: my-magic-token-0
+                      addedOn: '2024-12-03T06:06:50.137196Z'
+                      expiresOn: '2024-12-03T07:06:50.137196Z'
+                      isActive: true
+                      streams:
+                      - streamName: temp_stream
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      effectiveSettings:
+                        originCluster: auto
+                        allowedCountries: []
+                        deniedCountries: []
+                        geoCascade:
+                          isEnabled: true
+                          clusters:
+                          - phx-1
+                          - sgp-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/publish_token \\\n     -d '{\"label\": \"simple_token\", \"streams\": [{\"streamName\": \"stream1\"}]}'"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing Newtonsoft.Json;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token\";\n\nvar data = new { label = \"simple_token\", streams = new [] { new { streamName = \"stream1\" } }};\nvar httpContent = new StringContent(JsonConvert.SerializeObject(data),\n  Encoding.UTF8,\n  \"application/json\");\nvar response = await client.PostAsync(url, httpContent);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestProperty(\"Content-Type\", \"application/json\");\nconn.setRequestMethod(\"POST\");\n\nconn.setDoOutput(true);\nDataOutputStream wr = new DataOutputStream(conn.getOutputStream());\nwr.writeBytes(\"{\\\"label\\\": \\\"simple_token\\\", \\\"streams\\\": [{\\\"streamName\\\": \\\"stream1\\\"}]}\");\nwr.close();\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n  }\n};\nopts['method'] = 'POST';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nvar data = {\"label\": \"simple_token\", \"streams\": [{\"streamName\": \"stream1\"}]};\nreq.write(JSON.stringify(data));\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token';\n$headers = array(\n  'Authorization: Bearer your_api_secret',\n  'Content-Type: application/json'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$data = array(\"label\" => \"simple_token\", \"streams\" => array( array(\"streamName\" => \"stream1\") ));\ncurl_setopt($ch, CURLOPT_POST, TRUE);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\nimport json\n\nurl = 'https://api.millicast.com/api/publish_token'\nheaders = {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n}\nreq = urllib.request.Request(url, headers=headers)\nreq.method = 'POST'\ndata = {\"label\": \"simple_token\", \"streams\": [{\"streamName\": \"stream1\"}]}\nreq.data = json.dumps(data).encode('utf8')\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/publish_token')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\"label\": \"simple_token\", \"streams\": [{\"streamName\": \"stream1\"}]}\nres = http.post(uri, data.to_json, headers)\nputs res.body"
+  /api/publish_token/active:
+    get:
+      tags:
+      - PublishTokenV1
+      summary: Get active Publish Token ID
+      description: Gets the Publish Token ID of an active stream by its Stream ID. Publish Tokens for long running streams published before 1st October 2022 will not be returned. If you need to stop a long running stream, use the Dashboard or try republishing the stream.
+      operationId: PublishTokenV1_GetActiveTokenByStreamId
+      parameters:
+      - name: streamId
+        in: query
+        required: true
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseGetActiveTokenV1'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     https://api.millicast.com/api/publish_token/active?streamId=ppheyp/lb0ubvK \\\n     -G -d \"streamId=ppheyp/lb0ubvK\""
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/active?streamId=ppheyp/lb0ubvK\";\n\nvar response = await client.GetAsync(url);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/active?streamId=ppheyp/lb0ubvK\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestMethod(\"GET\");\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/active?streamId=ppheyp/lb0ubvK');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret'\n  }\n};\nopts['method'] = 'GET';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/active?streamId=ppheyp/lb0ubvK';\n$headers = array(\n  'Authorization: Bearer your_api_secret'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\n\nurl = 'https://api.millicast.com/api/publish_token/active?streamId=ppheyp/lb0ubvK'\nheaders = {\n    'Authorization': 'Bearer your_api_secret'\n}\nreq = urllib.request.Request(url, headers=headers)\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\n\nuri = URI('https://api.millicast.com/api/publish_token/active?streamId=ppheyp/lb0ubvK')\nheaders = {\n  'Authorization': 'Bearer your_api_secret'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\nres = http.get(uri, headers)\nputs res.body"
+  /api/publish_token/active/all:
+    get:
+      tags:
+      - PublishTokenV1
+      summary: Get all active Publish Token IDs
+      description: Get all Publish Token IDs for active streams on the account. Publish Tokens for long running streams published before 1st October 2022 will not be returned. If you need to stop a long running stream, use the Dashboard or try republishing the stream.
+      operationId: PublishTokenV1_GetAllActiveTokensByAccount
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseGetActiveTokenV1'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     https://api.millicast.com/api/publish_token/active/all"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/active/all\";\n\nvar response = await client.GetAsync(url);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/active/all\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestMethod(\"GET\");\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/active/all');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret'\n  }\n};\nopts['method'] = 'GET';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/active/all';\n$headers = array(\n  'Authorization: Bearer your_api_secret'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\n\nurl = 'https://api.millicast.com/api/publish_token/active/all'\nheaders = {\n    'Authorization': 'Bearer your_api_secret'\n}\nreq = urllib.request.Request(url, headers=headers)\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\n\nuri = URI('https://api.millicast.com/api/publish_token/active/all')\nheaders = {\n  'Authorization': 'Bearer your_api_secret'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\nres = http.get(uri, headers)\nputs res.body"
+  /api/publish_token/disable:
+    patch:
+      tags:
+      - PublishTokenV1
+      summary: Disable Publish Token(s)
+      description: Disables Publish Token(s) by their Token ID. An array of Token IDs can be used for bulk disable.
+      operationId: PublishTokenV1_DisableTokens
+      requestBody:
+        x-name: tokenIds
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisableActiveTokenModel'
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseDisableTokensV1'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/publish_token/disable \\\n     -X PATCH -d '{\n    \"tokenIds\" : [\n  100\n]\n}'"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing Newtonsoft.Json;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/disable\";\n\nvar data = {\n    \"tokenIds\" : [\n  100\n]\n};\nvar httpContent = new StringContent(JsonConvert.SerializeObject(data),\n  Encoding.UTF8,\n  \"application/json\");\nvar response = await client.PatchAsync(url, httpContent);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/disable\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestProperty(\"Content-Type\", \"application/json\");\nconn.setRequestMethod(\"PATCH\");\n\nconn.setDoOutput(true);\nDataOutputStream wr = new DataOutputStream(conn.getOutputStream());\nwr.writeBytes(\"{\n    \"tokenIds\" : [\n  100\n]\n}\");\nwr.close();\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/disable');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n  }\n};\nopts['method'] = 'PATCH';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nvar data = {\n    \"tokenIds\" : [\n  100\n]\n};\nreq.write(JSON.stringify(data));\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/disable';\n$headers = array(\n  'Authorization: Bearer your_api_secret',\n  'Content-Type: application/json'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$data = {\n    \"tokenIds\" : [\n  100\n]\n};\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\nimport json\n\nurl = 'https://api.millicast.com/api/publish_token/disable'\nheaders = {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n}\nreq = urllib.request.Request(url, headers=headers)\nreq.method = 'PUT'\ndata = {\n    \"tokenIds\" : [\n  100\n]\n}\nreq.data = json.dumps(data).encode('utf8')\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/publish_token/disable')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\n    \"tokenIds\" : [\n  100\n]\n}\nres = http.patch(uri, data.to_json, headers)\nputs res.body"
+  /api/publish_token/{tokenId}/restream/sync:
+    post:
+      tags:
+      - PublishTokenV1
+      summary: Sync restreams
+      description: Apply any re-stream configuration changes for running streams immediately.
+      operationId: PublishTokenV1_SyncRestream
+      parameters:
+      - name: tokenId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseBoolean'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+              examples:
+                does not exist:
+                  summary: does not exist
+                  value:
+                    status: fail
+                    data:
+                      tokenId: Invalid TokenId (100) for AccountId (200)
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     https://api.millicast.com/api/publish_token/100/restream/sync"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/publish_token/100/restream/sync\";\n\nvar response = await client.GetAsync(url);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/publish_token/100/restream/sync\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestMethod(\"GET\");\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/publish_token/100/restream/sync');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret'\n  }\n};\nopts['method'] = 'GET';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/publish_token/100/restream/sync';\n$headers = array(\n  'Authorization: Bearer your_api_secret'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\n\nurl = 'https://api.millicast.com/api/publish_token/100/restream/sync'\nheaders = {\n    'Authorization': 'Bearer your_api_secret'\n}\nreq = urllib.request.Request(url, headers=headers)\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\n\nuri = URI('https://api.millicast.com/api/publish_token/100/restream/sync')\nheaders = {\n  'Authorization': 'Bearer your_api_secret'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\nres = http.get(uri, headers)\nputs res.body"
+components:
+  schemas:
+    RestreamModel2:
+      type: object
+      additionalProperties: false
+      required:
+      - url
+      - key
+      properties:
+        label:
+          type:
+          - string
+          - 'null'
+          description: Restream config label
+          maxLength: 2048
+          minLength: 0
+        url:
+          type: string
+          description: The endpoint to restream media
+          maxLength: 2048
+          minLength: 1
+        key:
+          type: string
+          description: Secret key for restreaming endpoint
+          maxLength: 512
+          minLength: 5
+        enabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or disable restreaming to this endpoint
+          default: true
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    GeoCascadeModel3:
+      type: object
+      additionalProperties: false
+      properties:
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
+    SuccessResponseDisableTokensV1:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DisableTokens'
+    FailedToken:
+      type: object
+      additionalProperties: false
+      properties:
+        tokenId:
+          type: integer
+        errorMessage:
+          type:
+          - string
+          - 'null'
+    TokenEffectiveSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        originCluster:
+          type:
+          - string
+          - 'null'
+        allowedCountries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        deniedCountries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        geoCascade:
+          oneOf:
+          - $ref: '#/components/schemas/GeoCascadeModel2'
+        enableUTCInsertion:
+          type:
+          - boolean
+          - 'null'
+    DisableTokens:
+      type: object
+      additionalProperties: false
+      properties:
+        successfulTokens:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+        failedTokens:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailedToken'
+    SuccessResponsePublishTokenV1:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/PublishTokenResponseV1'
+    IntegrationIds:
+      type: string
+      description: ''
+      x-enumNames:
+      - None
+      - Maestro
+      - Passthru
+      - Internal
+      enum:
+      - None
+      - Maestro
+      - Passthru
+      - Internal
+    SuccessResponseGetActiveTokenV1:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TokenIdWrapper'
+    CreatePublishTokenV1:
+      type: object
+      additionalProperties: false
+      required:
+      - label
+      - streams
+      properties:
+        subscribeRequiresAuth:
+          type:
+          - boolean
+          - 'null'
+          description: Optional. Set to true to require authentication to subscribe to the specified streams. Default is false.
+          default: false
+        drm:
+          type:
+          - boolean
+          - 'null'
+          description: Optional. Set to true to mark as a DRM stream. Default is false.
+          default: false
+        record:
+          type:
+          - boolean
+          - 'null'
+          description: Optional. Set to true to allow this publish token to be allowed to record the specified streams. Default is false.
+          default: false
+        clip:
+          type:
+          - boolean
+          - 'null'
+          description: 'Optional. Set to true to allow this publish token to enable live clipping on specified streams. Default is false.
+
+            This flag cannot be set to true when the `record` flag is enabled.
+
+            Note: Live clipping is currently in Beta phase.'
+          default: false
+        multisource:
+          type:
+          - boolean
+          - 'null'
+          description: Optional. Set to false to disable the multi source capability for this publish token. Default is true.
+          default: true
+        enableThumbnails:
+          type:
+          - boolean
+          - 'null'
+          description: Optional. Set to true to receive webhook notifications for thumbnails for the specified streams. Default is false. See documentation https://optiview.dolby.com/docs/millicast/webhooks/thumbnail/. This flag only controls automated time-triggered thumbnails on loop, not on-demand thumbnails.
+          default: false
+        displaySrtPassphrase:
+          type:
+          - boolean
+          - 'null'
+          description: Optional. Set to true to display passphrase encryption settings in the dashboard as well as returning the SRT passphrase in response to this API call. Default is false.
+          default: false
+        lowLatencyRtmp:
+          type:
+          - boolean
+          - 'null'
+          description: Optional. Set to true to enable low latency RTMP.
+          default: true
+        enableUTCInsertion:
+          type:
+          - boolean
+          - 'null'
+          description: Optional. Set to true to insert UTC timestamps into the published stream. Defaults to account related setting if unset.
+        geoCascade:
+          description: Geo cascade settings for cascading stream to other clusters. Defaults to account related setting if unset.
+          oneOf:
+          - $ref: '#/components/schemas/GeoCascadeModel3'
+        restream:
+          type:
+          - array
+          - 'null'
+          description: List of endpoints to restream media.
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/RestreamModel2'
+        priority:
+          type:
+          - integer
+          - 'null'
+          description: Optional. Set default priority.
+          format: int32
+        encoderProfileId:
+          type:
+          - string
+          - 'null'
+          description: Optional. Set to the encoder profile ID to use a specific encoder profile for this publish token.
+        label:
+          type: string
+          description: Name for the token that is used to display in the dashboard.
+          maxLength: 128
+          minLength: 1
+        expires:
+          type:
+          - integer
+          - 'null'
+          description: Optional. Number of seconds until the token expires. If not specified, the token never expires (default).
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        streams:
+          type: array
+          description: A list of streams.
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CreateStreamNameModel'
+        allowedOrigins:
+          type:
+          - array
+          - 'null'
+          description: 'Optional. If specified only the domains in list will be allowed in requests to Director API with token. Wildcard subdomains are also allowed, e.g.: "*.demo.com". When unspecified (empty list) there are no domain restrictions. '
+          items:
+            type: string
+        allowedIpAddresses:
+          type:
+          - array
+          - 'null'
+          description: Optional. May specify multiple IPv4 addresses or CIDR notated network blocks. If specified, the token will only be usable from those IP addresses. Not currently supported with RTMP.
+          items:
+            type: string
+        bindIpsOnUsage:
+          type:
+          - integer
+          - 'null'
+          description: Optional. If specified will bind the token to the first X IP addresses used with token in requests to Director API, thus restricting the token to those IP addresses without being known beforehand. Mutually exclusive with allowedIpAddresses option. Not currently supported with RTMP.
+        originCluster:
+          type:
+          - string
+          - 'null'
+          description: Optional. Cluster to route specified streams to. Default is the account's default cluster.
+        allowedCountries:
+          type:
+          - array
+          - 'null'
+          description: Optional. Specify the ISO 3166-1 two letter country codes to explicitly allow viewer to watch the stream from. If the viewer's location does not match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of allowedCountries or deniedCountries should be specified. If the specified streams require authentication, the list of allowed countries can be overridden by the subscribe token.
+          items:
+            type: string
+        deniedCountries:
+          type:
+          - array
+          - 'null'
+          description: Optional. Specify the ISO 3166-1 two letter country codes to explicitly deny viewer to watch the stream from. If the viewer's location does match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of allowedCountries or deniedCountries should be specified.If the specified streams require authentication, the list of denied countries can be overridden by the subscribe token.
+          items:
+            type: string
+    ListFilterBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - None
+      - TokenName
+      - StreamName
+      - TokenOrStreamName
+      enum:
+      - None
+      - TokenName
+      - StreamName
+      - TokenOrStreamName
+    SuccessResponseBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
+    CreateStreamNameModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      properties:
+        streamName:
+          type: string
+          description: Name of the stream this token can access.
+          maxLength: 128
+          minLength: 1
+        isRegex:
+          type: boolean
+          description: Set to true if the name of the stream is a regular expression.
+          default: false
+    GeoCascadeModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
+    UpdatePublishTokenV1:
+      type: object
+      additionalProperties: false
+      properties:
+        subscribeRequiresAuth:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating whether the stream viewers require authentication.
+        record:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating whether to record the stream.
+        clip:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating whether the stream can generate clips.
+        multisource:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating whether multisource is enabled or not.
+        lowLatencyRtmp:
+          type:
+          - boolean
+          - 'null'
+          description: Flag to indicate if low latency RTMP is enabled for this publish token.
+        enableUTCInsertion:
+          type:
+          - boolean
+          - 'null'
+          description: Flag to indicate if UTC timestamp insertion is enabled for this publish token. Set to null to clear value and use the account related setting.
+        enableThumbnails:
+          type:
+          - boolean
+          - 'null'
+          description: Flag to receive webhook notifications for thumbnails for the specified streams. Default is false. See documentation https://optiview.dolby.com/docs/millicast/webhooks/thumbnail/. This flag only controls automated time-triggered thumbnails on loop, not on-demand thumbnails.
+        displaySrtPassphrase:
+          type:
+          - boolean
+          - 'null'
+          description: Flag to display passphrase encryption settings in the dashboard as well as returning the SRT passphrase in response to this API call. Default is false.
+        updateGeoCascade:
+          description: The geo cascading settings.
+          oneOf:
+          - $ref: '#/components/schemas/GeoCascadeModel3'
+        updateRestream:
+          type:
+          - array
+          - 'null'
+          description: List of endpoints to restream media.
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/RestreamModel2'
+        drm:
+          type:
+          - boolean
+          - 'null'
+          description: Optional. Set to true to mark as a DRM stream.
+        priority:
+          type:
+          - integer
+          - 'null'
+          description: Optional. Set default priority value for streams. Set to null to clear value.
+          format: int32
+        encoderProfileId:
+          type:
+          - string
+          - 'null'
+          description: Optional. Set encoder profile id. Set to null to clear the value.
+        label:
+          type:
+          - string
+          - 'null'
+          description: Name for the token that is used to display in the dashboard.
+          maxLength: 128
+        refreshToken:
+          type:
+          - boolean
+          - 'null'
+          description: Generate new unique token, invalidating previous token.
+        isActive:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates if the token is active.
+        addTokenStreams:
+          type:
+          - array
+          - 'null'
+          description: The list of stream names to add.
+          items:
+            $ref: '#/components/schemas/CreateStreamNameModel'
+        removeTokenStreams:
+          type:
+          - array
+          - 'null'
+          description: The list of stream names to remove.
+          items:
+            type: string
+        updateAllowedOrigins:
+          type:
+          - array
+          - 'null'
+          description: The list of allowed origins.
+          items:
+            type: string
+        updateAllowedIpAddresses:
+          type:
+          - array
+          - 'null'
+          description: The list of allowed IP addresses.
+          items:
+            type: string
+        updateBindIpsOnUsage:
+          type:
+          - integer
+          - 'null'
+          description: Optional. If specified will bind the token to the first X IP addresses used with token in requests to Director API, thus restricting the token to those IP addresses without being known beforehand. Mutually exclusive with allowedIpAddresses option.
+          maximum: 2147483647.0
+          minimum: 0.0
+        updateOriginCluster:
+          type:
+          - string
+          - 'null'
+          description: Update the origin cluster.
+        updateAllowedCountries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        updateDeniedCountries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+    DisableActiveTokenModel:
+      type: object
+      additionalProperties: false
+      required:
+      - tokenIds
+      properties:
+        tokenIds:
+          type: array
+          description: The list of identifiers for the tokens to disable.
+          minItems: 1
+          items:
+            type: integer
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    SuccessResponseListPublishTokenV1:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublishTokenResponseV1'
+    PublishTokenResponseV1:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          deprecated: true
+          x-deprecatedMessage: use Label
+        subscribeRequiresAuth:
+          type: boolean
+          description: Flag to require authentication to subscribe to the specified streams. Default is false.
+        record:
+          type: boolean
+          description: Flag to allow this publish token to be allowed to record the specified streams. Default is false.
+        clip:
+          type: boolean
+          description: 'Flag to allow this publish token to enable live clipping on specified streams. Default is false.
+
+            This flag cannot be set to true when the `record` flag is enabled.'
+        multisource:
+          type: boolean
+          description: Flag to indicate if the multi source capability is enabled for this publish token. Default is true.
+        enableThumbnails:
+          type: boolean
+          description: Flag to receive webhook notifications for thumbnails for the specified streams. Default is false. See documentation https://optiview.dolby.com/docs/millicast/webhooks/thumbnail/. This flag only controls automated time-triggered thumbnails on loop, not on-demand thumbnails.
+        lowLatencyRtmp:
+          type: boolean
+          description: Flag to indicate if low latency RTMP is enabled for this publish token. Default is true.
+        enableUTCInsertion:
+          type:
+          - boolean
+          - 'null'
+          description: Flag to indicate if UTC timestamp insertion is enabled for this publish token. Null means the account default is used.
+        integrationId:
+          description: The identifier of the integration.
+          oneOf:
+          - $ref: '#/components/schemas/IntegrationIds'
+        displaySrtPassphrase:
+          type: boolean
+          description: Flag to display passphrase encryption settings in the dashboard as well as returning the SRT passphrase in response to this API call. Default is false.
+        srtPassphrase:
+          type:
+          - string
+          - 'null'
+          description: The SRT passphrase.
+        drm:
+          type: boolean
+        geoCascade:
+          description: The geo cascading settings.
+          oneOf:
+          - $ref: '#/components/schemas/GeoCascadeModel2'
+        restream:
+          type:
+          - array
+          - 'null'
+          description: A list of endpoints where to restream the stream to.
+          items:
+            $ref: '#/components/schemas/RestreamModel2'
+        priority:
+          type:
+          - integer
+          - 'null'
+          description: Default priority of this publish token.
+          format: int32
+        encoderProfileId:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the encoder profile.
+        id:
+          type: integer
+          description: Identifier of the token.
+        label:
+          type: string
+          description: Friendly name of token.
+        token:
+          type: string
+          description: Actual token.
+        addedOn:
+          type: string
+          description: Date when the token was created.
+          format: date-time
+        expiresOn:
+          type:
+          - string
+          - 'null'
+          description: The token expiration date.
+          format: date-time
+        isActive:
+          type: boolean
+          description: Flag to indicate if the token is active or not.
+        streams:
+          type: array
+          description: A list of stream names associated with the token.
+          items:
+            $ref: '#/components/schemas/TokenStreamNameModel'
+        allowedOrigins:
+          type: array
+          description: A list of allowed origins for the token.
+          items:
+            type: string
+        allowedIpAddresses:
+          type: array
+          description: A list of allowed IP addresses for the token.
+          items:
+            type: string
+        bindIpsOnUsage:
+          type:
+          - integer
+          - 'null'
+          description: The number of IPs to bind on usage.
+        originCluster:
+          type: string
+          description: Default cluster for the token.
+        effectiveSettings:
+          description: Token effective settings for properties that use account default settings. Value for each property will either be token or account level settings.
+          oneOf:
+          - $ref: '#/components/schemas/TokenEffectiveSettings'
+        allowedCountries:
+          type: array
+          description: Specify the ISO 3166-1 two letter country codes to explicitly allow viewer to watch the stream from. If the viewer's location does not match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of allowedCountries or deniedCountries should be specified. If the specified streams require authentication, the list of allowed countries can be overridden by the subscribe token.
+          items:
+            type: string
+        deniedCountries:
+          type: array
+          description: Specify the ISO 3166-1 two letter country codes to explicitly deny viewer to watch the stream from. If the viewer's location does match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of allowedCountries or deniedCountries should be specified. If the specified streams require authentication, the list of denied countries can be overridden by the subscribe token.
+          items:
+            type: string
+    ListSortBy2:
+      type: string
+      description: ''
+      x-enumNames:
+      - Name
+      - AddedOn
+      enum:
+      - Name
+      - AddedOn
+    TokenIdWrapper:
+      type: object
+      additionalProperties: false
+      properties:
+        tokenIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+    TokenStreamNameModel:
+      type: object
+      additionalProperties: false
+      properties:
+        streamName:
+          type: string
+          description: The name of the stream.
+        isRegex:
+          type: boolean
+          description: Flag indicating whether the provided name is a regular expression.
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

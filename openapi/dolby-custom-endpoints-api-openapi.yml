@@ -1,0 +1,433 @@
+openapi: 3.2.0
+info:
+  title: THEOlive Custom Endpoints API
+  version: v2
+servers:
+- url: https://api.theo.live/v2
+  description: V2 API
+- url: https://api.theo.live
+  description: Base (for /v1 endpoints)
+security:
+- BasicAuth: []
+tags:
+- name: Custom Endpoints
+paths:
+  /channels/{id}/custom-endpoints:
+    post:
+      tags:
+      - Custom Endpoints
+      operationId: create-custom-endpoint
+      summary: Create a custom endpoint on a channel
+      parameters:
+      - schema:
+          type: string
+          description: Channel ID
+        required: true
+        description: Channel ID
+        name: id
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomEndpointBody'
+      responses:
+        '200':
+          description: Created custom endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomEndpointObjectResult'
+    get:
+      tags:
+      - Custom Endpoints
+      operationId: get-channel-custom-endpoints
+      summary: List all custom endpoints of a channel
+      parameters:
+      - schema:
+          type: string
+          description: Channel ID
+        required: true
+        description: Channel ID
+        name: id
+        in: path
+      responses:
+        '200':
+          description: List of custom endpoints
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomEndpointListResult'
+  /custom-endpoints/{id}:
+    get:
+      tags:
+      - Custom Endpoints
+      operationId: get-custom-endpoint
+      summary: Get a custom endpoint by ID
+      parameters:
+      - schema:
+          type: string
+          description: Custom Endpoint ID
+        required: true
+        description: Custom Endpoint ID
+        name: id
+        in: path
+      responses:
+        '200':
+          description: The requested custom endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomEndpointObjectResult'
+    patch:
+      tags:
+      - Custom Endpoints
+      operationId: update-custom-endpoint
+      summary: Update a custom endpoint
+      parameters:
+      - schema:
+          type: string
+          description: Custom Endpoint ID
+        required: true
+        description: Custom Endpoint ID
+        name: id
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomEndpointBody'
+      responses:
+        '200':
+          description: Updated custom endpoint
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomEndpointObjectResult'
+    delete:
+      tags:
+      - Custom Endpoints
+      operationId: delete-custom-endpoint
+      summary: Delete a custom endpoint
+      parameters:
+      - schema:
+          type: string
+          description: Custom Endpoint ID
+        required: true
+        description: Custom Endpoint ID
+        name: id
+        in: path
+      responses:
+        '204':
+          description: Empty response
+components:
+  schemas:
+    CustomEndpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        createdAt:
+          type: string
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          description: Last update timestamp
+        organizationId:
+          type: string
+          description: Organization ID
+        channelId:
+          type: string
+          description: Channel ID
+        name:
+          type: string
+          description: Name
+        src:
+          type: string
+          description: Source URL
+        srcType:
+          type: string
+          enum:
+          - hesp
+          - hls
+          - dash
+          description: Source type
+        provider:
+          type: string
+          description: Provider
+        adSystem:
+          type: string
+          description: Ad system (defaults to 'sgai')
+        drmConfig:
+          type:
+          - object
+          - 'null'
+          properties:
+            integration:
+              type: string
+              enum:
+              - ezdrm
+              - mediakind
+              - drmtoday
+              description: DRM integration type
+            merchant:
+              type: string
+              description: Merchant identifier, for integrations that identify the customer per license request
+            widevine:
+              type: object
+              properties:
+                licenseUrl:
+                  type: string
+                  description: Widevine license URL
+              required:
+              - licenseUrl
+              description: Widevine DRM configuration
+            playready:
+              type: object
+              properties:
+                licenseUrl:
+                  type: string
+                  description: PlayReady license URL
+              required:
+              - licenseUrl
+              description: PlayReady DRM configuration
+            fairplay:
+              type: object
+              properties:
+                licenseUrl:
+                  type: string
+                  description: FairPlay license URL
+                certificateUrl:
+                  type: string
+                  description: FairPlay certificate URL
+              required:
+              - licenseUrl
+              - certificateUrl
+              description: FairPlay DRM configuration
+          required:
+          - integration
+          additionalProperties: false
+          description: DRM configuration
+        cdn:
+          type: string
+          description: CDN identifier
+        priority:
+          type: number
+          description: Priority
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      - organizationId
+      - channelId
+      - name
+      - src
+      - srcType
+      - provider
+      - adSystem
+      - cdn
+      - priority
+      description: Custom endpoint object
+    CreateCustomEndpointBody:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Name of the custom endpoint
+        src:
+          type: string
+          minLength: 1
+          description: Source URL
+        srcType:
+          type: string
+          enum:
+          - hesp
+          - hls
+          - dash
+          description: Source type (hesp, hls or dash)
+        provider:
+          type: string
+          minLength: 1
+          description: Provider name (must be configured for the organization)
+        adSystem:
+          type: string
+          minLength: 1
+          description: Ad system name (must be configured for the organization). 'sgai' is always allowed. Defaults to 'sgai' if not specified
+        drmConfig:
+          $ref: '#/components/schemas/CustomEndpointDrmConfig'
+        cdn:
+          type: string
+          minLength: 1
+          pattern: ^[a-zA-Z0-9]+$
+          description: CDN identifier
+        priority:
+          type: integer
+          description: Priority (lower is higher priority)
+      required:
+      - name
+      - src
+      - srcType
+      - provider
+      - cdn
+      - priority
+      additionalProperties: false
+    CustomEndpointObjectResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/CustomEndpoint'
+      required:
+      - data
+    CustomEndpointListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomEndpoint'
+          description: List of custom endpoints
+      required:
+      - data
+    CustomEndpointDrmConfig:
+      type: object
+      properties:
+        integration:
+          type: string
+          enum:
+          - ezdrm
+          - mediakind
+          - drmtoday
+          description: DRM integration type
+        merchant:
+          type: string
+          description: Merchant identifier, for integrations that identify the customer per license request
+        widevine:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: Widevine license URL
+          required:
+          - licenseUrl
+          description: Widevine DRM configuration
+        playready:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: PlayReady license URL
+          required:
+          - licenseUrl
+          description: PlayReady DRM configuration
+        fairplay:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: FairPlay license URL
+            certificateUrl:
+              type: string
+              description: FairPlay certificate URL
+          required:
+          - licenseUrl
+          - certificateUrl
+          description: FairPlay DRM configuration
+      required:
+      - integration
+      additionalProperties: false
+      description: Optional DRM configuration
+    UpdateCustomEndpointBody:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Name of the custom endpoint
+        src:
+          type: string
+          minLength: 1
+          description: Source URL
+        srcType:
+          type: string
+          enum:
+          - hesp
+          - hls
+          - dash
+          description: Source type (hesp, hls or dash)
+        provider:
+          type: string
+          minLength: 1
+          description: Provider name (must be configured for the organization)
+        adSystem:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          description: Ad system name (must be configured for the organization). 'sgai' is always allowed. Set to null to reset to default ('sgai')
+        drmConfig:
+          type:
+          - object
+          - 'null'
+          properties:
+            integration:
+              type: string
+              enum:
+              - ezdrm
+              - mediakind
+              - drmtoday
+              description: DRM integration type
+            merchant:
+              type: string
+              description: Merchant identifier, for integrations that identify the customer per license request
+            widevine:
+              type: object
+              properties:
+                licenseUrl:
+                  type: string
+                  description: Widevine license URL
+              required:
+              - licenseUrl
+              description: Widevine DRM configuration
+            playready:
+              type: object
+              properties:
+                licenseUrl:
+                  type: string
+                  description: PlayReady license URL
+              required:
+              - licenseUrl
+              description: PlayReady DRM configuration
+            fairplay:
+              type: object
+              properties:
+                licenseUrl:
+                  type: string
+                  description: FairPlay license URL
+                certificateUrl:
+                  type: string
+                  description: FairPlay certificate URL
+              required:
+              - licenseUrl
+              - certificateUrl
+              description: FairPlay DRM configuration
+          required:
+          - integration
+          additionalProperties: false
+          description: Optional DRM configuration
+        cdn:
+          type: string
+          minLength: 1
+          pattern: ^[a-zA-Z0-9]+$
+          description: CDN identifier
+        priority:
+          type: integer
+          description: Priority (lower is higher priority)
+      additionalProperties: false
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic

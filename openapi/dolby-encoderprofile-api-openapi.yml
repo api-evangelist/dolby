@@ -1,0 +1,163 @@
+openapi: 3.2.0
+info:
+  title: Millicast Encoder Profile API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: EncoderProfile
+paths:
+  /api/encoders/profiles:
+    get:
+      tags:
+      - EncoderProfile
+      summary: Get Account Encoder Profiles
+      description: Get encoder profiles associated with an account
+      operationId: EncoderProfile_GetAccountEncoderProfiles
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EncoderProfileModel'
+      security:
+      - API_Secret: []
+components:
+  schemas:
+    AudioConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type:
+          - integer
+          - 'null'
+          description: Audio bitrate.
+          format: int32
+    EncoderConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type:
+          - integer
+          - 'null'
+          description: Video bitrate.
+          format: int32
+    AudioConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        codec:
+          type:
+          - string
+          - 'null'
+          description: Audio codec.
+        settings:
+          description: Audio configuration settings.
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurationSettings'
+    MultiTrackVideoConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        encoderConfigurations:
+          type:
+          - array
+          - 'null'
+          description: List of encoder configurations.
+          items:
+            $ref: '#/components/schemas/EncoderConfiguration'
+        audioConfigurations:
+          description: Audio configurations.
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurations'
+    AudioConfigurations:
+      type: object
+      additionalProperties: false
+      properties:
+        live:
+          type:
+          - array
+          - 'null'
+          description: List of live audio configurations.
+          items:
+            $ref: '#/components/schemas/AudioConfiguration'
+    EncoderConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrateInterpolationPoints:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        width:
+          type:
+          - integer
+          - 'null'
+          description: Width of the video feed.
+          format: int32
+        height:
+          type:
+          - integer
+          - 'null'
+          description: Height of the video feed.
+          format: int32
+        settings:
+          description: Video settings.
+          oneOf:
+          - $ref: '#/components/schemas/EncoderConfigurationSettings'
+    EncoderProfileModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: Identifier of the encoder profile.
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name of the encoder profile.
+        isGlobal:
+          type: boolean
+          description: Flag to indicate if this is a global encoder profile.
+        configuration:
+          description: The encoder profile configuration.
+          oneOf:
+          - $ref: '#/components/schemas/MultiTrackVideoConfiguration'
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

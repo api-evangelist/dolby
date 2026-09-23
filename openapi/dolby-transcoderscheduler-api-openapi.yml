@@ -1,0 +1,972 @@
+openapi: 3.2.0
+info:
+  title: Millicast Transcoder Scheduler API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: TranscoderScheduler
+paths:
+  /api/transcoders/schedule:
+    post:
+      tags:
+      - TranscoderScheduler
+      summary: Create Transcoder Schedule
+      description: Creates a Schedule for Transcoders specified.
+      operationId: TranscoderScheduler_CreateSchedule
+      requestBody:
+        x-name: request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TranscoderCreateScheduleRequest'
+            examples:
+              simple:
+                summary: simple
+                value:
+                  status: success
+                  data:
+                    start: '2024-08-15T09:00:00Z'
+                    stop: '2024-08-17T09:00:00Z'
+                    clientId: random_string
+                    transcoderIds:
+                    - 9dc8129e-499d-4989-bb32-a5ae459277c5
+                    name: start-transcoder-once
+                    description: first schedular ive created
+                    recurring:
+                      frequency:
+                        interval: weekly
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseCreateTranscoderSchedule'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      start: '2024-08-15T09:00:00Z'
+                      stop: '2024-08-17T09:00:00Z'
+                      clientId: random_string
+                      scheduleId: b4d1f1ea-c8ae-49ca-815e-8460587207cb
+                      status: active
+                      transcoderIds:
+                      - 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      name: start-transcoder-once
+                      description: first schedular ive created
+                      recurring:
+                        enabled: true
+                        frequency:
+                          interval: weekly
+                      metadata:
+                        createdOn: '2024-08-14T09:23:12Z'
+                      executions:
+                      - executionTime: '2024-08-15T09:00:00Z'
+                        scheduleType: Start
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      - executionTime: '2024-08-17T09:00:00Z'
+                        scheduleType: Stop
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/transcoders/schedule/{scheduleId}:
+    delete:
+      tags:
+      - TranscoderScheduler
+      summary: Delete Transcoder Schedule
+      description: Deletes a Transcoder schedule by its Schedule ID. Schedule ID can be found from Create/Get Transcoder Schedule response.
+      operationId: TranscoderScheduler_DeleteSchedule
+      parameters:
+      - name: scheduleId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseDeleteTranscoderSchedule'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      scheduleId: f76566d6-f1e1-4a6b-a299-de1b67990d7d
+                      status: Deleted
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    put:
+      tags:
+      - TranscoderScheduler
+      summary: Update Transcoder Schedule
+      description: Updates a Transcoder Schedule by its Schedule ID.
+      operationId: TranscoderScheduler_UpdateSchedule
+      parameters:
+      - name: scheduleId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      requestBody:
+        x-name: updateRequest
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTranscoderScheduleRequest'
+            examples:
+              simple:
+                summary: simple
+                value:
+                  status: success
+                  data:
+                    start: '2024-08-15T09:00:00Z'
+                    stop: '2024-08-17T09:00:00Z'
+                    recurring:
+                      frequency:
+                        interval: weekly
+        required: true
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseUpdateTranscoderSchedule'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      start: '2024-08-15T09:00:00Z'
+                      stop: '2024-08-17T09:00:00Z'
+                      clientId: random_string
+                      scheduleId: b4d1f1ea-c8ae-49ca-815e-8460587207cb
+                      status: active
+                      transcoderIds:
+                      - 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      - eb1f2499-8ef6-4c5b-bac0-9136261c4b6b
+                      name: start-transcoder-once
+                      description: first schedular ive created
+                      recurring:
+                        enabled: true
+                        frequency:
+                          interval: weekly
+                      metadata:
+                        createdOn: '2024-08-14T09:23:12Z'
+                      executions:
+                      - executionTime: '2024-08-15T09:00:00Z'
+                        scheduleType: Start
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      - executionTime: '2024-08-15T09:00:00Z'
+                        scheduleType: Start
+                        executionStatus: Pending
+                        transcoderId: eb1f2499-8ef6-4c5b-bac0-9136261c4b6b
+                      - executionTime: '2024-08-17T09:00:00Z'
+                        scheduleType: Stop
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      - executionTime: '2024-08-17T09:00:00Z'
+                        scheduleType: Stop
+                        executionStatus: Pending
+                        transcoderId: eb1f2499-8ef6-4c5b-bac0-9136261c4b6b
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    get:
+      tags:
+      - TranscoderScheduler
+      summary: Get Transcoder Schedule
+      description: Gets schedule summary by Schedule ID.
+      operationId: TranscoderScheduler_GetScheduleByScheduleId
+      parameters:
+      - name: scheduleId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessGetScheduleByScheduleId'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      start: '2024-08-15T09:00:00Z'
+                      stop: '2024-08-17T09:00:00Z'
+                      clientId: random_string
+                      scheduleId: b4d1f1ea-c8ae-49ca-815e-8460587207cb
+                      status: active
+                      transcoderIds:
+                      - 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      name: start-transcoder-once
+                      description: first schedular ive created
+                      recurring:
+                        enabled: true
+                        frequency:
+                          interval: weekly
+                      metadata:
+                        createdOn: '2024-08-14T09:23:12Z'
+                      executions:
+                      - executionTime: '2024-08-15T09:00:00Z'
+                        scheduleType: Start
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      - executionTime: '2024-08-17T09:00:00Z'
+                        scheduleType: Stop
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/transcoders/schedule/list:
+    get:
+      tags:
+      - TranscoderScheduler
+      summary: List Transcoder Schedules
+      description: Lists all Transcoder Schedules. Sort by Created Date by default. Able to be filtered by Schedule Status.
+      operationId: TranscoderScheduler_ListAllSchedules
+      parameters:
+      - name: sortBy
+        in: query
+        description: Order in which to return the list of Transcoder schedules. The default is by CreatedDate.
+        schema:
+          default: CreatedDate
+          oneOf:
+          - $ref: '#/components/schemas/ListTranscoderSchedulesSortBy'
+        x-position: 1
+      - name: status
+        in: query
+        style: form
+        explode: true
+        description: Returns only Transcoder schedules that have a specified status.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleStatus'
+        x-position: 2
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 3
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 4
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 5
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseListTranscoderSchedules'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                    - start: '2024-08-15T09:00:00Z'
+                      stop: '2024-08-17T09:00:00Z'
+                      clientId: random_string
+                      scheduleId: b4d1f1ea-c8ae-49ca-815e-8460587207cb
+                      status: active
+                      transcoderIds:
+                      - 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      name: start-transcoder-once
+                      description: first schedular ive created
+                      recurring:
+                        enabled: true
+                        frequency:
+                          interval: weekly
+                      metadata:
+                        createdOn: '2024-08-14T09:23:12Z'
+                      executions:
+                      - executionTime: '2024-08-15T09:00:00Z'
+                        scheduleType: Start
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      - executionTime: '2024-08-17T09:00:00Z'
+                        scheduleType: Stop
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/transcoders/{transcoderId}/schedule/list:
+    get:
+      tags:
+      - TranscoderScheduler
+      summary: Get Schedules By Transcoder
+      description: Get all Schedules for a single transcoder.
+      operationId: TranscoderScheduler_GetSchedulesForTranscoder
+      parameters:
+      - name: transcoderId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      - name: sortBy
+        in: query
+        description: Order in which to return the list of Transcoder schedules. The default is by CreatedDate.
+        schema:
+          default: CreatedDate
+          oneOf:
+          - $ref: '#/components/schemas/ListTranscoderSchedulesSortBy'
+        x-position: 2
+      - name: status
+        in: query
+        style: form
+        explode: true
+        description: Returns only Transcoder schedules that have a specified status.
+        schema:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/ScheduleStatus'
+        x-position: 3
+      - name: page
+        in: query
+        required: true
+        description: The index to start when paginating results.
+        schema:
+          type: integer
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 4
+      - name: itemsOnPage
+        in: query
+        required: true
+        description: The number of results to include when paginating a large result set.
+        schema:
+          type: integer
+          format: int32
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 5
+      - name: isDescending
+        in: query
+        description: Change the direction of the default sort ordering.
+        schema:
+          type: boolean
+          default: false
+        x-position: 6
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessGetSchedulesForSpecificTranscoder'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                    - start: '2024-08-15T09:00:00Z'
+                      stop: '2024-08-17T09:00:00Z'
+                      clientId: random_string
+                      scheduleId: b4d1f1ea-c8ae-49ca-815e-8460587207cb
+                      status: active
+                      transcoderIds:
+                      - 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      name: start-transcoder-once
+                      description: first schedular ive created
+                      recurring:
+                        enabled: true
+                        frequency:
+                          interval: weekly
+                      metadata:
+                        createdOn: '2024-08-14T09:23:12Z'
+                      executions:
+                      - executionTime: '2024-08-15T09:00:00Z'
+                        scheduleType: Start
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+                      - executionTime: '2024-08-17T09:00:00Z'
+                        scheduleType: Stop
+                        executionStatus: Pending
+                        transcoderId: 9dc8129e-499d-4989-bb32-a5ae459277c5
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+components:
+  schemas:
+    RecurringInfo:
+      type: object
+      additionalProperties: false
+      properties:
+        frequency:
+          $ref: '#/components/schemas/RecurringFrequency'
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    TranscoderScheduleExecutionResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        executionTime:
+          type: string
+          format: date-time
+        scheduleType:
+          $ref: '#/components/schemas/TranscoderScheduleType'
+        executionStatus:
+          $ref: '#/components/schemas/ScheduleExecutionStatus'
+        transcoderId:
+          type:
+          - string
+          - 'null'
+    ListTranscoderSchedulesSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - CreatedDate
+      enum:
+      - CreatedDate
+    TranscoderScheduleType:
+      type: string
+      description: ''
+      x-enumNames:
+      - Start
+      - Stop
+      enum:
+      - Start
+      - Stop
+    ScheduleMetadata:
+      type: object
+      additionalProperties: false
+      properties:
+        createdOn:
+          type: string
+          format: date-time
+        lastModifiedOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    SuccessResponseUpdateTranscoderSchedule:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+    SuccessResponseDeleteTranscoderSchedule:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DeleteTranscoderScheduleResponse'
+    UpdateTranscoderScheduleRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Update display name for schedule.
+        start:
+          type:
+          - string
+          - 'null'
+          description: Update the time to start the schedule. If it's weekly, then we use the time from this as well and the first day to anchor the schedule.
+          format: date-time
+        stop:
+          type:
+          - string
+          - 'null'
+          description: Update the stop time of the schedule.
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: Update the schedule description.
+        clientId:
+          type:
+          - string
+          - 'null'
+          description: Update the customers reference field.
+        recurring:
+          description: Update recurring schedule.
+          oneOf:
+          - $ref: '#/components/schemas/RecurringInfo'
+        transcoderIds:
+          type:
+          - array
+          - 'null'
+          description: Update all transcoder Ids for the schedule. This replaces all existing transcoder Ids for the schedule.
+          items:
+            type: string
+    RecurringInterval:
+      type: string
+      description: ''
+      x-enumNames:
+      - Daily
+      - Weekly
+      enum:
+      - Daily
+      - Weekly
+    DeleteTranscoderScheduleResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        scheduleId:
+          type: string
+        status:
+          $ref: '#/components/schemas/ScheduleStatus'
+    ScheduleStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Active
+      - Inactive
+      - Deleted
+      enum:
+      - Active
+      - Inactive
+      - Deleted
+    SuccessResponseCreateTranscoderSchedule:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+    DayOfWeek:
+      type: string
+      description: ''
+      x-enumNames:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      enum:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+    SuccessResponseListTranscoderSchedules:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+    SuccessGetScheduleByScheduleId:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+    SuccessGetSchedulesForSpecificTranscoder:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+    TranscoderCreateScheduleRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      properties:
+        start:
+          type:
+          - string
+          - 'null'
+          description: The start date and time of the schedule in the format of `YYYY-MM-DDTHH:MM:SSZ`.
+          format: date-time
+        stop:
+          type:
+          - string
+          - 'null'
+          description: The stop date and time of the schedule in the format of `YYYY-MM-DDTHH:MM:SSZ`.
+          format: date-time
+        clientId:
+          type:
+          - string
+          - 'null'
+          description: A field that can be used to associate particular schedules.
+        name:
+          type: string
+          description: The name of the schedule.
+          minLength: 1
+        description:
+          type:
+          - string
+          - 'null'
+          description: A description of the schedule.
+        recurring:
+          description: Recurring information about the schedule. This field is optional.
+          oneOf:
+          - $ref: '#/components/schemas/RecurringInfo'
+        transcoderIds:
+          type:
+          - array
+          - 'null'
+          description: The Transcoder Ids to schedule for.
+          items:
+            type: string
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    TranscoderScheduleInfoResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        metadata:
+          oneOf:
+          - $ref: '#/components/schemas/ScheduleMetadata'
+        status:
+          $ref: '#/components/schemas/ScheduleStatus'
+        scheduleId:
+          type:
+          - string
+          - 'null'
+        start:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        stop:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        clientId:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        description:
+          type:
+          - string
+          - 'null'
+        recurring:
+          oneOf:
+          - $ref: '#/components/schemas/RecurringInfo'
+        transcoderIds:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        executions:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TranscoderScheduleExecutionResponse'
+    ScheduleExecutionStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Pending
+      - Running
+      - Completed
+      - NoAction
+      - UnexpectedError
+      - Deleted
+      - RemovedByScheduleUpdate
+      enum:
+      - Pending
+      - Running
+      - Completed
+      - NoAction
+      - UnexpectedError
+      - Deleted
+      - RemovedByScheduleUpdate
+    RecurringFrequency:
+      type: object
+      additionalProperties: false
+      properties:
+        interval:
+          $ref: '#/components/schemas/RecurringInterval'
+        daysOfWeek:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

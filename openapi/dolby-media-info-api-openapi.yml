@@ -1,0 +1,48 @@
+openapi: 3.2.0
+info:
+  title: Dolby OptiView Ad Engine Media Info API
+  version: 1.0.0
+servers:
+- url: https://api.galaxy.dolbyrasp.com
+tags:
+- name: Media Info
+paths:
+  /media-info:
+    get:
+      operationId: media-info
+      tags:
+      - Media Info
+      summary: Media Info
+      responses:
+        '200':
+          description: OK
+      parameters:
+      - name: url
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uri
+        description: URL of the media file
+      - name: credentials_key
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The key of the stored credentials to use when accessing the URL.
+      - name: x-rasp-auth-token
+        in: header
+        required: true
+        schema:
+          type: string
+        description: Authentication token.
+      x-displayName: Media Info
+      security:
+      - ApiKeyAuth: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-rasp-auth-token
+      description: API authentication token

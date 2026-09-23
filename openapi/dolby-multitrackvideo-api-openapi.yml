@@ -1,0 +1,278 @@
+openapi: 3.2.0
+info:
+  title: Director Multi Track Video API
+  version: 1.0.0
+servers:
+- url: https://director.millicast.com
+security:
+- Token: []
+tags:
+- name: MultiTrackVideo
+paths:
+  /api/multitrackvideo/configuration:
+    post:
+      tags:
+      - MultiTrackVideo
+      summary: Configuration
+      description: 'Supplies multi track video configuration to OBS. Please refer to OBS for request schema. Supports OBS schema versions: [2024-06-04, 2025-01-25].'
+      operationId: MultiTrackVideo_Configuration
+      requestBody:
+        x-name: json
+        content:
+          application/json:
+            schema: {}
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultiTrackVideoConfigurationResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - Token: []
+components:
+  schemas:
+    MultiTrackVideoConfigurationResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        meta:
+          oneOf:
+          - $ref: '#/components/schemas/Meta'
+        ingest_endpoints:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IngestEndpoint'
+        encoder_configurations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EncoderConfiguration'
+        audio_configurations:
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurations'
+    AudioConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type: integer
+          format: int32
+    EncoderConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type: integer
+          format: int32
+        bf:
+          type: integer
+          format: int32
+        bframes:
+          type: integer
+          format: int32
+        keyint:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        keyint_sec:
+          type: integer
+          format: int32
+        lookahead:
+          type: boolean
+        preset2:
+          type:
+          - string
+          - 'null'
+        profile:
+          type:
+          - string
+          - 'null'
+        psycho_aq:
+          type: boolean
+        rate_control:
+          type:
+          - string
+          - 'null'
+        tune:
+          type:
+          - string
+          - 'null'
+        latency:
+          type:
+          - string
+          - 'null'
+        target_usage:
+          type:
+          - string
+          - 'null'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    Meta:
+      type: object
+      additionalProperties: false
+      properties:
+        schema_version:
+          type:
+          - string
+          - 'null'
+        service:
+          type:
+          - string
+          - 'null'
+        config_id:
+          type:
+          - string
+          - 'null'
+    AudioConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        codec:
+          type:
+          - string
+          - 'null'
+        track_id:
+          type: integer
+          format: int32
+        channels:
+          type: integer
+          format: int32
+        settings:
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurationSettings'
+    AudioConfigurations:
+      type: object
+      additionalProperties: false
+      properties:
+        live:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AudioConfiguration'
+        vod:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AudioConfiguration'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    Framerate:
+      type: object
+      additionalProperties: false
+      properties:
+        numerator:
+          type: integer
+          format: int32
+        denominator:
+          type: integer
+          format: int32
+    EncoderConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type:
+          - string
+          - 'null'
+        bitrate_interpolation_points:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+            format: int32
+        canvas_index:
+          type: integer
+          format: int32
+        framerate:
+          oneOf:
+          - $ref: '#/components/schemas/Framerate'
+        gpu_scale_type:
+          type:
+          - string
+          - 'null'
+        width:
+          type: integer
+          format: int32
+        height:
+          type: integer
+          format: int32
+        settings:
+          oneOf:
+          - $ref: '#/components/schemas/EncoderConfigurationSettings'
+    IngestEndpoint:
+      type: object
+      additionalProperties: false
+      properties:
+        protocol:
+          type:
+          - string
+          - 'null'
+        url_template:
+          type:
+          - string
+          - 'null'
+        authentication:
+          type:
+          - string
+          - 'null'
+  securitySchemes:
+    Token:
+      type: http
+      description: '### Usage
+
+        #### Acquire token from dashboard or api.
+
+        Token will be specific to publishing or subscribing.'
+      scheme: bearer
+x-generator: NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

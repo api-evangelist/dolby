@@ -1,0 +1,1931 @@
+openapi: 3.2.0
+info:
+  title: THEOlive Distributions API
+  version: v2
+servers:
+- url: https://api.theo.live/v2
+  description: V2 API
+- url: https://api.theo.live
+  description: Base (for /v1 endpoints)
+security:
+- BasicAuth: []
+tags:
+- name: Distributions
+paths:
+  /channels/{id}/distributions:
+    get:
+      tags:
+      - Distributions
+      operationId: get-channel-distributions
+      summary: Get distributions of a channel
+      description: Distributions are ordered alphabetically by name.
+      parameters:
+      - schema:
+          type: string
+          description: Channel ID
+        required: true
+        description: Channel ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          description: Pagination cursor
+        required: false
+        description: Pagination cursor
+        name: cursor
+        in: query
+      - schema:
+          type:
+          - number
+          - 'null'
+          maximum: 100
+          description: Maximum number of items to return (max 100)
+        required: false
+        description: Maximum number of items to return (max 100)
+        name: limit
+        in: query
+      responses:
+        '200':
+          description: List of distributions, ordered alphabetically by name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDistributionResult'
+    post:
+      tags:
+      - Distributions
+      operationId: create-channel-distribution
+      summary: Create a distribution for a channel
+      parameters:
+      - schema:
+          type: string
+          description: Channel ID
+        required: true
+        description: Channel ID
+        name: id
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDistributionBody'
+      responses:
+        '200':
+          description: Distribution created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionObjectResult'
+  /distributions/{id}:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution
+      summary: Get a distribution by ID
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      responses:
+        '200':
+          description: The requested distribution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionObjectResult'
+    patch:
+      tags:
+      - Distributions
+      operationId: update-distribution
+      summary: Update a distribution by ID
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDistributionBody'
+      responses:
+        '200':
+          description: Updated distribution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionObjectResult'
+    delete:
+      tags:
+      - Distributions
+      operationId: delete-distribution
+      summary: Delete a distribution by ID
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      responses:
+        '204':
+          description: Empty response
+  /distributions/{id}/security/keys:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-security-keys
+      summary: Get security keys of a distribution
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      responses:
+        '200':
+          description: List of security keys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionSecurityKeyListResult'
+    post:
+      tags:
+      - Distributions
+      operationId: create-distribution-security-key
+      summary: Add a security key to a distribution
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDistributionSecurityKeyBody'
+      responses:
+        '200':
+          description: Security key created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionSecurityKeyObjectResult'
+    delete:
+      tags:
+      - Distributions
+      operationId: delete-all-distribution-security-keys
+      summary: Delete all security keys of a distribution
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      responses:
+        '204':
+          description: Empty response
+  /distributions/{id}/security/keys/{keyId}:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-security-key
+      summary: Get a specific security key
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          description: Security key ID
+        required: true
+        description: Security key ID
+        name: keyId
+        in: path
+      responses:
+        '200':
+          description: The requested security key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionSecurityKeyObjectResult'
+    delete:
+      tags:
+      - Distributions
+      operationId: delete-distribution-security-key
+      summary: Delete a specific security key
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          description: Security key ID
+        required: true
+        description: Security key ID
+        name: keyId
+        in: path
+      responses:
+        '204':
+          description: Empty response
+  /distributions/{id}/analytics/viewing-minutes:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-viewing-minutes
+      summary: Get viewing minutes analytics for a distribution
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          description: Start date for the analytics period
+        required: true
+        description: Start date for the analytics period
+        name: start
+        in: query
+      - schema:
+          type: string
+          description: End date for the analytics period
+        required: true
+        description: End date for the analytics period
+        name: end
+        in: query
+      - schema:
+          type: string
+          enum:
+          - channel
+          - distribution
+          - streaming-format
+          description: Group results by channel, distribution, or streaming format
+        required: false
+        description: Group results by channel, distribution, or streaming format
+        name: groupBy
+        in: query
+      - schema:
+          type: string
+          enum:
+          - 15min
+          - hour
+          - day
+          - month
+          description: Time resolution for the analytics data
+        required: true
+        description: Time resolution for the analytics data
+        name: resolution
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of streaming formats to filter by
+        required: false
+        description: Comma-separated list of streaming formats to filter by
+        name: streamingFormats
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of distribution IDs to filter by
+        required: false
+        description: Comma-separated list of distribution IDs to filter by
+        name: distributionIds
+        in: query
+      - schema:
+          type: string
+          description: UTC offset in minutes
+        required: false
+        description: UTC offset in minutes
+        name: utcOffset
+        in: query
+      responses:
+        '200':
+          description: Viewing minutes analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsListResult'
+  /distributions/{id}/analytics/bytes-transferred:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-bytes-transferred
+      summary: Get bytes transferred analytics for a distribution
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          description: Start date for the analytics period
+        required: true
+        description: Start date for the analytics period
+        name: start
+        in: query
+      - schema:
+          type: string
+          description: End date for the analytics period
+        required: true
+        description: End date for the analytics period
+        name: end
+        in: query
+      - schema:
+          type: string
+          enum:
+          - channel
+          - distribution
+          - streaming-format
+          description: Group results by channel, distribution, or streaming format
+        required: false
+        description: Group results by channel, distribution, or streaming format
+        name: groupBy
+        in: query
+      - schema:
+          type: string
+          enum:
+          - 15min
+          - hour
+          - day
+          - month
+          description: Time resolution for the analytics data
+        required: true
+        description: Time resolution for the analytics data
+        name: resolution
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of streaming formats to filter by
+        required: false
+        description: Comma-separated list of streaming formats to filter by
+        name: streamingFormats
+        in: query
+      - schema:
+          type: string
+          description: UTC offset in minutes
+        required: false
+        description: UTC offset in minutes
+        name: utcOffset
+        in: query
+      responses:
+        '200':
+          description: Bytes transferred analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsListResult'
+  /distributions/{id}/analytics/viewing-minutes/browsers:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-viewing-minutes-browsers
+      summary: Get viewing minutes grouped by browser for a distribution
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          description: Start date for the analytics period
+        required: true
+        description: Start date for the analytics period
+        name: start
+        in: query
+      - schema:
+          type: string
+          description: End date for the analytics period
+        required: true
+        description: End date for the analytics period
+        name: end
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of streaming formats to filter by
+        required: false
+        description: Comma-separated list of streaming formats to filter by
+        name: streamingFormats
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of distribution IDs to filter by
+        required: false
+        description: Comma-separated list of distribution IDs to filter by
+        name: distributionIds
+        in: query
+      - schema:
+          type: string
+          description: UTC offset in minutes
+        required: false
+        description: UTC offset in minutes
+        name: utcOffset
+        in: query
+      responses:
+        '200':
+          description: Viewing minutes by browser
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewingBrowserListResult'
+  /distributions/{id}/analytics/viewing-minutes/countries:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-viewing-minutes-countries
+      summary: Get viewing minutes grouped by country for a distribution
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          description: Start date for the analytics period
+        required: true
+        description: Start date for the analytics period
+        name: start
+        in: query
+      - schema:
+          type: string
+          description: End date for the analytics period
+        required: true
+        description: End date for the analytics period
+        name: end
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of streaming formats to filter by
+        required: false
+        description: Comma-separated list of streaming formats to filter by
+        name: streamingFormats
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of distribution IDs to filter by
+        required: false
+        description: Comma-separated list of distribution IDs to filter by
+        name: distributionIds
+        in: query
+      - schema:
+          type: string
+          description: UTC offset in minutes
+        required: false
+        description: UTC offset in minutes
+        name: utcOffset
+        in: query
+      responses:
+        '200':
+          description: Viewing minutes by country
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewingCountryListResult'
+  /distributions/{id}/analytics/bytes-transferred/browsers:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-bytes-transferred-browsers
+      summary: Get bytes transferred grouped by browser for a distribution
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          description: Start date for the analytics period
+        required: true
+        description: Start date for the analytics period
+        name: start
+        in: query
+      - schema:
+          type: string
+          description: End date for the analytics period
+        required: true
+        description: End date for the analytics period
+        name: end
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of streaming formats to filter by
+        required: false
+        description: Comma-separated list of streaming formats to filter by
+        name: streamingFormats
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of distribution IDs to filter by
+        required: false
+        description: Comma-separated list of distribution IDs to filter by
+        name: distributionIds
+        in: query
+      - schema:
+          type: string
+          description: UTC offset in minutes
+        required: false
+        description: UTC offset in minutes
+        name: utcOffset
+        in: query
+      responses:
+        '200':
+          description: Bytes transferred by browser
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewingBrowserListResult'
+  /distributions/{id}/analytics/bytes-transferred/countries:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-bytes-transferred-countries
+      summary: Get bytes transferred grouped by country for a distribution
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          description: Start date for the analytics period
+        required: true
+        description: Start date for the analytics period
+        name: start
+        in: query
+      - schema:
+          type: string
+          description: End date for the analytics period
+        required: true
+        description: End date for the analytics period
+        name: end
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of streaming formats to filter by
+        required: false
+        description: Comma-separated list of streaming formats to filter by
+        name: streamingFormats
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of distribution IDs to filter by
+        required: false
+        description: Comma-separated list of distribution IDs to filter by
+        name: distributionIds
+        in: query
+      - schema:
+          type: string
+          description: UTC offset in minutes
+        required: false
+        description: UTC offset in minutes
+        name: utcOffset
+        in: query
+      responses:
+        '200':
+          description: Bytes transferred by country
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewingCountryListResult'
+  /distributions/{id}/analytics/insights/countries:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-insights-countries
+      summary: Get country insights for a distribution
+      description: Data is only available for the last 30 days.
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          enum:
+          - hour
+          - day
+          - week
+          - month
+          description: Time period for the insights
+        required: true
+        description: Time period for the insights
+        name: period
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of channel IDs to filter by
+        required: false
+        description: Comma-separated list of channel IDs to filter by
+        name: channelIds
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of distribution IDs to filter by
+        required: false
+        description: Comma-separated list of distribution IDs to filter by
+        name: distributionIds
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of streaming formats to filter by
+        required: false
+        description: Comma-separated list of streaming formats to filter by
+        name: streamingFormats
+        in: query
+      responses:
+        '200':
+          description: Country insights data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CountryInsightsListResult'
+  /distributions/{id}/analytics/insights/browsers-os:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-insights-browsers-os
+      summary: Get browser and OS insights for a distribution
+      description: Data is only available for the last 30 days.
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          enum:
+          - hour
+          - day
+          - week
+          - month
+          description: Time period for the insights
+        required: true
+        description: Time period for the insights
+        name: period
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of channel IDs to filter by
+        required: false
+        description: Comma-separated list of channel IDs to filter by
+        name: channelIds
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of distribution IDs to filter by
+        required: false
+        description: Comma-separated list of distribution IDs to filter by
+        name: distributionIds
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of streaming formats to filter by
+        required: false
+        description: Comma-separated list of streaming formats to filter by
+        name: streamingFormats
+        in: query
+      responses:
+        '200':
+          description: Browser/OS insights data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrowserOsInsightsListResult'
+  /distributions/{id}/analytics/insights/viewers:
+    get:
+      tags:
+      - Distributions
+      operationId: get-distribution-insights-viewers
+      summary: Get viewer count insights for a distribution
+      description: Data is only available for the last 30 days.
+      parameters:
+      - schema:
+          type: string
+          description: Distribution ID
+        required: true
+        description: Distribution ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          enum:
+          - hour
+          - day
+          - week
+          - month
+          description: Time period for the insights
+        required: true
+        description: Time period for the insights
+        name: period
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of channel IDs to filter by
+        required: false
+        description: Comma-separated list of channel IDs to filter by
+        name: channelIds
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of distribution IDs to filter by
+        required: false
+        description: Comma-separated list of distribution IDs to filter by
+        name: distributionIds
+        in: query
+      - schema:
+          type: string
+          description: Comma-separated list of streaming formats to filter by
+        required: false
+        description: Comma-separated list of streaming formats to filter by
+        name: streamingFormats
+        in: query
+      responses:
+        '200':
+          description: Viewer count insights data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ViewersInsightsListResult'
+components:
+  schemas:
+    DistributionSecurityKeyObjectResult:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Security key ID
+            name:
+              type: string
+              description: Security key name
+          required:
+          - id
+          description: Security key object
+      required:
+      - data
+    ViewersInsightsListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                description: Timestamp of the data point
+              amount:
+                type: number
+                description: Number of unique viewers
+            required:
+            - timestamp
+            - amount
+          description: List of viewer count data points
+      required:
+      - data
+    ViewingCountryListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              countryCode:
+                type: string
+                description: ISO country code
+              amount:
+                type: number
+                description: Metric value
+            required:
+            - countryCode
+            - amount
+          description: List of country viewing data
+      required:
+      - data
+    CreateDistributionSecurityKeyBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the security key
+        key:
+          type: string
+          description: Security key value
+      required:
+      - key
+      additionalProperties: false
+    BrowserOsInsightsListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              browserName:
+                type: string
+                description: Browser name
+              browserVersion:
+                type: string
+                description: Browser version
+              osName:
+                type: string
+                description: OS name
+              osVersion:
+                type: string
+                description: OS version
+              amount:
+                type: number
+                description: Number of unique viewers
+            required:
+            - browserName
+            - browserVersion
+            - osName
+            - osVersion
+            - amount
+          description: List of browser/OS insights
+      required:
+      - data
+    CountryInsightsListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              city:
+                type: string
+                description: City name
+              countryCode:
+                type: string
+                description: ISO country code
+              geoLocation:
+                type: string
+                description: Rounded latitude,longitude
+              amount:
+                type: number
+                description: Number of unique viewers
+            required:
+            - city
+            - countryCode
+            - geoLocation
+            - amount
+          description: List of country insights
+      required:
+      - data
+    UpdateDistributionBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the distribution
+        externalId:
+          type:
+          - string
+          - 'null'
+          description: External identifier for the distribution. Set to null to clear.
+        enabled:
+          type: boolean
+          description: Whether the distribution is enabled
+        targetLatency:
+          type: number
+          description: 'Deprecated: use latencies.hesp instead.'
+        latencies:
+          type:
+          - object
+          - 'null'
+          properties:
+            hesp:
+              type:
+              - number
+              - 'null'
+              minimum: 1
+              maximum: 30
+              description: 'HESP latency in seconds (1-30, default: 2)'
+            hls:
+              type:
+              - number
+              - 'null'
+              minimum: 6
+              maximum: 30
+              description: 'HLS latency in seconds (6-30, default: 10)'
+          description: Latency configuration per output protocol
+        security:
+          type: object
+          properties:
+            geoBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether geo-blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: Geo-blocking mode
+                countries:
+                  type: array
+                  items:
+                    type: string
+                  description: List of country codes
+              description: Geo-blocking configuration
+            ipBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether IP blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: IP blocking mode
+                cidrs:
+                  type: array
+                  items:
+                    type: string
+                  description: List of CIDR ranges
+              description: IP blocking configuration
+            refererBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether referer blocking is enabled
+                allowedDomains:
+                  type: array
+                  items:
+                    type: string
+                  description: List of allowed domains. Matched exactly against the referer host including port (e.g. example.com). `localhost` with an optional port (e.g. localhost:3000) is also allowed.
+                allowNativeApps:
+                  type: boolean
+                  description: Whether native apps are allowed
+              description: Referer blocking configuration
+            rewriteSegmentUrls:
+              type: boolean
+              description: When enabled, a short-lived token is added to the segment URLs, derived from the token that was passed. This only works when JWT security is enabled on the same distribution.
+            keys:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the security key
+                  key:
+                    type: string
+                    description: Security key value
+                required:
+                - key
+              maxItems: 2
+              description: Security keys (max 2, create only)
+          description: Security configuration
+        endpoints:
+          type: object
+          properties:
+            engineIds:
+              type: array
+              items:
+                type: string
+              description: Engine IDs to connect
+          description: Endpoint configuration
+        webRtc:
+          type:
+          - object
+          - 'null'
+          properties:
+            priority:
+              type: number
+              description: WebRTC priority
+            src:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: WebRTC source name
+                accountId:
+                  type: string
+                  description: WebRTC account ID
+                apiUrl:
+                  type: string
+                  description: WebRTC API URL
+              required:
+              - name
+              - accountId
+              - apiUrl
+              description: WebRTC source configuration
+          required:
+          - priority
+          - src
+          description: WebRTC configuration
+        outputs:
+          type: object
+          properties:
+            hesp:
+              type: boolean
+              default: true
+              description: Enable HESP output. Enabled by default.
+            hls:
+              type: boolean
+              default: true
+              description: Enable HLS output. Enabled by default.
+            hlsMpegTs:
+              type: boolean
+              default: false
+              description: Enable HLS MPEG-TS output. Disabled by default.
+          description: Output format configuration
+        maxBitrate:
+          type:
+          - number
+          - 'null'
+          description: Maximum bitrate limit in bps
+        dvr:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Whether DVR is enabled on the distribution
+          description: DVR configuration
+        overrides:
+          type:
+          - array
+          - 'null'
+          items:
+            type: object
+            properties:
+              deviceType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - tv
+                - mobile
+                - desktop
+                - other
+                - null
+                description: Target device type
+              sdkType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - native
+                - web
+                - null
+                description: Target SDK type
+              osName:
+                type:
+                - string
+                - 'null'
+                enum:
+                - apple
+                - android
+                - windows
+                - roku
+                - other
+                - null
+                description: Target OS name
+              profileId:
+                type:
+                - string
+                - 'null'
+                description: Target profile ID
+              targets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    distributionId:
+                      type: string
+                      description: Target distribution ID
+                    weight:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Weight (0-100)
+                  required:
+                  - distributionId
+                  - weight
+                description: Override target distributions with weights
+            required:
+            - targets
+          description: Distribution overrides for device targeting
+        customEndpoints:
+          type:
+          - array
+          - 'null'
+          items:
+            type: object
+            properties:
+              customEndpointId:
+                type: string
+                description: ID of the custom endpoint to connect
+              weight:
+                type: integer
+                minimum: 0
+                maximum: 100
+                default: 100
+                description: Weight (0-100, default 100)
+            required:
+            - customEndpointId
+          description: Custom endpoints to connect to this distribution. Replaces all existing connections.
+        ads:
+          type:
+          - object
+          - 'null'
+          properties:
+            dai:
+              type: object
+              properties:
+                weight:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  description: Weight for DAI endpoints (0-100)
+                priority:
+                  type: integer
+                  description: Priority for DAI endpoints (any integer, lower = higher priority)
+              required:
+              - weight
+              - priority
+              additionalProperties: false
+              description: DAI endpoint settings
+          additionalProperties: false
+          description: Ads configuration for the distribution. Set to null to clear.
+        playerSettings:
+          type:
+          - object
+          - 'null'
+          properties:
+            hespCooldown:
+              type: number
+              minimum: 0
+              maximum: 300
+              description: Cooldown period in seconds (0-300) before the player retries HESP playback after falling back to another protocol. Defaults to 120 seconds when not set.
+          additionalProperties: false
+          description: Player settings applied to the player configuration in the discovery response. Set to null to clear.
+      additionalProperties: false
+    DistributionSecurityKeyListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Security key ID
+              name:
+                type: string
+                description: Security key name
+            required:
+            - id
+          description: List of security keys
+      required:
+      - data
+    ViewingBrowserListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              browserName:
+                type: string
+                description: Browser name
+              hardwareType:
+                type: string
+                description: Hardware type
+              amount:
+                type: number
+                description: Metric value
+            required:
+            - browserName
+            - hardwareType
+            - amount
+          description: List of browser viewing data
+      required:
+      - data
+    DistributionObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Distribution'
+          - description: Distribution object
+      required:
+      - data
+    AnalyticsListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                description: Timestamp of the data point
+              records:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: Identifier of the grouped entity
+                    amount:
+                      type: number
+                      description: Metric value
+                  required:
+                  - id
+                  - amount
+                description: Records for this time bucket
+            required:
+            - timestamp
+            - records
+          description: List of analytics data points
+      required:
+      - data
+    CreateDistributionBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the distribution
+        externalId:
+          type: string
+          description: External identifier for the distribution
+        enabled:
+          type: boolean
+          description: Whether the distribution is enabled
+        targetLatency:
+          type: number
+          description: 'Deprecated: use latencies.hesp instead. If set, will be applied as latencies.hesp.'
+        latencies:
+          type: object
+          properties:
+            hesp:
+              type:
+              - number
+              - 'null'
+              minimum: 1
+              maximum: 30
+              description: 'HESP latency in seconds (1-30, default: 2)'
+            hls:
+              type:
+              - number
+              - 'null'
+              minimum: 6
+              maximum: 30
+              description: 'HLS latency in seconds (6-30, default: 10)'
+          description: Latency configuration per output protocol
+        security:
+          type: object
+          properties:
+            geoBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether geo-blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: Geo-blocking mode
+                countries:
+                  type: array
+                  items:
+                    type: string
+                  description: List of country codes
+              description: Geo-blocking configuration
+            ipBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether IP blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: IP blocking mode
+                cidrs:
+                  type: array
+                  items:
+                    type: string
+                  description: List of CIDR ranges
+              description: IP blocking configuration
+            refererBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether referer blocking is enabled
+                allowedDomains:
+                  type: array
+                  items:
+                    type: string
+                  description: List of allowed domains. Matched exactly against the referer host including port (e.g. example.com). `localhost` with an optional port (e.g. localhost:3000) is also allowed.
+                allowNativeApps:
+                  type: boolean
+                  description: Whether native apps are allowed
+              description: Referer blocking configuration
+            rewriteSegmentUrls:
+              type: boolean
+              description: When enabled, a short-lived token is added to the segment URLs, derived from the token that was passed. This only works when JWT security is enabled on the same distribution.
+            keys:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the security key
+                  key:
+                    type: string
+                    description: Security key value
+                required:
+                - key
+              maxItems: 2
+              description: Security keys (max 2, create only)
+          description: Security configuration
+        endpoints:
+          type: object
+          properties:
+            engineIds:
+              type: array
+              items:
+                type: string
+              description: Engine IDs to connect
+          description: Endpoint configuration
+        webRtc:
+          type:
+          - object
+          - 'null'
+          properties:
+            priority:
+              type: number
+              description: WebRTC priority
+            src:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: WebRTC source name
+                accountId:
+                  type: string
+                  description: WebRTC account ID
+                apiUrl:
+                  type: string
+                  description: WebRTC API URL
+              required:
+              - name
+              - accountId
+              - apiUrl
+              description: WebRTC source configuration
+          required:
+          - priority
+          - src
+          description: WebRTC configuration
+        outputs:
+          type: object
+          properties:
+            hesp:
+              type: boolean
+              default: true
+              description: Enable HESP output. Enabled by default.
+            hls:
+              type: boolean
+              default: true
+              description: Enable HLS output. Enabled by default.
+            hlsMpegTs:
+              type: boolean
+              default: false
+              description: Enable HLS MPEG-TS output. Disabled by default.
+          description: Output format configuration
+        maxBitrate:
+          type:
+          - number
+          - 'null'
+          description: Maximum bitrate limit in bps
+        dvr:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Whether DVR is enabled on the distribution
+          description: DVR configuration
+        overrides:
+          type: array
+          items:
+            type: object
+            properties:
+              deviceType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - tv
+                - mobile
+                - desktop
+                - other
+                - null
+                description: Target device type
+              sdkType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - native
+                - web
+                - null
+                description: Target SDK type
+              osName:
+                type:
+                - string
+                - 'null'
+                enum:
+                - apple
+                - android
+                - windows
+                - roku
+                - other
+                - null
+                description: Target OS name
+              profileId:
+                type:
+                - string
+                - 'null'
+                description: Target profile ID
+              targets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    distributionId:
+                      type: string
+                      description: Target distribution ID
+                    weight:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Weight (0-100)
+                  required:
+                  - distributionId
+                  - weight
+                description: Override target distributions with weights
+            required:
+            - targets
+          description: Distribution overrides for device targeting
+        customEndpoints:
+          type: array
+          items:
+            type: object
+            properties:
+              customEndpointId:
+                type: string
+                description: ID of the custom endpoint to connect
+              weight:
+                type: integer
+                minimum: 0
+                maximum: 100
+                default: 100
+                description: Weight (0-100, default 100)
+            required:
+            - customEndpointId
+          description: Custom endpoints to connect to this distribution
+        ads:
+          type:
+          - object
+          - 'null'
+          properties:
+            dai:
+              type: object
+              properties:
+                weight:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  description: Weight for DAI endpoints (0-100)
+                priority:
+                  type: integer
+                  description: Priority for DAI endpoints (any integer, lower = higher priority)
+              required:
+              - weight
+              - priority
+              additionalProperties: false
+              description: DAI endpoint settings
+          additionalProperties: false
+          description: Ads configuration for the distribution
+        playerSettings:
+          type:
+          - object
+          - 'null'
+          properties:
+            hespCooldown:
+              type: number
+              minimum: 0
+              maximum: 300
+              description: Cooldown period in seconds (0-300) before the player retries HESP playback after falling back to another protocol. Defaults to 120 seconds when not set.
+          additionalProperties: false
+          description: Player settings applied to the player configuration in the discovery response
+      required:
+      - name
+      additionalProperties: false
+    PaginatedDistributionResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Distribution'
+          description: List of distributions
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
+    Distribution:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the distribution
+        createdAt:
+          type: string
+          description: Creation timestamp
+        name:
+          type: string
+          description: Name of the distribution
+        externalId:
+          type: string
+          description: External identifier for the distribution
+        enabled:
+          type: boolean
+          description: Whether the distribution is enabled
+        targetLatency:
+          type: number
+          description: 'Deprecated: use latencies instead.'
+        latencies:
+          type: object
+          properties:
+            hesp:
+              type:
+              - number
+              - 'null'
+              minimum: 1
+              maximum: 30
+              description: 'HESP latency in seconds (1-30, default: 2)'
+            hls:
+              type:
+              - number
+              - 'null'
+              minimum: 6
+              maximum: 30
+              description: 'HLS latency in seconds (6-30, default: 10)'
+          description: Latency configuration per output protocol
+        security:
+          type: object
+          properties:
+            geoBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether geo-blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: Geo-blocking mode
+                countries:
+                  type: array
+                  items:
+                    type: string
+                  description: List of country codes
+              required:
+              - enabled
+              - mode
+              - countries
+              description: Geo-blocking configuration
+            ipBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether IP blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: IP blocking mode
+                cidrs:
+                  type: array
+                  items:
+                    type: string
+                  description: List of CIDR ranges
+              required:
+              - enabled
+              - mode
+              - cidrs
+              description: IP blocking configuration
+            refererBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether referer blocking is enabled
+                allowedDomains:
+                  type: array
+                  items:
+                    type: string
+                  description: List of allowed domains
+                allowNativeApps:
+                  type: boolean
+                  description: Whether native apps are allowed
+              required:
+              - enabled
+              - allowedDomains
+              - allowNativeApps
+              description: Referer blocking configuration
+            rewriteSegmentUrls:
+              type: boolean
+              description: When enabled, a short-lived token is added to the segment URLs, derived from the token that was passed. This only works when JWT security is enabled on the same distribution.
+            keys:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Security key ID
+                  name:
+                    type: string
+                    description: Security key name
+                required:
+                - id
+              description: Security keys
+          required:
+          - geoBlocking
+          - ipBlocking
+          - keys
+          description: Security configuration
+        endpoints:
+          type: object
+          properties:
+            engineIds:
+              type: array
+              items:
+                type: string
+              description: Connected engine IDs
+          required:
+          - engineIds
+          description: Endpoint configuration
+        webRtc:
+          type: object
+          properties:
+            priority:
+              type: number
+              description: WebRTC priority
+            src:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: WebRTC source name
+                accountId:
+                  type: string
+                  description: WebRTC account ID
+                apiUrl:
+                  type: string
+                  description: WebRTC API URL
+              required:
+              - name
+              - accountId
+              - apiUrl
+              description: WebRTC source configuration
+          required:
+          - priority
+          - src
+          description: WebRTC configuration
+        maxBitrate:
+          type: number
+          description: Maximum bitrate limit in bps
+        outputs:
+          type: object
+          properties:
+            hesp:
+              type: boolean
+              default: true
+              description: Enable HESP output. Enabled by default.
+            hls:
+              type: boolean
+              default: true
+              description: Enable HLS output. Enabled by default.
+            hlsMpegTs:
+              type: boolean
+              default: false
+              description: Enable HLS MPEG-TS output. Disabled by default.
+          description: Output format configuration
+        dvr:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Whether DVR is enabled on the distribution
+          description: DVR configuration
+        overrides:
+          type: array
+          items:
+            type: object
+            properties:
+              deviceType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - tv
+                - mobile
+                - desktop
+                - other
+                - null
+                description: Target device type
+              sdkType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - native
+                - web
+                - null
+                description: Target SDK type
+              osName:
+                type:
+                - string
+                - 'null'
+                enum:
+                - apple
+                - android
+                - windows
+                - roku
+                - other
+                - null
+                description: Target OS name
+              profileId:
+                type:
+                - string
+                - 'null'
+                description: Target profile ID
+              targets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    distributionId:
+                      type: string
+                      description: Target distribution ID
+                    weight:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Weight (0-100)
+                  required:
+                  - distributionId
+                  - weight
+                description: Override target distributions with weights
+            required:
+            - targets
+          description: Distribution overrides
+        customEndpoints:
+          type: array
+          items:
+            type: object
+            properties:
+              customEndpointId:
+                type: string
+                description: ID of the connected custom endpoint
+              weight:
+                type: number
+                description: Weight (0-100)
+            required:
+            - customEndpointId
+            - weight
+          description: Connected custom endpoints with weights
+        ads:
+          type: object
+          properties:
+            dai:
+              type: object
+              properties:
+                weight:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  description: Weight for DAI endpoints (0-100)
+                priority:
+                  type: integer
+                  description: Priority for DAI endpoints (any integer, lower = higher priority)
+              required:
+              - weight
+              - priority
+              additionalProperties: false
+              description: DAI endpoint settings
+          additionalProperties: false
+          description: Ads configuration for the distribution
+        playerSettings:
+          type: object
+          properties:
+            hespCooldown:
+              type: number
+              minimum: 0
+              maximum: 300
+              description: Cooldown period in seconds (0-300) before the player retries HESP playback after falling back to another protocol. Defaults to 120 seconds when not set.
+          additionalProperties: false
+          description: Player settings applied to the player configuration in the discovery response
+      required:
+      - id
+      - createdAt
+      - name
+      - enabled
+      - latencies
+      - security
+      - endpoints
+      - dvr
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic

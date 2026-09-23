@@ -1,0 +1,146 @@
+openapi: 3.2.0
+info:
+  title: THEOlive ABR Ladders API
+  version: v2
+servers:
+- url: https://api.theo.live/v2
+  description: V2 API
+- url: https://api.theo.live
+  description: Base (for /v1 endpoints)
+security:
+- BasicAuth: []
+tags:
+- name: ABR Ladders
+paths:
+  /abr:
+    get:
+      tags:
+      - ABR Ladders
+      operationId: get-abr-ladders
+      summary: Get all ABR ladders for your organization
+      responses:
+        '200':
+          description: List of ABR ladders
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AbrListResult'
+components:
+  schemas:
+    AbrListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Unique identifier of the ABR ladder
+              name:
+                type: string
+                description: Name of the ABR ladder
+              video:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    bitrate:
+                      type: number
+                      description: Bitrate in bits-per-second (bps)
+                    id:
+                      type: string
+                      description: Unique identifier for this rendition
+                    label:
+                      type: string
+                      description: Label for this rendition
+                    width:
+                      type: number
+                      description: Width in pixels
+                    height:
+                      type: number
+                      description: Height in pixels
+                    frameRate:
+                      type: object
+                      properties:
+                        scale:
+                          type: number
+                          minimum: 1
+                          description: Frame rate scale
+                        value:
+                          type: number
+                          minimum: 1
+                          description: Frame rate value
+                      required:
+                      - scale
+                      - value
+                      description: Frame rate configuration
+                    codec:
+                      type: string
+                      enum:
+                      - h264
+                      - vision_h265
+                      description: Video codec to use for this rendition (defaults to h264)
+                    disableHardwareAcceleration:
+                      type: boolean
+                      description: Disable hardware acceleration for this rendition (defaults to false)
+                  required:
+                  - bitrate
+                  - id
+                  - label
+                  - width
+                  - height
+                description: List of video quality renditions
+              audio:
+                type: object
+                properties:
+                  bitrate:
+                    type: number
+                    minimum: 1
+                    description: Audio bitrate in kilobits-per-second (kbps)
+                  atmos:
+                    type: object
+                    properties:
+                      bitrate:
+                        type: number
+                        minimum: 1
+                        description: Dolby Atmos bitrate in kilobits-per-second (kbps)
+                    required:
+                    - bitrate
+                    description: Dolby Atmos audio configuration
+                required:
+                - bitrate
+                description: Audio configuration
+              resources:
+                type: object
+                properties:
+                  cpuCores:
+                    type: number
+                    minimum: 1
+                    maximum: 32
+                    description: Number of CPU cores (1 - 32)
+                  memoryMiB:
+                    type: number
+                    minimum: 1
+                    description: Memory in MiB
+                  gpuCount:
+                    type: integer
+                    minimum: 0
+                    maximum: 2
+                    description: Number of GPUs (0, 1 or 2)
+                required:
+                - cpuCores
+                - memoryMiB
+                description: Resource allocation configuration
+            required:
+            - id
+            - name
+            - video
+          description: List of ABR ladders
+      required:
+      - data
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic

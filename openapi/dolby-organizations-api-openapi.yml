@@ -1,0 +1,448 @@
+openapi: 3.2.0
+info:
+  title: OptiView Ads Organizations API
+  version: v1
+security:
+- basicAuth: []
+  orgId: []
+tags:
+- name: Organizations
+paths:
+  /api/v1/organizations/integrations:
+    get:
+      description: List all organization integrations for the organization with pagination, filtering, and sorting.
+      parameters:
+      - schema:
+          default: 1
+          type: integer
+          minimum: 1
+          maximum: 9007199254740991
+        in: query
+        name: page
+        required: false
+        description: Page number to return. The first page is 1.
+      - schema:
+          default: 20
+          type: integer
+          minimum: 1
+          maximum: 100
+        in: query
+        name: pageSize
+        required: false
+        description: Number of items to return per page, between 1 and 100.
+      - schema:
+          type: string
+        in: query
+        name: filter
+        required: false
+        description: Optional RSQL filter expression (for example `status==READY;duration=gt=30`). Each resource exposes its own allow-list of filterable fields and operators.
+      - schema:
+          type: string
+        in: query
+        name: sort
+        required: false
+        description: Optional comma-separated list of fields to sort by; prefix a field with `-` for descending order. Defaults to newest first (createdAt descending).
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: Unique organization integration identifier within the organization.
+                        type:
+                          type: string
+                          enum:
+                          - GOOGLE
+                          description: Organization integration type. Currently only `GOOGLE` (Google GAM configuration).
+                        networkCode:
+                          type: string
+                          minLength: 1
+                          description: Google Ad Manager network code used when signaling ad breaks.
+                        eabnLookForwardTimeMs:
+                          type: integer
+                          maximum: 9007199254740991
+                          description: How far ahead (in milliseconds) upcoming ad breaks are looked up when syncing with Google EABN.
+                        eabnDecisioningMarginMs:
+                          type: integer
+                          maximum: 9007199254740991
+                          description: Minimum margin (in milliseconds) before a break starts for Google EABN decisioning.
+                        state:
+                          type: string
+                          enum:
+                          - READY
+                          - ERROR
+                          description: 'Server-managed state of the integration. Issues with the integration, such as invalid credentials, cause it to be in `ERROR`, which runtime consumers skip. Currently always `READY`: nothing transitions it yet.'
+                        createdAt:
+                          type: string
+                          description: Timestamp when the organization integration was created, as an ISO 8601 datetime string.
+                      required:
+                      - id
+                      - type
+                      - networkCode
+                      - state
+                      - createdAt
+                      additionalProperties: false
+                    description: The page of results.
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                        description: Page number of this result set. The first page is 1.
+                      pageSize:
+                        type: number
+                        description: Number of items requested per page.
+                      total:
+                        type: number
+                        description: Total number of items matching the query across all pages.
+                      totalPages:
+                        type: number
+                        description: Total number of pages available for the query.
+                    required:
+                    - page
+                    - pageSize
+                    - total
+                    - totalPages
+                    additionalProperties: false
+                    description: Pagination metadata for the result set.
+                required:
+                - data
+                - pagination
+                additionalProperties: false
+      tags:
+      - Organizations
+      summary: Get api organizations integrations
+      x-summary-source: derived
+      operationId: getApiV1OrganizationsIntegrations
+      x-operation-id-source: derived
+    post:
+      description: Create an organization integration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  description: Unique organization integration identifier within the organization. Provided by the customer or auto-generated when omitted.
+                  type: string
+                  minLength: 1
+                type:
+                  type: string
+                  enum:
+                  - GOOGLE
+                  description: Organization integration type. Currently only `GOOGLE` (Google GAM configuration).
+                networkCode:
+                  type: string
+                  minLength: 1
+                  description: Google Ad Manager network code used when signaling ad breaks.
+                serviceAccountCredentials:
+                  type: object
+                  properties:
+                    auth_uri:
+                      type: string
+                      format: uri
+                      description: OAuth2 authorization endpoint, as found in the service account key file.
+                    client_email:
+                      type: string
+                      format: email
+                      pattern: ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+                      description: Service account email address, as found in the key file.
+                    private_key:
+                      type: string
+                      description: PEM-encoded private key, copied verbatim from the key file's "private_key" field. Its "\n" escapes are standard JSON string escaping and decode to the real line breaks the PEM needs; a doubly-escaped key (decoded value still containing literal "\n") is rejected.
+                    token_uri:
+                      type: string
+                      format: uri
+                      description: OAuth2 token endpoint from the key file, used to mint access tokens.
+                  required:
+                  - auth_uri
+                  - client_email
+                  - private_key
+                  - token_uri
+                  description: 'Google service account credentials to upload (the `auth_uri`, `client_email`, `private_key` and `token_uri` fields of the key file JSON; other fields are ignored). Write-only: the backend stores them in the secret manager at the location derived from the organization, and they are never returned. Optional — omit it when the credentials are already stored, e.g. when only changing `networkCode`. The credentials are not exchanged with Google on write; use the verify endpoint for that.'
+                eabnLookForwardTimeMs:
+                  type: integer
+                  maximum: 9007199254740991
+                  description: How far ahead (in milliseconds) upcoming ad breaks are looked up when syncing with Google EABN.
+                eabnDecisioningMarginMs:
+                  type: integer
+                  maximum: 9007199254740991
+                  description: Minimum margin (in milliseconds) before a break starts for Google EABN decisioning.
+              required:
+              - type
+              - networkCode
+      responses:
+        '201':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique organization integration identifier within the organization.
+                  type:
+                    type: string
+                    enum:
+                    - GOOGLE
+                    description: Organization integration type. Currently only `GOOGLE` (Google GAM configuration).
+                  networkCode:
+                    type: string
+                    minLength: 1
+                    description: Google Ad Manager network code used when signaling ad breaks.
+                  eabnLookForwardTimeMs:
+                    type: integer
+                    maximum: 9007199254740991
+                    description: How far ahead (in milliseconds) upcoming ad breaks are looked up when syncing with Google EABN.
+                  eabnDecisioningMarginMs:
+                    type: integer
+                    maximum: 9007199254740991
+                    description: Minimum margin (in milliseconds) before a break starts for Google EABN decisioning.
+                  state:
+                    type: string
+                    enum:
+                    - READY
+                    - ERROR
+                    description: 'Server-managed state of the integration. Issues with the integration, such as invalid credentials, cause it to be in `ERROR`, which runtime consumers skip. Currently always `READY`: nothing transitions it yet.'
+                  createdAt:
+                    type: string
+                    description: Timestamp when the organization integration was created, as an ISO 8601 datetime string.
+                required:
+                - id
+                - type
+                - networkCode
+                - state
+                - createdAt
+                additionalProperties: false
+      tags:
+      - Organizations
+      summary: Create api organizations integrations
+      x-summary-source: derived
+      operationId: postApiV1OrganizationsIntegrations
+      x-operation-id-source: derived
+  /api/v1/organizations/integrations/{organizationIntegrationId}:
+    get:
+      description: Get an organization integration by ID.
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: organizationIntegrationId
+        required: true
+        description: Identifier of the organization integration.
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique organization integration identifier within the organization.
+                  type:
+                    type: string
+                    enum:
+                    - GOOGLE
+                    description: Organization integration type. Currently only `GOOGLE` (Google GAM configuration).
+                  networkCode:
+                    type: string
+                    minLength: 1
+                    description: Google Ad Manager network code used when signaling ad breaks.
+                  eabnLookForwardTimeMs:
+                    type: integer
+                    maximum: 9007199254740991
+                    description: How far ahead (in milliseconds) upcoming ad breaks are looked up when syncing with Google EABN.
+                  eabnDecisioningMarginMs:
+                    type: integer
+                    maximum: 9007199254740991
+                    description: Minimum margin (in milliseconds) before a break starts for Google EABN decisioning.
+                  state:
+                    type: string
+                    enum:
+                    - READY
+                    - ERROR
+                    description: 'Server-managed state of the integration. Issues with the integration, such as invalid credentials, cause it to be in `ERROR`, which runtime consumers skip. Currently always `READY`: nothing transitions it yet.'
+                  createdAt:
+                    type: string
+                    description: Timestamp when the organization integration was created, as an ISO 8601 datetime string.
+                required:
+                - id
+                - type
+                - networkCode
+                - state
+                - createdAt
+                additionalProperties: false
+      tags:
+      - Organizations
+      summary: Get api organizations integrations by organization integration id
+      x-summary-source: derived
+      operationId: getApiV1OrganizationsIntegrationsByOrganizationIntegrationId
+      x-operation-id-source: derived
+    patch:
+      description: Update an organization integration. `type` is immutable.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                networkCode:
+                  type: string
+                  minLength: 1
+                  description: Google Ad Manager network code used when signaling ad breaks.
+                serviceAccountCredentials:
+                  type: object
+                  properties:
+                    auth_uri:
+                      type: string
+                      format: uri
+                      description: OAuth2 authorization endpoint, as found in the service account key file.
+                    client_email:
+                      type: string
+                      format: email
+                      pattern: ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$
+                      description: Service account email address, as found in the key file.
+                    private_key:
+                      type: string
+                      description: PEM-encoded private key, copied verbatim from the key file's "private_key" field. Its "\n" escapes are standard JSON string escaping and decode to the real line breaks the PEM needs; a doubly-escaped key (decoded value still containing literal "\n") is rejected.
+                    token_uri:
+                      type: string
+                      format: uri
+                      description: OAuth2 token endpoint from the key file, used to mint access tokens.
+                  required:
+                  - auth_uri
+                  - client_email
+                  - private_key
+                  - token_uri
+                  description: 'Google service account credentials to upload (the `auth_uri`, `client_email`, `private_key` and `token_uri` fields of the key file JSON; other fields are ignored). Write-only: the backend stores them in the secret manager at the location derived from the organization, and they are never returned. Optional — omit it when the credentials are already stored, e.g. when only changing `networkCode`. The credentials are not exchanged with Google on write; use the verify endpoint for that.'
+                eabnLookForwardTimeMs:
+                  type: integer
+                  maximum: 9007199254740991
+                  description: How far ahead (in milliseconds) upcoming ad breaks are looked up when syncing with Google EABN.
+                eabnDecisioningMarginMs:
+                  type: integer
+                  maximum: 9007199254740991
+                  description: Minimum margin (in milliseconds) before a break starts for Google EABN decisioning.
+              additionalProperties: false
+              description: Organization integration configuration update. `type` is immutable and cannot be changed.
+        description: Organization integration configuration update. `type` is immutable and cannot be changed.
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: organizationIntegrationId
+        required: true
+        description: Identifier of the organization integration.
+      responses:
+        '200':
+          description: Default Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique organization integration identifier within the organization.
+                  type:
+                    type: string
+                    enum:
+                    - GOOGLE
+                    description: Organization integration type. Currently only `GOOGLE` (Google GAM configuration).
+                  networkCode:
+                    type: string
+                    minLength: 1
+                    description: Google Ad Manager network code used when signaling ad breaks.
+                  eabnLookForwardTimeMs:
+                    type: integer
+                    maximum: 9007199254740991
+                    description: How far ahead (in milliseconds) upcoming ad breaks are looked up when syncing with Google EABN.
+                  eabnDecisioningMarginMs:
+                    type: integer
+                    maximum: 9007199254740991
+                    description: Minimum margin (in milliseconds) before a break starts for Google EABN decisioning.
+                  state:
+                    type: string
+                    enum:
+                    - READY
+                    - ERROR
+                    description: 'Server-managed state of the integration. Issues with the integration, such as invalid credentials, cause it to be in `ERROR`, which runtime consumers skip. Currently always `READY`: nothing transitions it yet.'
+                  createdAt:
+                    type: string
+                    description: Timestamp when the organization integration was created, as an ISO 8601 datetime string.
+                required:
+                - id
+                - type
+                - networkCode
+                - state
+                - createdAt
+                additionalProperties: false
+      tags:
+      - Organizations
+      summary: Update api organizations integrations by organization integration id
+      x-summary-source: derived
+      operationId: patchApiV1OrganizationsIntegrationsByOrganizationIntegrationId
+      x-operation-id-source: derived
+    delete:
+      description: Delete an organization integration.
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: organizationIntegrationId
+        required: true
+        description: Identifier of the organization integration.
+      responses:
+        '204':
+          description: Default Response
+      tags:
+      - Organizations
+      summary: Delete api organizations integrations by organization integration id
+      x-summary-source: derived
+      operationId: deleteApiV1OrganizationsIntegrationsByOrganizationIntegrationId
+      x-operation-id-source: derived
+  /api/v1/organizations/integrations/{organizationIntegrationId}/verify:
+    post:
+      description: 'Verify the organization''s stored service account credentials with the ad system: `204` when they verify, `422` with the reason when they do not, `502` when the check itself could not complete. The outcome is not persisted.'
+      parameters:
+      - schema:
+          type: string
+        in: path
+        name: organizationIntegrationId
+        required: true
+        description: Identifier of the organization integration.
+      responses:
+        '204':
+          description: Default Response
+      tags:
+      - Organizations
+      summary: Create api organizations integrations by organization integration id verify
+      x-summary-source: derived
+      operationId: postApiV1OrganizationsIntegrationsByOrganizationIntegrationIdVerify
+      x-operation-id-source: derived
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: API key (username) and secret (password).
+    orgId:
+      type: apiKey
+      in: header
+      name: x-org-id
+      description: Organization identifier.

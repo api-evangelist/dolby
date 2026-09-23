@@ -1,0 +1,1324 @@
+openapi: 3.2.0
+info:
+  title: Dolby Webhooks API
+  version: '1.0'
+  description: 'Operations tagged Webhooks across 2 of this provider''s published API definitions: dolby-millicast-api-openapi-original.json, dolby-optiview-live-openapi-original.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.millicast.com
+- url: https://api.theo.live/v2
+  description: V2 API
+- url: https://api.theo.live
+  description: Base (for /v1 endpoints)
+tags:
+- name: Webhooks
+paths:
+  /api/webhooks/{webhookId}:
+    get:
+      tags:
+      - Webhooks
+      summary: Read Webhook
+      description: Webhook url and details used on account.
+      operationId: Webhooks_Get
+      parameters:
+      - name: webhookId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessWebhookModel'
+              examples:
+                standard:
+                  summary: standard
+                  value:
+                    status: success
+                    data:
+                      id: 100
+                      url: https://example-webhook.domain.com/path/route
+                      secret: base64string
+                      isFeedHooks: true
+                      isMediaHooks: true
+                      isThumbnailHooks: true
+                      isTranscoderHooks: true
+                      isViewerConnectionHooks: true
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    put:
+      tags:
+      - Webhooks
+      summary: Update Webhook
+      description: Update webhook url, events to signal, or refresh signing secret.
+      operationId: Webhooks_UpdateWebhook
+      parameters:
+      - name: webhookId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebhookModel'
+            examples:
+              standard:
+                summary: standard
+                value:
+                  url: https://new-domain.com/other
+                  isFeedHooks: true
+                  isMediaHooks: false
+                  isThumbnailHooks: true
+                  isTranscoderHooks: true
+                  isViewerConnectionHooks: true
+        required: true
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessWebhookModel'
+              examples:
+                standard:
+                  summary: standard
+                  value:
+                    status: success
+                    data:
+                      id: 100
+                      url: https://new-domain.com/other
+                      secret: base64string
+                      isFeedHooks: true
+                      isMediaHooks: false
+                      isThumbnailHooks: true
+                      isTranscoderHooks: false
+                      isViewerConnectionHooks: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    delete:
+      tags:
+      - Webhooks
+      summary: Remove Webhook
+      description: Removes all webhook data for account.
+      operationId: Webhooks_RemoveWebhook
+      parameters:
+      - name: webhookId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessWebhookModel'
+              examples:
+                standard:
+                  summary: standard
+                  value:
+                    status: success
+                    data: true
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/webhooks/list:
+    get:
+      tags:
+      - Webhooks
+      summary: List Webhooks
+      description: Iterative call to list webhooks on account.
+      operationId: Webhooks_ListWebhooks
+      parameters:
+      - name: startingId
+        in: query
+        description: If null starts at beginning of list
+        schema:
+          type:
+          - integer
+          - 'null'
+        x-position: 1
+      - name: itemCount
+        in: query
+        description: How many items to return in current query
+        schema:
+          type:
+          - integer
+          - 'null'
+          default: 10
+        x-position: 2
+      - name: isDescending
+        in: query
+        description: Default order is ascending by order added
+        schema:
+          type: boolean
+          default: false
+        x-position: 3
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessListWebhooksModel'
+              examples:
+                standard:
+                  summary: standard
+                  value:
+                    status: success
+                    data:
+                    - id: 100
+                      url: https://example-webhook.domain.com/path/route
+                      secret: base64string
+                      isFeedHooks: true
+                      isMediaHooks: false
+                      isThumbnailHooks: true
+                      isTranscoderHooks: true
+                      isViewerConnectionHooks: true
+                    - id: 101
+                      url: https://example-webhook.otherdomain.com/
+                      secret: base64string
+                      isFeedHooks: false
+                      isMediaHooks: true
+                      isThumbnailHooks: false
+                      isTranscoderHooks: true
+                      isViewerConnectionHooks: false
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/webhooks:
+    post:
+      tags:
+      - Webhooks
+      summary: Add Webhook
+      description: Add new webhook on account.
+      operationId: Webhooks_AddWebhook
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddWebhookModel'
+            examples:
+              standard:
+                summary: standard
+                value:
+                  url: https://example-webhook.domain.com/path/route
+                  isFeedHooks: true
+                  isMediaHooks: true
+                  isThumbnailHooks: true
+                  isTranscoderHooks: true
+                  isViewerConnectionHooks: true
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessWebhookModel'
+              examples:
+                standard:
+                  summary: standard
+                  value:
+                    status: success
+                    data:
+                      id: 100
+                      url: https://example-webhook.domain.com/path/route
+                      secret: base64string
+                      isFeedHooks: true
+                      isMediaHooks: true
+                      isThumbnailHooks: true
+                      isTranscoderHooks: true
+                      isViewerConnectionHooks: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /api/webhooks/test/{webhookType}:
+    post:
+      tags:
+      - Webhooks
+      summary: Test Webhook
+      description: Sends a test event for the specified webhook type.
+      operationId: Webhooks_TestWebhook
+      parameters:
+      - name: webhookType
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/WebhookType'
+        x-position: 1
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestWebhookModel'
+            examples:
+              standard:
+                summary: standard
+                value:
+                  streamName: myStreamName
+                  transcoderName: transcoderName
+        required: true
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              examples:
+                standard:
+                  summary: standard
+                  value:
+                    status: success
+                    data: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    servers:
+    - url: https://api.millicast.com
+  /webhooks:
+    get:
+      tags:
+      - Webhooks
+      operationId: get-webhooks
+      summary: Get all webhooks
+      responses:
+        '200':
+          description: List of webhooks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWebhookResult'
+      security:
+      - BasicAuth: []
+    post:
+      tags:
+      - Webhooks
+      operationId: create-webhook
+      summary: Create a new webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWebhookBody'
+      responses:
+        '200':
+          description: Webhook created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookObjectResult'
+      security:
+      - BasicAuth: []
+    servers:
+    - url: https://api.theo.live/v2
+      description: V2 API
+    - url: https://api.theo.live
+      description: Base (for /v1 endpoints)
+  /webhooks/{id}:
+    get:
+      tags:
+      - Webhooks
+      operationId: get-webhook
+      summary: Get a webhook by ID
+      parameters:
+      - schema:
+          type: string
+          description: Webhook ID
+        required: true
+        description: Webhook ID
+        name: id
+        in: path
+      responses:
+        '200':
+          description: The requested webhook
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookObjectResult'
+      security:
+      - BasicAuth: []
+    patch:
+      tags:
+      - Webhooks
+      operationId: update-webhook
+      summary: Update a webhook by ID
+      parameters:
+      - schema:
+          type: string
+          description: Webhook ID
+        required: true
+        description: Webhook ID
+        name: id
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebhookBody'
+      responses:
+        '200':
+          description: Updated webhook
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookObjectResult'
+      security:
+      - BasicAuth: []
+    delete:
+      tags:
+      - Webhooks
+      operationId: delete-webhook
+      summary: Delete a webhook by ID
+      parameters:
+      - schema:
+          type: string
+          description: Webhook ID
+        required: true
+        description: Webhook ID
+        name: id
+        in: path
+      responses:
+        '204':
+          description: Empty response
+      security:
+      - BasicAuth: []
+    servers:
+    - url: https://api.theo.live/v2
+      description: V2 API
+    - url: https://api.theo.live
+      description: Base (for /v1 endpoints)
+  /webhooks/{id}/secret:
+    get:
+      tags:
+      - Webhooks
+      operationId: get-webhook-secret
+      summary: Get a webhook secret
+      parameters:
+      - schema:
+          type: string
+          description: Webhook ID
+        required: true
+        description: Webhook ID
+        name: id
+        in: path
+      responses:
+        '200':
+          description: The webhook secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSecretResult'
+      security:
+      - BasicAuth: []
+    servers:
+    - url: https://api.theo.live/v2
+      description: V2 API
+    - url: https://api.theo.live
+      description: Base (for /v1 endpoints)
+  /webhooks/{id}/logs:
+    get:
+      tags:
+      - Webhooks
+      operationId: get-webhook-logs
+      summary: Get webhook logs
+      parameters:
+      - schema:
+          type: string
+          description: Webhook ID
+        required: true
+        description: Webhook ID
+        name: id
+        in: path
+      - schema:
+          type: string
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$
+          description: Start date in 'YYYY-MM-DDTHH:mm:ss.sssZ' format
+        required: false
+        description: Start date in 'YYYY-MM-DDTHH:mm:ss.sssZ' format
+        name: startDate
+        in: query
+      - schema:
+          type: string
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$
+          description: End date in 'YYYY-MM-DDTHH:mm:ss.sssZ' format
+        required: false
+        description: End date in 'YYYY-MM-DDTHH:mm:ss.sssZ' format
+        name: endDate
+        in: query
+      - schema:
+          type:
+          - number
+          - 'null'
+          maximum: 100
+          description: Maximum number of logs to return (max 100)
+        required: false
+        description: Maximum number of logs to return (max 100)
+        name: limit
+        in: query
+      responses:
+        '200':
+          description: Webhook logs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWebhookLogResult'
+      security:
+      - BasicAuth: []
+    servers:
+    - url: https://api.theo.live/v2
+      description: V2 API
+    - url: https://api.theo.live
+      description: Base (for /v1 endpoints)
+components:
+  schemas:
+    WebhookType:
+      type: string
+      description: ''
+      x-enumNames:
+      - Recordings
+      - Thumbnail
+      - Transcoder
+      - Media
+      - Feeds
+      - ViewerConnection
+      enum:
+      - Recordings
+      - Thumbnail
+      - Transcoder
+      - Media
+      - Feeds
+      - ViewerConnection
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    TestWebhookModel:
+      type: object
+      additionalProperties: false
+      properties:
+        streamName:
+          type:
+          - string
+          - 'null'
+          description: StreamName to include in test webhook payload. If not provided a default value will be used.
+        transcoderName:
+          type:
+          - string
+          - 'null'
+          description: TranscoderName to include in test webhook payload. If not provided a default value will be used.
+    SuccessListWebhooksModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookModel'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    SuccessWebhookModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/WebhookModel'
+    UpdateWebhookModel:
+      type: object
+      additionalProperties: false
+      properties:
+        url:
+          type:
+          - string
+          - 'null'
+          description: The URL to send webhook data to.
+        refreshSecret:
+          type:
+          - boolean
+          - 'null'
+          description: If true will generate new signing secret for webhook.
+        isFeedHooks:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating if the webhook should send events on feeds start/stop.
+        isRecordingHooks:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating if the webhook should send events on recording start/error/complete/deleted.
+        isThumbnailHooks:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating if the webhook should send events on thumbnail generation.
+        isTranscoderHooks:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating if the webhook should send events on transcoder instance updates.
+        isMediaHooks:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating if the webhook should send events on media asset processing/errored/completed/deleted. Only media assets of type 'recording' and 'clip' types can trigger webhooks.
+        isViewerConnectionHooks:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating if the webhook should send important events related to viewers.
+        reEnable:
+          type:
+          - boolean
+          - 'null'
+          description: Immediately re-enable the webhook if it has been temporarily disabled
+        filter:
+          type:
+          - string
+          - 'null'
+          description: A regular expression used to filter the events sent to this webhook based on StreamName or TranscoderName. For event types 'feeds', 'media', 'recording', 'thumbnail' and 'viewerConnection' the filter applies to the 'StreamName' field. For event type 'transcoder' the filter applies to the 'TranscoderName' field. Set to null to clear value
+          maxLength: 128
+          minLength: 1
+    WebhookModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+          description: The unique identifier of this webhook.
+        url:
+          type: string
+          description: Url to send webhook data to.
+        secret:
+          type: string
+          description: Base64 string of signing secret.
+        isFeedHooks:
+          type: boolean
+          description: If true sends webhook events on feeds start/stop.
+        isRecordingHooks:
+          type: boolean
+          description: If true sends webhook events on recording start/error/complete/deleted.
+        isThumbnailHooks:
+          type: boolean
+          description: If true sends webhook events on thumbnail generation.
+        isTranscoderHooks:
+          type: boolean
+          description: If true sends webhook events on transcoder instance updates.
+        isMediaHooks:
+          type: boolean
+          description: If true sends webhook events on media asset processing/errored/completed/deleted. Only media assets of type 'recording' and 'clip' types can trigger webhooks.
+        isViewerConnectionHooks:
+          type: boolean
+          description: If true sends webhooks on important events related to viewers
+        disabled:
+          description: Your webhook may be temporarily disabled if too many attempted webhook events timeout. You can re-enable it immediately by updating the url or setting reenable = true via [Update Webhook](#tag/Webhooks/operation/Webhooks_UpdateWebhook).
+          oneOf:
+          - $ref: '#/components/schemas/DisabledInfoModel'
+        filter:
+          type:
+          - string
+          - 'null'
+          description: A regular expression used to filter the events sent to this webhook based on StreamName or TranscoderName. For event types 'feeds', 'media', 'recording', 'thumbnail' and 'viewerConnection' the filter applies to the 'StreamName' field. For event type 'transcoder' the filter applies to the 'TranscoderName' field.
+    DisabledInfoModel:
+      type: object
+      additionalProperties: false
+      properties:
+        until:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        reason:
+          type:
+          - string
+          - 'null'
+    AddWebhookModel:
+      type: object
+      additionalProperties: false
+      required:
+      - url
+      - isFeedHooks
+      properties:
+        url:
+          type: string
+          description: Url to send webhook data to.
+          minLength: 1
+        isFeedHooks:
+          type: boolean
+          description: If true sends webhook events on feeds start/stop.
+        isRecordingHooks:
+          type:
+          - boolean
+          - 'null'
+          description: "**Please use `isMediaHooks`.**\n\n If true sends webhook events on recording start/error/complete/deleted."
+          default: false
+          deprecated: true
+        isThumbnailHooks:
+          type:
+          - boolean
+          - 'null'
+          description: If true sends webhook events on thumbnail generation
+          default: false
+        isTranscoderHooks:
+          type:
+          - boolean
+          - 'null'
+          description: If true sends webhook events on transcoder instance updates
+          default: false
+        isMediaHooks:
+          type:
+          - boolean
+          - 'null'
+          description: 'If true sends webhook events on media asset processing/errored/completed/deleted. Only media assets of type ''recording'' and ''clip'' types can trigger webhooks. '
+          default: false
+        isViewerConnectionHooks:
+          type:
+          - boolean
+          - 'null'
+          description: If true sends webhooks on important events related to viewers
+          default: false
+        filter:
+          type:
+          - string
+          - 'null'
+          description: A regular expression used to filter the events sent to this webhook based on StreamName or TranscoderName. For event types 'feeds', 'media', 'recording', 'thumbnail' and 'viewerConnection' the filter applies to the 'StreamName' field. For event type 'transcoder' the filter applies to the 'TranscoderName' field.
+          maxLength: 128
+          minLength: 1
+    CreateWebhookBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the webhook
+        description:
+          type: string
+          description: Description of the webhook
+        url:
+          type: string
+          format: uri
+          description: URL to send webhook events to
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+            - '*'
+            - channel.created
+            - channel.stopped
+            - channel.deleted
+            - channel.deploying
+            - channel.updated
+            - webhook.created
+            - webhook.updated
+            - webhook.deleted
+            - scheduler.created
+            - scheduler.updated
+            - scheduler.deleted
+            - scheduler.active
+            - scheduler.terminated
+            - engine.deploying
+            - engine.waiting
+            - engine.starting
+            - engine.error
+            - engine.playing
+            - engine.ingesting
+            - engine.created
+            - engine.updated
+            - engine.stopping
+            - engine.stopped
+            - engine.deleting
+            - engine.deleted
+            - engine.log.warn
+            - engine.log.error
+            - engine.log.info
+            - ingest.created
+            - ingest.updated
+            - ingest.deleted
+            - distribution.created
+            - distribution.enabled
+            - distribution.disabled
+            - distribution.updated
+            - distribution.deleted
+            - distribution.security.key.added
+            - distribution.security.key.deleted
+            - distribution.security.keys.deleted
+          minItems: 1
+          description: List of events to subscribe to
+        active:
+          type: boolean
+          description: Whether the webhook should be active upon creation. Defaults to false.
+      required:
+      - name
+      - url
+      - events
+      additionalProperties: false
+    UpdateWebhookBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the webhook
+        description:
+          type: string
+          description: Description of the webhook
+        url:
+          type: string
+          format: uri
+          description: URL to send webhook events to
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+            - '*'
+            - channel.created
+            - channel.stopped
+            - channel.deleted
+            - channel.deploying
+            - channel.updated
+            - webhook.created
+            - webhook.updated
+            - webhook.deleted
+            - scheduler.created
+            - scheduler.updated
+            - scheduler.deleted
+            - scheduler.active
+            - scheduler.terminated
+            - engine.deploying
+            - engine.waiting
+            - engine.starting
+            - engine.error
+            - engine.playing
+            - engine.ingesting
+            - engine.created
+            - engine.updated
+            - engine.stopping
+            - engine.stopped
+            - engine.deleting
+            - engine.deleted
+            - engine.log.warn
+            - engine.log.error
+            - engine.log.info
+            - ingest.created
+            - ingest.updated
+            - ingest.deleted
+            - distribution.created
+            - distribution.enabled
+            - distribution.disabled
+            - distribution.updated
+            - distribution.deleted
+            - distribution.security.key.added
+            - distribution.security.key.deleted
+            - distribution.security.keys.deleted
+          description: List of events to subscribe to
+        active:
+          type: boolean
+          description: Whether the webhook is active
+      additionalProperties: false
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the webhook
+        createdAt:
+          type: string
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          description: Last update timestamp
+        name:
+          type: string
+          description: Name of the webhook
+        active:
+          type: boolean
+          description: Whether the webhook is active
+        description:
+          type: string
+          description: Description of the webhook
+        url:
+          type: string
+          description: URL to send webhook events to
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+            - '*'
+            - channel.created
+            - channel.stopped
+            - channel.deleted
+            - channel.deploying
+            - channel.updated
+            - webhook.created
+            - webhook.updated
+            - webhook.deleted
+            - scheduler.created
+            - scheduler.updated
+            - scheduler.deleted
+            - scheduler.active
+            - scheduler.terminated
+            - engine.deploying
+            - engine.waiting
+            - engine.starting
+            - engine.error
+            - engine.playing
+            - engine.ingesting
+            - engine.created
+            - engine.updated
+            - engine.stopping
+            - engine.stopped
+            - engine.deleting
+            - engine.deleted
+            - engine.log.warn
+            - engine.log.error
+            - engine.log.info
+            - ingest.created
+            - ingest.updated
+            - ingest.deleted
+            - distribution.created
+            - distribution.enabled
+            - distribution.disabled
+            - distribution.updated
+            - distribution.deleted
+            - distribution.security.key.added
+            - distribution.security.key.deleted
+            - distribution.security.keys.deleted
+          description: List of subscribed events. "*" means all events.
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      - name
+      - active
+      - url
+      - events
+    PaginatedWebhookResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Webhook'
+          description: List of webhooks
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
+    PaginatedWebhookLogResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookLog'
+          description: List of webhook logs
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
+    WebhookSecretResult:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            secret:
+              type: string
+              description: The webhook signing secret
+          required:
+          - secret
+          description: Secret object
+      required:
+      - data
+    WebhookLog:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the log entry
+        timestamp:
+          type: string
+          description: Timestamp of the log entry
+        type:
+          type: string
+          enum:
+          - '*'
+          - channel.created
+          - channel.stopped
+          - channel.deleted
+          - channel.deploying
+          - channel.updated
+          - webhook.created
+          - webhook.updated
+          - webhook.deleted
+          - scheduler.created
+          - scheduler.updated
+          - scheduler.deleted
+          - scheduler.active
+          - scheduler.terminated
+          - engine.deploying
+          - engine.waiting
+          - engine.starting
+          - engine.error
+          - engine.playing
+          - engine.ingesting
+          - engine.created
+          - engine.updated
+          - engine.stopping
+          - engine.stopped
+          - engine.deleting
+          - engine.deleted
+          - engine.log.warn
+          - engine.log.error
+          - engine.log.info
+          - ingest.created
+          - ingest.updated
+          - ingest.deleted
+          - distribution.created
+          - distribution.enabled
+          - distribution.disabled
+          - distribution.updated
+          - distribution.deleted
+          - distribution.security.key.added
+          - distribution.security.key.deleted
+          - distribution.security.keys.deleted
+          description: Event type that triggered the webhook
+        statusCode:
+          type: number
+          description: HTTP status code of the webhook delivery
+        requestData:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - '*'
+              - channel.created
+              - channel.stopped
+              - channel.deleted
+              - channel.deploying
+              - channel.updated
+              - webhook.created
+              - webhook.updated
+              - webhook.deleted
+              - scheduler.created
+              - scheduler.updated
+              - scheduler.deleted
+              - scheduler.active
+              - scheduler.terminated
+              - engine.deploying
+              - engine.waiting
+              - engine.starting
+              - engine.error
+              - engine.playing
+              - engine.ingesting
+              - engine.created
+              - engine.updated
+              - engine.stopping
+              - engine.stopped
+              - engine.deleting
+              - engine.deleted
+              - engine.log.warn
+              - engine.log.error
+              - engine.log.info
+              - ingest.created
+              - ingest.updated
+              - ingest.deleted
+              - distribution.created
+              - distribution.enabled
+              - distribution.disabled
+              - distribution.updated
+              - distribution.deleted
+              - distribution.security.key.added
+              - distribution.security.key.deleted
+              - distribution.security.keys.deleted
+              description: Event type
+            created:
+              type: number
+              description: Unix timestamp of when the event was created
+            object:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                  - channel
+                  - ingest
+                  - engine
+                  - distribution
+                  - alias
+                  - scheduler
+                  description: Type of the related object
+                id:
+                  type: string
+                  description: ID of the related object
+                parent:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - channel
+                      - ingest
+                      - engine
+                      - distribution
+                      - alias
+                      - scheduler
+                      description: Type of the parent object
+                    id:
+                      type: string
+                      description: ID of the parent object
+                  required:
+                  - type
+                  - id
+                  description: Parent object reference
+                organizationId:
+                  type: string
+                  description: Organization ID
+              required:
+              - type
+              - id
+              - organizationId
+              description: Object that triggered the event
+            data:
+              description: Additional event data
+          required:
+          - type
+          - created
+          - object
+          description: Request data sent in the webhook delivery
+      required:
+      - id
+      - timestamp
+      - type
+      - statusCode
+      - requestData
+    WebhookObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Webhook'
+          - description: Webhook object
+      required:
+      - data
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+    BasicAuth:
+      type: http
+      scheme: basic
+x-refined-from:
+- dolby-millicast-api-openapi-original.json
+- dolby-optiview-live-openapi-original.json
+x-generator: NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

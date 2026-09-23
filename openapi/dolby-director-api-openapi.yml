@@ -1,0 +1,335 @@
+openapi: 3.2.0
+info:
+  title: Director API
+  version: 1.0.0
+servers:
+- url: https://director.millicast.com
+security:
+- Token: []
+tags:
+- name: Director
+paths:
+  /api/director/publish:
+    post:
+      tags:
+      - Director
+      summary: Publish
+      description: Request for url and authorization to publish a stream.
+      operationId: Director_Publish
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublishStreamModel'
+            examples:
+              ? ''
+              : summary: ''
+                value:
+                  streamName: my_stream
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessPublishDirectorResponseModel'
+              examples:
+                ? ''
+                : summary: ''
+                  value:
+                    status: success
+                    data:
+                      urls:
+                      - wss://domain.millicast.com/ws/pub/faux
+                      jwt: long_jwt_string
+                      iceServers:
+                      - urls: stun:stun.example.com:3478
+                      - urls: turn:turn.example.com:443?transport=tcp
+                        username: user
+                        credential: secret
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - Token: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://director.millicast.com/api/director/publish \\\n     -d '{\"streamName\": \"my_stream\"}'"
+  /api/director/subscribe:
+    post:
+      tags:
+      - Director
+      summary: Subscribe
+      description: Request for url and authorization to subscribe to a stream.
+      operationId: Director_Subscribe
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscribeStreamModel'
+            examples:
+              noauth:
+                summary: noauth
+                value:
+                  streamName: my_insecure_stream
+                  streamAccountId: abc123
+              auth:
+                summary: auth
+                value:
+                  streamName: my_secure_stream
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessSubscribeDirectorResponseModel'
+              examples:
+                noauth:
+                  summary: noauth
+                  value:
+                    status: success
+                    data:
+                      urls:
+                      - wss://domain.millicast.com/ws/sub/faux
+                      jwt: long_jwt_string
+                      iceServers:
+                      - urls: stun:stun.example.com:3478
+                      - urls: turn:turn.example.com:443?transport=tcp
+                        username: user
+                        credential: secret
+                auth:
+                  summary: auth
+                  value:
+                    status: success
+                    data:
+                      urls:
+                      - wss://domain.millicast.com/ws/sub/faux
+                      jwt: long_jwt_string
+                      iceServers:
+                      - urls: stun:stun.example.com:3478
+                      - urls: turn:turn.example.com:443?transport=tcp
+                        username: user
+                        credential: secret
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - Token: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://director.millicast.com/api/director/subscribe \\\n     -d '{\"streamName\": \"my_insecure_stream\", \"streamAccountId\": \"abc123\"}'"
+components:
+  schemas:
+    DirectorResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        wsUrl:
+          type: string
+          deprecated: true
+          x-deprecatedMessage: Use Urls property
+        urls:
+          type: array
+          items:
+            type: string
+        jwt:
+          type: string
+        iceServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/IceServerModel'
+        streamAccountId:
+          type: string
+        drmObject:
+          oneOf:
+          - $ref: '#/components/schemas/DrmLicenseServers'
+    SuccessSubscribeDirectorResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DirectorResponseModel'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SubscribeStreamModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      properties:
+        streamName:
+          type: string
+          minLength: 1
+        streamAccountId:
+          type:
+          - string
+          - 'null'
+          description: Required **only** for published streams which have `subscribeRequiresAuth=false`.
+    SuccessPublishDirectorResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/PublishDirectorResponseModel'
+    IceServerModel:
+      type: object
+      additionalProperties: false
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+        username:
+          type:
+          - string
+          - 'null'
+        credential:
+          type:
+          - string
+          - 'null'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    PublishDirectorResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        wsUrl:
+          type: string
+          deprecated: true
+          x-deprecatedMessage: Use Urls property
+        urls:
+          type: array
+          items:
+            type: string
+        jwt:
+          type: string
+        iceServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/IceServerModel'
+        streamAccountId:
+          type: string
+        drmObject:
+          oneOf:
+          - $ref: '#/components/schemas/DrmLicenseServers'
+        subscribeRequiresAuth:
+          type: boolean
+    DrmLicenseServers:
+      type: object
+      additionalProperties: false
+      properties:
+        widevineUrl:
+          type:
+          - string
+          - 'null'
+        fairPlayUrl:
+          type:
+          - string
+          - 'null'
+        fairPlayCertUrl:
+          type:
+          - string
+          - 'null'
+    PublishStreamModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      properties:
+        streamName:
+          type: string
+          minLength: 1
+        streamAccountId:
+          type:
+          - string
+          - 'null'
+  securitySchemes:
+    Token:
+      type: http
+      description: '### Usage
+
+        #### Acquire token from dashboard or api.
+
+        Token will be specific to publishing or subscribing.'
+      scheme: bearer
+x-generator: NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

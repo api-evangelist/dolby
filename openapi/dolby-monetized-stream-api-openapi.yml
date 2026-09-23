@@ -1,0 +1,749 @@
+openapi: 3.2.0
+info:
+  title: THEOads Monetized Stream API
+  version: 25.9.0
+  description: The THEOads REST API allows you to create and manage monetized streams, which are deployments of signaling services. Each monetized stream corresponds to an origin stream that is monetized using THEOads (SGAI). For detailed information on the various parameters and their usage, please refer to the getting started guide.
+  license:
+    name: UNLICENSED
+  contact: {}
+servers:
+- url: /ads-client/api
+tags:
+- name: Monetized-Stream
+paths:
+  /v1/monetized-streams:
+    get:
+      operationId: GetMonetizedStreams
+      responses:
+        '200':
+          description: List of monetized streams
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - items:
+                    $ref: '#/components/schemas/IMonetizedStreamApiResponse'
+                  type: array
+                - type: string
+      description: Retrieves all created and deployed monetized streams (signaling services) along with their configurations.
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters: []
+      summary: Get monetized streams
+      x-summary-source: derived
+    post:
+      operationId: CreateMonetizedStream
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IMonetizedStreamApiResponse'
+      description: Creates and deploys a new monetized stream in the environment, resulting in a deployment of a signaling service.
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters: []
+      requestBody:
+        description: The monetized stream configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IMonetizedStream'
+              description: The monetized stream configuration
+      summary: Create monetized stream
+      x-summary-source: derived
+  /v1/monetized-streams/{monetizedStreamId}:
+    get:
+      operationId: GetMonetizedStream
+      responses:
+        '200':
+          description: A monetized stream
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IMonetizedStreamApiResponse'
+      description: Retrieves a single monetized stream (signaling service) based on its identifier, along with its configuration details.
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      summary: Get monetized stream
+      x-summary-source: derived
+    patch:
+      operationId: UpdateMonetizedStream
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IMonetizedStreamApiResponse'
+      description: Updates a single monetized stream (signaling service) based on its identifier, along with its configuration update.
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The monetized stream configuration update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IMonetizedStreamUpdate'
+              description: The monetized stream configuration update
+      summary: Update monetized stream
+      x-summary-source: derived
+    delete:
+      operationId: DeleteMonetizedStream
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IMonetizedStreamApiResponse'
+      description: Deletes a single monetized stream (signaling service) based on its identifier.
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      summary: Delete monetized stream
+      x-summary-source: derived
+  /v1/monetized-streams/{monetizedStreamId}/layout:
+    patch:
+      operationId: UpdateMonetizedStreamLayout
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IMonetizedStreamApiResponse'
+      description: Updates the default layout for an existing monetized stream (signaling service).
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The layout configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                layout:
+                  $ref: '#/components/schemas/MonetizedStreamLayout'
+              required:
+              - layout
+              type: object
+              description: The layout configuration
+      summary: Update monetized stream layout
+      x-summary-source: derived
+  /v1/monetized-streams/{monetizedStreamId}/break:
+    post:
+      operationId: CreateMonetizedStreamBreak
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/IAdBreakApiResponse'
+                - type: string
+      description: Creates an ad break on an existing monetized stream (signaling service).
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The ad break configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IAdBreak'
+              description: The ad break configuration
+      summary: Create monetized stream break
+      x-summary-source: derived
+    get:
+      operationId: GetMonetizedStreamBreaks
+      responses:
+        '200':
+          description: A monetized stream
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/IAdBreaksApiResponse'
+                - type: string
+      description: Retrieves all adbreaks linked to the monetized sctream
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      summary: Get monetized stream breaks
+      x-summary-source: derived
+  /v1/monetized-streams/{monetizedStreamId}/break/{adbreakId}:
+    delete:
+      operationId: DeleteMonetizedStreamBreaks
+      responses:
+        '200':
+          description: An abreak
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IAdBreakApiResponse'
+      description: Deletes an adbreak linked to the monetized sctream
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      - description: The adbreak identifier.
+        in: path
+        name: adbreakId
+        required: true
+        schema:
+          type: string
+      summary: Delete monetized stream breaks
+      x-summary-source: derived
+    patch:
+      operationId: UpdateMonetizedStreamBreaks
+      responses:
+        '200':
+          description: An adbreak
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IAdBreakApiResponse'
+      description: Patches an adbreak linked to the monetized sctream
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      - description: The adbreak identifier.
+        in: path
+        name: adbreakId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IAdBreakUpdate'
+      summary: Update monetized stream breaks
+      x-summary-source: derived
+  /v1/monetized-streams/{monetizedStreamId}/overlay:
+    post:
+      operationId: CreateMonetizedStreamOverlay
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IOverlayApiResponse'
+      description: Creates an overlay on an existing monetized stream (signaling service).
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The overlay configuration
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IOverlay'
+              description: The overlay configuration
+      summary: Create monetized stream overlay
+      x-summary-source: derived
+    get:
+      operationId: GetMonetizedStreamOverlays
+      responses:
+        '200':
+          description: A monetized stream
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/IOverlaysApiResponse'
+                - type: string
+      description: Retrieves all overlays linked to the monetized sctream
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      summary: Get monetized stream overlays
+      x-summary-source: derived
+  /v1/monetized-streams/{monetizedStreamId}/overlay/{overlayId}:
+    delete:
+      operationId: DeleteMonetizedStreamOverlay
+      responses:
+        '200':
+          description: A monetized stream
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IOverlayApiResponse'
+      description: Deletes an overlay linked to the monetized sctream
+      tags:
+      - Monetized-Stream
+      security: []
+      parameters:
+      - description: The Monetized stream identifier.
+        in: path
+        name: monetizedStreamId
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: overlayId
+        required: true
+        schema:
+          type: string
+      summary: Delete monetized stream overlay
+      x-summary-source: derived
+components:
+  schemas:
+    IOverlaysApiResponse:
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+          enum:
+          - created
+          - deleted
+        type:
+          type: string
+          enum:
+          - overlay
+        payload:
+          items:
+            $ref: '#/components/schemas/IOverlay'
+          type: array
+      required:
+      - id
+      - state
+      - type
+      - payload
+      type: object
+      additionalProperties: false
+    IOverlay:
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        duration:
+          type: number
+          format: double
+        type:
+          $ref: '#/components/schemas/OverlayTypes'
+        position:
+          properties:
+            bottom:
+              type: number
+              format: double
+            top:
+              type: number
+              format: double
+            right:
+              type: number
+              format: double
+            left:
+              type: number
+              format: double
+          type: object
+        size:
+          properties:
+            height:
+              type: number
+              format: double
+            width:
+              type: number
+              format: double
+          required:
+          - height
+          - width
+          type: object
+        opacity:
+          type: number
+          format: double
+        gamProperties:
+          $ref: '#/components/schemas/IGamProperties'
+        resourceURI:
+          items:
+            properties:
+              tv:
+                type: string
+              phone:
+                type: string
+              default:
+                type: string
+              type:
+                $ref: '#/components/schemas/OverlayURITypes'
+            required:
+            - default
+            - type
+            type: object
+          type: array
+        clickThroughURI:
+          type: string
+      required:
+      - id
+      - startDate
+      - duration
+      - type
+      - position
+      - size
+      type: object
+      additionalProperties: false
+    MonetizedStreamType:
+      enum:
+      - LIVE
+      - VOD
+      type: string
+    MonetizedStreamLayout:
+      enum:
+      - SINGLE
+      - DOUBLE
+      - LSHAPE_AD
+      - LSHAPE_CONTENT
+      type: string
+    ResourceType.AD_BREAK:
+      enum:
+      - adbreak
+      type: string
+    IOverlayApiResponse:
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+          enum:
+          - created
+          - deleted
+        type:
+          type: string
+          enum:
+          - overlay
+        payload:
+          $ref: '#/components/schemas/IOverlay'
+      required:
+      - id
+      - state
+      - type
+      - payload
+      type: object
+      additionalProperties: false
+    IMonetizedStream:
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        streamId:
+          type: string
+        streamType:
+          $ref: '#/components/schemas/MonetizedStreamType'
+        origin:
+          type: string
+        segmentOrigin:
+          type: string
+        layout:
+          $ref: '#/components/schemas/MonetizedStreamLayout'
+        assetKey:
+          type: string
+        networkCode:
+          type: string
+        originPath:
+          type: string
+        assetURI:
+          type: string
+        backdropURI:
+          type: string
+        backdropURIGamProperties:
+          $ref: '#/components/schemas/IGamProperties'
+      required:
+      - streamId
+      - layout
+      type: object
+      additionalProperties: false
+    IMonetizedStreamUpdate:
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        streamType:
+          $ref: '#/components/schemas/MonetizedStreamType'
+        origin:
+          type: string
+        segmentOrigin:
+          type: string
+        layout:
+          $ref: '#/components/schemas/MonetizedStreamLayout'
+        originPath:
+          type: string
+        assetURI:
+          type: string
+        backdropURI:
+          type: string
+        backdropURIGamProperties:
+          $ref: '#/components/schemas/IGamProperties'
+      type: object
+      additionalProperties: false
+    OverlayTypes:
+      enum:
+      - image
+      type: string
+    SignaledAdBreakStatus:
+      enum:
+      - new
+      - future
+      - signaled
+      - finished
+      - error
+      - continuous
+      type: string
+    ResourceType.MONETIZED_STREAM:
+      enum:
+      - monetized-stream
+      type: string
+    IAdBreakUpdate:
+      properties:
+        startDate:
+          type: string
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        duration:
+          type: number
+          format: double
+        source:
+          type: string
+        layout:
+          $ref: '#/components/schemas/MonetizedStreamLayout'
+        assetURI:
+          type: string
+        status:
+          $ref: '#/components/schemas/SignaledAdBreakStatus'
+        asset_key:
+          type: string
+        network_code:
+          type: string
+        backdropURI:
+          type: string
+        backdropURIGamProperties:
+          $ref: '#/components/schemas/IGamProperties'
+        startPts:
+          type: number
+          format: double
+        name:
+          type: string
+      type: object
+      additionalProperties: false
+    IAdBreaksApiResponse:
+      properties:
+        payload:
+          items:
+            $ref: '#/components/schemas/IAdBreak'
+          type: array
+        type:
+          $ref: '#/components/schemas/ResourceType.AD_BREAK'
+        state:
+          type: string
+          enum:
+          - created
+          - deleted
+        id:
+          type: string
+      required:
+      - payload
+      - type
+      - state
+      - id
+      type: object
+    IAdBreak:
+      properties:
+        id:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        duration:
+          type: number
+          format: double
+        source:
+          type: string
+        layout:
+          $ref: '#/components/schemas/MonetizedStreamLayout'
+        assetURI:
+          type: string
+        status:
+          $ref: '#/components/schemas/SignaledAdBreakStatus'
+        asset_key:
+          type: string
+        network_code:
+          type: string
+        backdropURI:
+          type: string
+        backdropURIGamProperties:
+          $ref: '#/components/schemas/IGamProperties'
+        startPts:
+          type: number
+          format: double
+        name:
+          type: string
+      required:
+      - id
+      - startDate
+      type: object
+      additionalProperties: false
+    OverlayURITypes:
+      enum:
+      - png
+      - svg
+      type: string
+    IGamProperties:
+      properties:
+        iu:
+          type: string
+        sz:
+          properties:
+            tv:
+              type: string
+            phone:
+              type: string
+            default:
+              type: string
+          required:
+          - default
+          type: object
+      required:
+      - iu
+      - sz
+      type: object
+      additionalProperties: false
+    IMonetizedStreamApiResponse:
+      properties:
+        id:
+          type: string
+        state:
+          type: string
+          enum:
+          - created
+          - deleted
+        type:
+          $ref: '#/components/schemas/ResourceType.MONETIZED_STREAM'
+        payload:
+          $ref: '#/components/schemas/IMonetizedStream'
+      required:
+      - id
+      - state
+      - type
+      - payload
+      type: object
+      additionalProperties: false
+    IAdBreakApiResponse:
+      properties:
+        payload:
+          $ref: '#/components/schemas/IAdBreak'
+        type:
+          $ref: '#/components/schemas/ResourceType.AD_BREAK'
+        state:
+          type: string
+          enum:
+          - created
+          - deleted
+        id:
+          type: string
+      required:
+      - payload
+      - type
+      - state
+      - id
+      type: object
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      name: X-API-KEY
+      in: header

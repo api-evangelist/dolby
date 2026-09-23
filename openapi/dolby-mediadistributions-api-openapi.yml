@@ -1,0 +1,598 @@
+openapi: 3.2.0
+info:
+  title: Millicast Media Distributions API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: MediaDistributions
+paths:
+  /api/v3/media/distributions:
+    post:
+      tags:
+      - MediaDistributions
+      summary: Create Media Distribution
+      description: Creates a new media distribution for viewing HLS media assets.
+      operationId: MediaDistributions_CreateMediaDistribution
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMediaDistributionModel'
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfMediaDistributionResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - API_Secret: []
+    get:
+      tags:
+      - MediaDistributions
+      summary: List Media Distributions
+      description: List all media distributions with specific sorting and pagination.
+      operationId: MediaDistributions_ListMediaDistribution
+      parameters:
+      - name: sort
+        in: query
+        schema:
+          default: createdAt
+          oneOf:
+          - $ref: '#/components/schemas/ListMediaDistributionsSortBy'
+        x-position: 1
+      - name: name
+        in: query
+        description: Optional. Case insensitive.
+        schema:
+          type:
+          - string
+          - 'null'
+        x-position: 2
+      - name: default
+        in: query
+        schema:
+          type:
+          - boolean
+          - 'null'
+        x-position: 3
+      - name: cursor
+        in: query
+        description: Used for pagination. Do not include on the first request. For subsequent requests use the pagination.cursor field from the previous response. You must use the same sort option when requesting each page
+        schema:
+          type:
+          - string
+          - 'null'
+          default: ''
+        x-position: 4
+      - name: limit
+        in: query
+        description: The maximum number of objects returned
+        schema:
+          type: integer
+          default: 25
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 5
+      - name: desc
+        in: query
+        schema:
+          type: boolean
+          default: false
+        x-position: 6
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfPaginationResponseOfMediaDistributionResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - API_Secret: []
+  /api/v3/media/distributions/{id}:
+    get:
+      tags:
+      - MediaDistributions
+      summary: Read Media Distribution
+      description: Gets media distribution specified by mediaDistributionId.
+      operationId: MediaDistributions_ReadMediaDistribution
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfMediaDistributionResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - API_Secret: []
+    patch:
+      tags:
+      - MediaDistributions
+      summary: Update Media Distribution
+      description: Update media distribution settings.
+      operationId: MediaDistributions_UpdateMediaDistribution
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      requestBody:
+        x-name: request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMediaDistribution'
+        required: true
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfMediaDistributionResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - API_Secret: []
+    delete:
+      tags:
+      - MediaDistributions
+      summary: Delete Media Distribution
+      description: Deletes media distribution specified by a mediaDistributionId.
+      operationId: MediaDistributions_DeleteMediaDistribution
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '204':
+          description: Empty Response
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/v3/media/distributions/{id}/security/keys:
+    get:
+      tags:
+      - MediaDistributions
+      summary: Get all security keys of a media distribution by ID
+      operationId: MediaDistributions_GetSecurityKeys
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfListOfSecurityKeyResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - API_Secret: []
+    post:
+      tags:
+      - MediaDistributions
+      summary: Create a new security key for a media distribution
+      description: Create a new security key for a media distribution. Each media distribution may have up to 2 security keys.
+      operationId: MediaDistributions_CreateSecurityKey
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecurityKeyRequestModel'
+        required: true
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfSecurityKeyResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - API_Secret: []
+  /api/v3/media/distributions/{id}/security/keys/{keyId}:
+    delete:
+      tags:
+      - MediaDistributions
+      summary: Delete a media distribution security key
+      operationId: MediaDistributions_DeleteSecurityKey
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      - name: keyId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 2
+      responses:
+        '204':
+          description: Empty Response
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - API_Secret: []
+components:
+  schemas:
+    UpdateMediaDistribution:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: User-friendly name for the media distribution.
+          maxLength: 128
+          minLength: 1
+        default:
+          type:
+          - boolean
+          - 'null'
+          description: Set this as the default media distribution that will be associated with all future media assets created without an explicit mediaDistributionId set.
+    MediaDistributionResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: User-friendly name for the media distribution. The '*' character is not allowed
+          maxLength: 128
+          minLength: 1
+        default:
+          type: boolean
+          description: Set this as the default media distribution that will be associated with all future media assets created without an explicit MediaDistributionId set.
+        id:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+          format: date-time
+        security:
+          description: Security settings for your media distribution.
+          oneOf:
+          - $ref: '#/components/schemas/MediaDistributionSecurityResponse'
+    MediaDistributionSecurityRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        keys:
+          type:
+          - array
+          - 'null'
+          description: Security keys that can be used to sign a JWT to authenticate media asset views. If no keys are provided the media distribution will be unsecured. This means any associated assets can be viewed without a token, and if a token is provided the signing key will not be validated. If a key is specified the media distribution will be secured and a valid token signed with one of the provided keys will be required to view associated media assets.
+          maxItems: 2
+          items:
+            $ref: '#/components/schemas/SecurityKeyRequestModel'
+    SuccessResponseOfListOfSecurityKeyResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityKeyResponseModel'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SecurityKeyRequestModel:
+      type: object
+      additionalProperties: false
+      required:
+      - key
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name for the security key.
+          maxLength: 128
+          minLength: 1
+        key:
+          type: string
+          maxLength: 4096
+          minLength: 32
+    ListMediaDistributionsSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - CreatedAt
+      - Name
+      enum:
+      - createdAt
+      - name
+    CreateMediaDistributionModel:
+      type: object
+      additionalProperties: false
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: User-friendly name for the media distribution. The '*' character is not allowed
+          maxLength: 128
+          minLength: 1
+        default:
+          type: boolean
+          description: Set this as the default media distribution that will be associated with all future media assets created without an explicit MediaDistributionId set.
+        security:
+          description: Optional. Specify security settings for your media distribution.
+          oneOf:
+          - $ref: '#/components/schemas/MediaDistributionSecurityRequest'
+    SuccessResponseOfPaginationResponseOfMediaDistributionResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/PaginationResponseOfMediaDistributionResponseModel'
+    SuccessResponseOfSecurityKeyResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/SecurityKeyResponseModel'
+    MediaDistributionSecurityResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        keys:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/SecurityKeyResponseModel'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    PaginationResponseOfMediaDistributionResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        data:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MediaDistributionResponseModel'
+        pagination:
+          oneOf:
+          - $ref: '#/components/schemas/Pagination'
+    Pagination:
+      type: object
+      additionalProperties: false
+      properties:
+        hasMore:
+          type: boolean
+        cursor:
+          type:
+          - string
+          - 'null'
+    SecurityKeyResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+    SuccessResponseOfMediaDistributionResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/MediaDistributionResponseModel'
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

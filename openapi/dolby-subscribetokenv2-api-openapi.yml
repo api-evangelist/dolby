@@ -1,0 +1,424 @@
+openapi: 3.2.0
+info:
+  title: Millicast Subscribe Token V2 API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: SubscribeTokenV2
+paths:
+  /api/v2/subscribe_token/{tokenId}:
+    put:
+      tags:
+      - SubscribeTokenV2
+      summary: Update Token
+      description: Update token stream information as well as updates token itself.
+      operationId: SubscribeTokenV2_UpdateToken
+      parameters:
+      - name: tokenId
+        in: path
+        required: true
+        schema:
+          type: integer
+        x-position: 1
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubscribeTokenV2'
+            examples:
+              simple:
+                summary: simple
+                value:
+                  label: new_label_name
+                  refreshToken: true
+              complex:
+                summary: complex
+                value:
+                  label: new_regex_token_name
+                  addTokenStreams:
+                  - streamName: newStream1
+                  - streamName: special_regex_stream[0-9]+
+                    isRegex: true
+                  removeTokenStreams:
+                  - container1/.+
+        required: true
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseSubscribeTokenV2'
+              examples:
+                simple:
+                  summary: simple
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      id: 467
+                      label: label_no_367
+                      token: my-magic-token-80
+                      addedOn: '2024-12-11T04:05:35Z'
+                      isActive: true
+                      streams:
+                      - streamName: stream1
+                        isRegex: false
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      effectiveSettings:
+                        originCluster: phx-1
+                        allowedCountries: []
+                        deniedCountries: []
+                regex:
+                  summary: regex
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries: []
+                      id: 67899
+                      label: label_no_240
+                      token: my-magic-token-84
+                      addedOn: '2024-12-11T04:05:35Z'
+                      isActive: true
+                      streams:
+                      - streamName: stream1
+                        isRegex: false
+                      - streamName: newStream1
+                        isRegex: false
+                      - streamName: special_regex_stream[0-9]+
+                        isRegex: true
+                      allowedOrigins: []
+                      allowedIpAddresses: []
+                      effectiveSettings:
+                        originCluster: phx-1
+                        allowedCountries: []
+                        deniedCountries: []
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+              examples:
+                validation:
+                  summary: validation
+                  value:
+                    status: fail
+                    data:
+                      token: No properties specified to update.
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+      x-codeSamples:
+      - lang: curl
+        source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://api.millicast.com/api/v2/subscribe_token/100 \\\n     -X PUT -d '{\"label\": \"new_label_name\", \"refreshToken\": true}'"
+      - lang: .NET
+        source: "// required namespaces\nusing System;\nusing System.Net.Http;\nusing System.Net.Http.Headers;\nusing System.Text;\nusing Newtonsoft.Json;\n\nvar client = new HttpClient();\nclient.DefaultRequestHeaders.Authorization = \n  new AuthenticationHeaderValue(\n    \"Bearer\",\n    \"your_api_secret\");\nvar url = \"https://api.millicast.com/api/v2/subscribe_token/100\";\n\nvar data = new { label = \"new_label_name\", refreshToken = true };\nvar httpContent = new StringContent(JsonConvert.SerializeObject(data),\n  Encoding.UTF8,\n  \"application/json\");\nvar response = await client.PutAsync(url, httpContent);\nvar responseContent = await response.Content.ReadAsStringAsync();\nConsole.WriteLine(responseContent);"
+      - lang: Java
+        source: "// required imports\nimport java.io.BufferedReader;\nimport java.io.DataOutputStream;\nimport java.io.InputStreamReader;\nimport java.net.HttpURLConnection;\nimport java.net.URL;\n\nURL url = new URL(\"https://api.millicast.com/api/v2/subscribe_token/100\");\nHttpURLConnection conn = (HttpURLConnection)url.openConnection();\nconn.setRequestProperty(\"Authorization\", \"Bearer your_api_secret\");\nconn.setRequestProperty(\"Content-Type\", \"application/json\");\nconn.setRequestMethod(\"PUT\");\n\nconn.setDoOutput(true);\nDataOutputStream wr = new DataOutputStream(conn.getOutputStream());\nwr.writeBytes(\"{\\\"label\\\": \\\"new_label_name\\\", \\\"refreshToken\\\": true}\");\nwr.close();\n\nInputStreamReader sr = new InputStreamReader(conn.getInputStream());\nBufferedReader br = new BufferedReader(sr);\nString inputLine;\nStringBuffer response = new StringBuffer();\nwhile ((inputLine = br.readLine()) != null)\n  response.append(inputLine);\nbr.close();\nSystem.out.println(response);"
+      - lang: Node
+        source: "const https = require('https');\nconst URL = require('url');\n\nconst url = URL.parse('https://api.millicast.com/api/v2/subscribe_token/100');\nconst opts = {\n  'protocol': url.protocol,\n  'host': url.host,\n  'port': url.port,\n  'path': url.path,\n  'headers': {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n  }\n};\nopts['method'] = 'PUT';let req = https.request(opts, (resp) => {\n  let result = '';\n  resp.on('data', (chunk) => result += chunk);\n  resp.on('end', () => {\n    console.log(result);\n  });\n});\nvar data = {\"label\": \"new_label_name\", \"refreshToken\": true};\nreq.write(JSON.stringify(data));\nreq.end();"
+      - lang: PHP
+        source: "$url = 'https://api.millicast.com/api/v2/subscribe_token/100';\n$headers = array(\n  'Authorization: Bearer your_api_secret',\n  'Content-Type: application/json'\n);\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, $url);\ncurl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n$data = array(\"label\" => \"new_label_name\", \"refreshToken\" => TRUE );\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');\ncurl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n$result = curl_exec($ch);\necho($result);"
+      - lang: Python
+        source: "import urllib.request\nimport json\n\nurl = 'https://api.millicast.com/api/v2/subscribe_token/100'\nheaders = {\n    'Authorization': 'Bearer your_api_secret',\n    'Content-Type': 'application/json'\n}\nreq = urllib.request.Request(url, headers=headers)\nreq.method = 'PUT'\ndata = {\"label\": \"new_label_name\", \"refreshToken\": True}\nreq.data = json.dumps(data).encode('utf8')\nwith urllib.request.urlopen(req) as resp:\n    result = resp.read()\nprint(result.decode('utf-8'))"
+      - lang: Ruby
+        source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/v2/subscribe_token/100')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\"label\": \"new_label_name\", \"refreshToken\": true}\nres = http.put(uri, data.to_json, headers)\nputs res.body"
+components:
+  schemas:
+    TokenStreamNameViewModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      properties:
+        streamName:
+          type: string
+          description: Name of the stream this token can access.
+          maxLength: 128
+          minLength: 1
+        isRegex:
+          type: boolean
+          description: Set to true if the name of the stream is a regular expression.
+          default: false
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    TrackingInformation:
+      type: object
+      additionalProperties: false
+      properties:
+        trackingId:
+          type:
+          - string
+          - 'null'
+          description: Optional. Tracking identifier for Stream Syndication.
+          maxLength: 128
+    UpdateSubscribeTokenV2:
+      type: object
+      additionalProperties: false
+      properties:
+        label:
+          type:
+          - string
+          - 'null'
+          maxLength: 128
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        addTokenStreams:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TokenStreamNameViewModel'
+        removeTokenStreams:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        allowedOrigins:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        allowedIpAddresses:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        bindIpsOnUsage:
+          type:
+          - integer
+          - 'null'
+          maximum: 4294967295.0
+          minimum: 0.0
+        originCluster:
+          type:
+          - string
+          - 'null'
+        refreshToken:
+          type:
+          - boolean
+          - 'null'
+          description: Generate new unique token, invalidating previous token.
+        allowedCountries:
+          type:
+          - array
+          - 'null'
+          description: The list of allowed countries.
+          items:
+            type: string
+        deniedCountries:
+          type:
+          - array
+          - 'null'
+          description: The list of denied countries.
+          items:
+            type: string
+    GeoCascadeModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
+    SuccessResponseSubscribeTokenV2:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/SubscribeTokenResponseV2'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    SubscribeTokenResponseV2:
+      type: object
+      additionalProperties: false
+      properties:
+        tracking:
+          description: Tracking information
+          oneOf:
+          - $ref: '#/components/schemas/TrackingInformation'
+        id:
+          type: integer
+        label:
+          type:
+          - string
+          - 'null'
+          description: Friendly name of token
+        token:
+          type:
+          - string
+          - 'null'
+          description: Actual token
+        addedOn:
+          type: string
+          format: date-time
+        expiresOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        isActive:
+          type: boolean
+        streams:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TokenStreamNameViewModel'
+        allowedOrigins:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        allowedIpAddresses:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        bindIpsOnUsage:
+          type:
+          - integer
+          - 'null'
+        originCluster:
+          type:
+          - string
+          - 'null'
+        effectiveSettings:
+          description: Token effective settings for properties that use account default settings. Value for each property will either be token or account level settings.
+          oneOf:
+          - $ref: '#/components/schemas/TokenEffectiveSettings'
+        allowedCountries:
+          type: array
+          description: The list of allowed countries.
+          items:
+            type: string
+        deniedCountries:
+          type: array
+          description: The list of denied countries.
+          items:
+            type: string
+    TokenEffectiveSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        originCluster:
+          type:
+          - string
+          - 'null'
+        allowedCountries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        deniedCountries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        geoCascade:
+          oneOf:
+          - $ref: '#/components/schemas/GeoCascadeModel2'
+        enableUTCInsertion:
+          type:
+          - boolean
+          - 'null'
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

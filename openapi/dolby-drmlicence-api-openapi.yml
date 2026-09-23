@@ -1,0 +1,78 @@
+openapi: 3.2.0
+info:
+  title: Director Drm Licence API
+  version: 1.0.0
+servers:
+- url: https://director.millicast.com
+security:
+- Token: []
+tags:
+- name: DrmLicence
+paths:
+  /api/drm_proxy/{licenseType}/{assetId}:
+    post:
+      tags:
+      - DrmLicence
+      operationId: DrmLicence_GetDrmLicence
+      parameters:
+      - name: licenseType
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      - name: assetId
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 2
+      - name: specConform
+        in: query
+        required: true
+        schema:
+          type:
+          - boolean
+          - 'null'
+        x-position: 3
+      responses:
+        '200':
+          description: ''
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      security:
+      - Token: []
+      summary: Drm licence get drm licence
+      x-summary-source: derived
+  /api/drm_proxy/fair_play/cert:
+    get:
+      tags:
+      - DrmLicence
+      operationId: DrmLicence_GetFairplayCertificate
+      responses:
+        '200':
+          description: ''
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      security:
+      - Token: []
+      summary: Drm licence get fairplay certificate
+      x-summary-source: derived
+components:
+  securitySchemes:
+    Token:
+      type: http
+      description: '### Usage
+
+        #### Acquire token from dashboard or api.
+
+        Token will be specific to publishing or subscribing.'
+      scheme: bearer
+x-generator: NSwag v14.6.3.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

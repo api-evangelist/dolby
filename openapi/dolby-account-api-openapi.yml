@@ -1,0 +1,1422 @@
+openapi: 3.2.0
+info:
+  title: Millicast Account API
+  description: '# Introduction
+
+    Controlling publishing for your Millicast account.'
+  version: 1.0.0
+servers:
+- url: https://api.millicast.com
+security:
+- API_Secret: []
+tags:
+- name: Account
+paths:
+  /api/v3/account/media/expiration:
+    put:
+      tags:
+      - Account
+      summary: Update Account Media Assets Expiration Rules
+      description: Update account level expiration rule for various media asset types.
+      operationId: Account_UpdateExpirationRules
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMediaAssetExpirationModel'
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfMediaAssetExpirationResponseModel'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    get:
+      tags:
+      - Account
+      summary: Get Account Media Assets Expiration Rule
+      description: Get account level expiration rule for various media asset types.
+      operationId: Account_GetExpirationRules
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfMediaAssetExpirationResponseModel'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/v3/account/media/storage:
+    get:
+      tags:
+      - Account
+      summary: List Storage Profiles
+      description: List all storage profiles created on your account.
+      operationId: Account_ListStorageProfiles
+      parameters:
+      - name: sort
+        in: query
+        schema:
+          default: name
+          oneOf:
+          - $ref: '#/components/schemas/ListStorageProfilesSortBy'
+        x-position: 1
+      - name: default
+        in: query
+        description: Set to true to get the default storage profile on your account
+        schema:
+          type:
+          - boolean
+          - 'null'
+        x-position: 2
+      - name: page
+        in: query
+        schema:
+          type: integer
+          default: 1
+          maximum: 2147483647.0
+          minimum: 1.0
+        x-position: 3
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 25
+          maximum: 100.0
+          minimum: 1.0
+        x-position: 4
+      - name: desc
+        in: query
+        schema:
+          type: boolean
+          default: false
+        x-position: 5
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfListOfStorageProfileResponseModel'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    post:
+      tags:
+      - Account
+      summary: Create Storage Profile
+      description: Create a storage profile identifying the configuration for a cloud storage provider that can receive media assets when they are finished processing. Only one storage profile will be set as a default for the entire account, otherwise you may specify a storage location using the `storageProfileId` on any individual media clip request.
+      operationId: Account_CreateStorageProfile
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStorageProfileModel'
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfStorageProfileResponseModel'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/v3/account/media/storage/{id}:
+    delete:
+      tags:
+      - Account
+      summary: Delete Storage Profile
+      description: Specify the id of a storage profile you wish to delete.
+      operationId: Account_DeleteStorageProfile
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfBoolean'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    get:
+      tags:
+      - Account
+      summary: Get Storage Profile
+      description: Get details of a saved storage profile
+      operationId: Account_GetStorageProfile
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfStorageProfileResponseModel'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    put:
+      tags:
+      - Account
+      summary: Update Storage Profile
+      description: Change the details of a storage profile.
+      operationId: Account_UpdateStorageProfile
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        x-position: 1
+      requestBody:
+        x-name: updateModel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStorageProfileModel'
+        required: true
+        x-position: 2
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfStorageProfileResponseModel'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/v3/account/media/storage/validate:
+    post:
+      tags:
+      - Account
+      summary: Validate Third Party Storage Setup
+      description: 'Validates third party storage is configured with permissions for Dolby.io to upload media assets.
+
+
+        To track the validation result, keep note of the the `id` returned in the response body. If correctly configured, when calling Read Media Asset, the response should return a successful entry with `id` matching the `id`.
+
+
+        Run once to validate write permissions. If successful, optionally run a second time to confirm that overwriting is allowed.
+
+
+        Note that validation results are only available for 1 hour.'
+      operationId: Account_ValidateThirdPartyStorage
+      requestBody:
+        x-name: storageModel
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MediaAssetStorageModel'
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfSuccessValidateRecordStorageResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/v3/account/distribution:
+    get:
+      tags:
+      - Account
+      summary: Read Account Distribution Settings
+      description: 'Gets account wide distribution settings. Whenever publish tokens are created, these will be the default settings used for features that impact how streams are distributed.
+
+        * geoCascade: controls if and which geographic clusters are included for regional content delivery'
+      operationId: Account_GetAccountDistribution
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfAccountDistributionModel'
+              examples:
+                success:
+                  summary: success
+                  value:
+                    status: success
+                    data:
+                      geoCascade:
+                        isEnabled: true
+                        clusters:
+                        - phx-1
+                        - ams-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    put:
+      tags:
+      - Account
+      summary: Update Account Distribution Settings
+      description: 'Update account wide distribution settings to enable/disable the feature or update the account default cluster list. Whenever publish tokens are created, these will be the default settings used for features that impact how streams are distributed.
+
+        ''["all"]'' could be used in place of cluster list to cascade stream to all existing and any future clusters available to the account.
+
+        Empty cluster list is not allowed when enabling account wide distribution settings. Cluster list is translated to ''["all"]'' clusters if not specified or set to null.
+
+        Cluster list is ignored when geo cascade is disabled.'
+      operationId: Account_UpdateAccountDistribution
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountDistributionModel'
+            examples:
+              update:
+                summary: update
+                value:
+                  geoCascade:
+                    isenabled: true
+                    clusters:
+                    - phx-1
+                    - ams-1
+                    - lon-1
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfAccountDistributionModel'
+              examples:
+                success:
+                  summary: success
+                  value:
+                    status: success
+                    data:
+                      geoCascade:
+                        isEnabled: true
+                        clusters:
+                        - phx-1
+                        - ams-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+              examples:
+                failure:
+                  summary: failure
+                  value:
+                    status: fail
+                    data:
+                      message: Geo cascade Clusters list cannot be empty
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/v3/account/security:
+    get:
+      tags:
+      - Account
+      summary: Read Account Security Settings
+      description: Gets account wide security settings. If a Token (either Publish or Subscribe) does not define any security settings, the account wide rules are used.
+      operationId: Account_GetAccountSecurity
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountGeoRestrictions'
+              examples:
+                allowed:
+                  summary: allowed
+                  value:
+                    status: success
+                    data:
+                      allowedCountries:
+                      - US
+                      deniedCountries: []
+                denied:
+                  summary: denied
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries:
+                      - UK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+    put:
+      tags:
+      - Account
+      summary: Update Account Security Settings
+      description: Update account wide security settings. Updated to an empty array `[]` removes all rules of that type.
+      operationId: Account_UpdateAccountSecurity
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAccountGeoModel'
+            examples:
+              allowed:
+                summary: allowed
+                value:
+                  allowedCountries:
+                  - US
+                  deniedCountries: []
+              denied:
+                summary: denied
+                value:
+                  allowedCountries: []
+                  deniedCountries:
+                  - UK
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountGeoRestrictions'
+              examples:
+                allowed:
+                  summary: allowed
+                  value:
+                    status: success
+                    data:
+                      allowedCountries:
+                      - US
+                      deniedCountries: []
+                denied:
+                  summary: denied
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries:
+                      - UK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/v3/account/info:
+    get:
+      tags:
+      - Account
+      summary: Read Account Info
+      description: Returns basic information about the authenticated account, including its `accountId` (the public account identifier used in stream IDs, e.g. `/`).
+      operationId: Account_GetAccountInfo
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponseOfAccountInfoResponseModel'
+              examples:
+                success:
+                  summary: success
+                  value:
+                    status: success
+                    data:
+                      accountId: abc123
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      security:
+      - API_Secret: []
+  /api/account/geo_cascade:
+    get:
+      tags:
+      - Account
+      summary: Read Account Geo Cascade Settings
+      description: '**Please refer to Get Account Distribution Settings**
+
+
+        Gets account wide geo cascade settings. If a Publish Token does not define any geo cascade settings, the account wide settings are used.'
+      operationId: Account_GetGeoCascade
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountGeoCascade'
+              examples:
+                success:
+                  summary: success
+                  value:
+                    status: success
+                    data:
+                      isEnabled: true
+                      clusters:
+                      - phx-1
+                      - ams-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+    put:
+      tags:
+      - Account
+      summary: Update Account Geo Cascade Settings
+      description: '**Please refer to Update Account Distribution Settings**
+
+
+        Update account wide geo cascade settings to enable/disable the feature or update the account default cluster list.
+
+        ''["all"]'' could be used in place of cluster list to cascade stream to all existing and any future clusters available to the account.
+
+        Empty cluster list is not allowed when enabling geo cascade feature. Cluster list is translated to ''["all"]'' clusters if not specified or set to null.
+
+        Cluster list is ignored when geo cascade is disabled.'
+      operationId: Account_UpdateGeoCascade
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeoCascadeModel'
+            examples:
+              update:
+                summary: update
+                value:
+                  isenabled: true
+                  clusters:
+                  - phx-1
+                  - ams-1
+                  - lon-1
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountGeoCascade'
+              examples:
+                success:
+                  summary: success
+                  value:
+                    status: success
+                    data:
+                      isEnabled: true
+                      clusters:
+                      - phx-1
+                      - ams-1
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+              examples:
+                failure:
+                  summary: failure
+                  value:
+                    status: fail
+                    data:
+                      message: Geo cascade Clusters list cannot be empty
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+  /api/geo/account:
+    get:
+      tags:
+      - Account
+      summary: Read Account Geo Restrictions
+      description: '**Please refer to Get Account Security Settings**
+
+
+        Gets account wide geo restrictions. If a Token (either Publish or Subscribe) does not define any geo restrictions, the account wide rules are used.'
+      operationId: Geo_Geo
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountGeoRestrictions'
+              examples:
+                allowed:
+                  summary: allowed
+                  value:
+                    status: success
+                    data:
+                      allowedCountries:
+                      - US
+                      deniedCountries: []
+                denied:
+                  summary: denied
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries:
+                      - UK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+    post:
+      tags:
+      - Account
+      summary: Update Account Geo Restrictions
+      description: '**Please refer to Update Account Security Settings**
+
+
+        Update account wide geo restrictions. Updated to an empty array `[]` removes all rules of that type.'
+      operationId: Geo_UpdateGeo
+      requestBody:
+        x-name: model
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAccountGeoModel'
+            examples:
+              allowed:
+                summary: allowed
+                value:
+                  allowedCountries:
+                  - US
+                  deniedCountries: []
+              denied:
+                summary: denied
+                value:
+                  allowedCountries: []
+                  deniedCountries:
+                  - UK
+        required: true
+        x-position: 1
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessAccountGeoRestrictions'
+              examples:
+                allowed:
+                  summary: allowed
+                  value:
+                    status: success
+                    data:
+                      allowedCountries:
+                      - US
+                      deniedCountries: []
+                denied:
+                  summary: denied
+                  value:
+                    status: success
+                    data:
+                      allowedCountries: []
+                      deniedCountries:
+                      - UK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailResponse'
+        default:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                general:
+                  summary: general
+                  value:
+                    status: error
+                    message: simple error reason
+                    code: 500
+                    data:
+                      additional: other data here (not actual key)
+      deprecated: true
+      security:
+      - API_Secret: []
+components:
+  schemas:
+    ListStorageProfilesSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - Name
+      enum:
+      - name
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    UpdateMediaAssetExpirationModel:
+      type: object
+      additionalProperties: false
+      properties:
+        timelines:
+          description: "Update account level expiration rule for timelines. Specified timespans must be non-zero.\n\n This limits the earliest permissible startTime when creating clips. Expiration rule updates take effect immediately, with then system cleaning up any timelines created prior to the expiration rule.\n\n By default, timelines expire after 1 day.\n\n Provide an empty json to clear settings."
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+        recordings:
+          description: "Update account level expiration rule for recordings. Specified timespans must be non-zero.\n\n Updates to the expiration rule are applied only to new recordings.\n\n By default, recordings do not expire unless this value is updated.\n\n Provide an empty json to clear settings."
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+        clips:
+          description: "Update account level expiration rule for clips. Specified timespans must be non-zero.\n\n Updates to the expiration rule are applied only to new clips. This account level default can be overridden for individual clips upon clip creation.\n\n By default, clip do not expire unless this value is updated or expiration is specified on creation.\n\n Provide an empty json to clear settings. "
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+    SuccessAccountGeoRestrictions:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/AccountGeoModel'
+    MediaAssetStorageResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          description: Storage provider type
+          oneOf:
+          - $ref: '#/components/schemas/MediaAssetStorageType'
+        path:
+          type:
+          - string
+          - 'null'
+          description: 'Path to clip storage location. Available only for external storage configurations. '
+    SuccessResponseOfListOfStorageProfileResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StorageProfileResponseModel'
+    CreateStorageProfileModel:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      - options
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Provide a label for your storage profile
+          maxLength: 256
+          minLength: 1
+        default:
+          type:
+          - boolean
+          - 'null'
+          description: Set this as the default storage profile for your account. If set to true this will replace the previous default profile.
+          default: false
+        type:
+          description: 'Storage provider type. One of the following:
+
+            * AwsS3 - Amazon S3
+
+            * Gcs - Google Cloud Storage'
+          oneOf:
+          - $ref: '#/components/schemas/MediaAssetStorageType'
+        options:
+          description: The storage options.
+          oneOf:
+          - $ref: '#/components/schemas/StorageOptionsModel'
+    SuccessResponseOfBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
+    SuccessResponseOfAccountInfoResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/AccountInfoResponseModel'
+    MediaAssetStorageModel:
+      type: object
+      additionalProperties: false
+      properties:
+        profileId:
+          type:
+          - string
+          - 'null'
+          description: Optional. Provide the id of a storage profile. Mutually exclusive with Type.
+        type:
+          description: 'Optional. Use to indicate the storage provider type for a one-off storage configuration. Mutually exclusive with ProfileId. Storage provider type. One of the following:
+
+            * AwsS3 - Amazon S3
+
+            * Gcs - Google Cloud Storage
+
+            * DolbyStorage - Dolby.io''s storage buckets. Call Read Media Asset to retrieve the clip file.'
+          oneOf:
+          - $ref: '#/components/schemas/MediaAssetStorageType'
+        options:
+          description: 'May be used in the following ways: <br />1. Optional. Override parameters of a storage profile specified via ProfileId <br />2. Required. Set parameters for a one-off storage configuration when Type is provided <br /> 3. Optional. Override parameters of the default storage profile if neither ProfileId or Type are provided'
+          oneOf:
+          - $ref: '#/components/schemas/UpdateStorageOptionsModel'
+    SuccessValidateRecordStorageResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        storage:
+          oneOf:
+          - $ref: '#/components/schemas/MediaAssetStorageResponseModel'
+    SuccessResponseOfMediaAssetExpirationResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/MediaAssetExpirationResponseModel'
+    MediaAssetStorageType:
+      type: string
+      description: ''
+      x-enumNames:
+      - Gcs
+      - AwsS3
+      - DolbyStorage
+      enum:
+      - gcs
+      - awsS3
+      - dolbyStorage
+    SuccessResponseOfAccountDistributionModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/AccountDistributionModel'
+    AccountDistributionModel:
+      type: object
+      additionalProperties: false
+      required:
+      - geoCascade
+      properties:
+        geoCascade:
+          description: Controls if and which geographic clusters are included for regional content delivery
+          oneOf:
+          - $ref: '#/components/schemas/GeoCascadeModel'
+    StorageProfileResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The unique identifier of the storage profile.
+        name:
+          type:
+          - string
+          - 'null'
+          description: The name of the storage profile.
+        default:
+          type:
+          - boolean
+          - 'null'
+          description: Flag indicating whether this is the default storage profile.
+        type:
+          description: The type of this storage profile.
+          oneOf:
+          - $ref: '#/components/schemas/MediaAssetStorageType'
+        options:
+          description: The options of this storage profile.
+          oneOf:
+          - $ref: '#/components/schemas/StorageOptionsModel'
+    AccountInfoResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        accountId:
+          type:
+          - string
+          - 'null'
+    AccountGeoModel:
+      type: object
+      additionalProperties: false
+      properties:
+        allowedCountries:
+          type: array
+          items:
+            type: string
+        deniedCountries:
+          type: array
+          items:
+            type: string
+    GeoCascadeModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
+    UpdateStorageOptionsModel:
+      type: object
+      additionalProperties: false
+      properties:
+        objectPrefix:
+          type:
+          - string
+          - 'null'
+          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. Ignored when using Dolby.io's storage buckets. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
+          maxLength: 1000
+          minLength: 0
+        bucketName:
+          type:
+          - string
+          - 'null'
+          description: Name of bucket to upload clips to. Please ensure Dolby.io's service account is granted access.
+        bucketRegion:
+          type:
+          - string
+          - 'null'
+          description: Region of the specified bucket if using storage provider awsS3
+          maxLength: 32
+          minLength: 1
+    StorageOptionsModel:
+      type: object
+      additionalProperties: false
+      required:
+      - bucketName
+      properties:
+        objectPrefix:
+          type:
+          - string
+          - 'null'
+          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
+          maxLength: 1000
+          minLength: 0
+        bucketName:
+          type: string
+          description: Name of bucket to upload clips to. Please ensure Dolby.io's service account is granted access.
+          minLength: 1
+        bucketRegion:
+          type:
+          - string
+          - 'null'
+          description: 'Region of the specified bucket. Required when using storageType AwsS3 '
+          maxLength: 32
+          minLength: 1
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    SuccessResponseOfSuccessValidateRecordStorageResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/SuccessValidateRecordStorageResponse'
+    SuccessAccountGeoCascade:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/GeoCascadeModel2'
+    GeoCascadeModel:
+      type: object
+      additionalProperties: false
+      required:
+      - isEnabled
+      properties:
+        isEnabled:
+          type: boolean
+          description: Enable or Disable geo cascade.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
+    TimeSpanModel:
+      type: object
+      additionalProperties: false
+      properties:
+        days:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          maximum: 365.0
+          minimum: 1.0
+    UpdateStorageProfileModel:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Update the label for your storage profile
+          maxLength: 256
+          minLength: 0
+        default:
+          type:
+          - boolean
+          - 'null'
+          description: Set this as the default storage profile for your account. If set to true this will replace the previous default profile.
+        type:
+          description: 'Storage provider type. One of the following:
+
+            * AwsS3 - Amazon S3
+
+            * Gcs - Google Cloud Storage'
+          oneOf:
+          - $ref: '#/components/schemas/MediaAssetStorageType'
+        options:
+          description: The storage options.
+          oneOf:
+          - $ref: '#/components/schemas/UpdateStorageOptionsModel'
+    MediaAssetExpirationResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        timelines:
+          description: 'Account level expiration rule for timelines. If custom rule is not set, by default, timelines expire after 1 day. '
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+        recordings:
+          description: "Account level expiration rule for recordings.Expiration countdown begin upon recording creation (i.e. when [Create Media Asset](#operation/MediaAssets_CreateMediaAsset) the recording is stopped).\n\n If custom rule is not set, recordings never expire and this field will be empty. "
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+        clips:
+          description: "Account level expiration rule for clips. Expiration countdown begin upon clip creation (i.e. when [Create Media Asset](#operation/MediaAssets_CreateMediaAsset) is invoke).\n\n If custom rule is not set, clips never expire by default and this field will be empty. Setting the `expiration` value on in the request body of [Create Media Asset](#operation/MediaAssets_CreateMediaAsset) overrides the rule configured here."
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+    SuccessResponseOfStorageProfileResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/StorageProfileResponseModel'
+    UpdateAccountGeoModel:
+      type: object
+      additionalProperties: false
+      properties:
+        updateAllowedCountries:
+          type:
+          - array
+          - 'null'
+          description: Set the list of permitted countries as the account default when creating new tokens. List must be less than 768 characters.
+          items:
+            type: string
+        updateDeniedCountries:
+          type:
+          - array
+          - 'null'
+          description: Set the list of excluded countries as the account default when creating new tokens. List must be less than 768 characters.
+          items:
+            type: string
+  securitySchemes:
+    API_Secret:
+      type: http
+      description: '### Usage
+
+        #### Acquire secret from dashboard.
+
+        * Login to the streaming dashboard
+
+        * On the left menu, click on Settings
+
+        * Navigate to the Security tab''s sub section API Secrets
+
+        1. "+ Create" to generate a new named API Secret if needed
+
+        2. Click on the copy button or the reveal button to access a previously created API Secret
+
+
+        ![](../assets/api_secret.png "Find API Secret")'
+      scheme: bearer
+x-generator: NSwag v14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))
+x-code-samples-replace: {}

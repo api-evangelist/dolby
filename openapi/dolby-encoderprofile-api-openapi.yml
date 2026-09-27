@@ -32,26 +32,27 @@ paths:
       - API_Secret: []
 components:
   schemas:
-    AudioConfigurationSettings:
+    EncoderProfileModel:
       type: object
       additionalProperties: false
       properties:
-        bitrate:
+        id:
           type:
-          - integer
+          - string
           - 'null'
-          description: Audio bitrate.
-          format: int32
-    EncoderConfigurationSettings:
-      type: object
-      additionalProperties: false
-      properties:
-        bitrate:
+          description: Identifier of the encoder profile.
+        name:
           type:
-          - integer
+          - string
           - 'null'
-          description: Video bitrate.
-          format: int32
+          description: Name of the encoder profile.
+        isGlobal:
+          type: boolean
+          description: Flag to indicate if this is a global encoder profile.
+        configuration:
+          description: The encoder profile configuration.
+          oneOf:
+          - $ref: '#/components/schemas/MultiTrackVideoConfiguration'
     AudioConfiguration:
       type: object
       additionalProperties: false
@@ -65,6 +66,16 @@ components:
           description: Audio configuration settings.
           oneOf:
           - $ref: '#/components/schemas/AudioConfigurationSettings'
+    AudioConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type:
+          - integer
+          - 'null'
+          description: Audio bitrate.
+          format: int32
     MultiTrackVideoConfiguration:
       type: object
       additionalProperties: false
@@ -80,6 +91,16 @@ components:
           description: Audio configurations.
           oneOf:
           - $ref: '#/components/schemas/AudioConfigurations'
+    EncoderConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type:
+          - integer
+          - 'null'
+          description: Video bitrate.
+          format: int32
     AudioConfigurations:
       type: object
       additionalProperties: false
@@ -118,27 +139,6 @@ components:
           description: Video settings.
           oneOf:
           - $ref: '#/components/schemas/EncoderConfigurationSettings'
-    EncoderProfileModel:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: Identifier of the encoder profile.
-        name:
-          type:
-          - string
-          - 'null'
-          description: Name of the encoder profile.
-        isGlobal:
-          type: boolean
-          description: Flag to indicate if this is a global encoder profile.
-        configuration:
-          description: The encoder profile configuration.
-          oneOf:
-          - $ref: '#/components/schemas/MultiTrackVideoConfiguration'
   securitySchemes:
     API_Secret:
       type: http

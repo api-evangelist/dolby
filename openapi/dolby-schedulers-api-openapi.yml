@@ -155,21 +155,6 @@ paths:
           description: Empty response
 components:
   schemas:
-    SchedulerChannelSelection:
-      type: object
-      properties:
-        channelId:
-          type: string
-          description: Channel ID
-        engineIds:
-          type: array
-          items:
-            type: string
-          minItems: 1
-          description: Engine IDs of this channel to start/stop. Omit to include all engines of the channel.
-      required:
-      - channelId
-      additionalProperties: false
     CreateSchedulerBody:
       type: object
       properties:
@@ -218,6 +203,39 @@ components:
       - startDate
       - startTime
       additionalProperties: false
+    PaginatedSchedulerResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Scheduler'
+          description: List of schedulers
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
+    SchedulerObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Scheduler'
+          - description: Scheduler object
+      required:
+      - data
     Scheduler:
       type: object
       properties:
@@ -275,39 +293,21 @@ components:
       - timeZone
       - channelIds
       - channels
-    PaginatedSchedulerResult:
+    SchedulerChannelSelection:
       type: object
       properties:
-        data:
+        channelId:
+          type: string
+          description: Channel ID
+        engineIds:
           type: array
           items:
-            $ref: '#/components/schemas/Scheduler'
-          description: List of schedulers
-        pagination:
-          type: object
-          properties:
-            hasMore:
-              type: boolean
-              description: Whether more results are available
-            cursor:
-              type: string
-              description: Cursor for the next page of results
-          required:
-          - hasMore
-          - cursor
-          description: Pagination info
+            type: string
+          minItems: 1
+          description: Engine IDs of this channel to start/stop. Omit to include all engines of the channel.
       required:
-      - data
-      - pagination
-    SchedulerObjectResult:
-      type: object
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/Scheduler'
-          - description: Scheduler object
-      required:
-      - data
+      - channelId
+      additionalProperties: false
     UpdateSchedulerBody:
       type: object
       properties:

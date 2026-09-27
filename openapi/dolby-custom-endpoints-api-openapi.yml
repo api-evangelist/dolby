@@ -124,6 +124,108 @@ paths:
           description: Empty response
 components:
   schemas:
+    CustomEndpointDrmConfig:
+      type: object
+      properties:
+        integration:
+          type: string
+          enum:
+          - ezdrm
+          - mediakind
+          - drmtoday
+          description: DRM integration type
+        merchant:
+          type: string
+          description: Merchant identifier, for integrations that identify the customer per license request
+        widevine:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: Widevine license URL
+          required:
+          - licenseUrl
+          description: Widevine DRM configuration
+        playready:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: PlayReady license URL
+          required:
+          - licenseUrl
+          description: PlayReady DRM configuration
+        fairplay:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: FairPlay license URL
+            certificateUrl:
+              type: string
+              description: FairPlay certificate URL
+          required:
+          - licenseUrl
+          - certificateUrl
+          description: FairPlay DRM configuration
+      required:
+      - integration
+      additionalProperties: false
+      description: Optional DRM configuration
+    CreateCustomEndpointBody:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Name of the custom endpoint
+        src:
+          type: string
+          minLength: 1
+          description: Source URL
+        srcType:
+          type: string
+          enum:
+          - hesp
+          - hls
+          - dash
+          description: Source type (hesp, hls or dash)
+        provider:
+          type: string
+          minLength: 1
+          description: Provider name (must be configured for the organization)
+        adSystem:
+          type: string
+          minLength: 1
+          description: Ad system name (must be configured for the organization). 'sgai' is always allowed. Defaults to 'sgai' if not specified
+        drmConfig:
+          $ref: '#/components/schemas/CustomEndpointDrmConfig'
+        cdn:
+          type: string
+          minLength: 1
+          pattern: ^[a-zA-Z0-9]+$
+          description: CDN identifier
+        priority:
+          type: integer
+          description: Priority (lower is higher priority)
+      required:
+      - name
+      - src
+      - srcType
+      - provider
+      - cdn
+      - priority
+      additionalProperties: false
+    CustomEndpointListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomEndpoint'
+          description: List of custom endpoints
+      required:
+      - data
     CustomEndpoint:
       type: object
       properties:
@@ -231,50 +333,6 @@ components:
       - cdn
       - priority
       description: Custom endpoint object
-    CreateCustomEndpointBody:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Name of the custom endpoint
-        src:
-          type: string
-          minLength: 1
-          description: Source URL
-        srcType:
-          type: string
-          enum:
-          - hesp
-          - hls
-          - dash
-          description: Source type (hesp, hls or dash)
-        provider:
-          type: string
-          minLength: 1
-          description: Provider name (must be configured for the organization)
-        adSystem:
-          type: string
-          minLength: 1
-          description: Ad system name (must be configured for the organization). 'sgai' is always allowed. Defaults to 'sgai' if not specified
-        drmConfig:
-          $ref: '#/components/schemas/CustomEndpointDrmConfig'
-        cdn:
-          type: string
-          minLength: 1
-          pattern: ^[a-zA-Z0-9]+$
-          description: CDN identifier
-        priority:
-          type: integer
-          description: Priority (lower is higher priority)
-      required:
-      - name
-      - src
-      - srcType
-      - provider
-      - cdn
-      - priority
-      additionalProperties: false
     CustomEndpointObjectResult:
       type: object
       properties:
@@ -282,64 +340,6 @@ components:
           $ref: '#/components/schemas/CustomEndpoint'
       required:
       - data
-    CustomEndpointListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomEndpoint'
-          description: List of custom endpoints
-      required:
-      - data
-    CustomEndpointDrmConfig:
-      type: object
-      properties:
-        integration:
-          type: string
-          enum:
-          - ezdrm
-          - mediakind
-          - drmtoday
-          description: DRM integration type
-        merchant:
-          type: string
-          description: Merchant identifier, for integrations that identify the customer per license request
-        widevine:
-          type: object
-          properties:
-            licenseUrl:
-              type: string
-              description: Widevine license URL
-          required:
-          - licenseUrl
-          description: Widevine DRM configuration
-        playready:
-          type: object
-          properties:
-            licenseUrl:
-              type: string
-              description: PlayReady license URL
-          required:
-          - licenseUrl
-          description: PlayReady DRM configuration
-        fairplay:
-          type: object
-          properties:
-            licenseUrl:
-              type: string
-              description: FairPlay license URL
-            certificateUrl:
-              type: string
-              description: FairPlay certificate URL
-          required:
-          - licenseUrl
-          - certificateUrl
-          description: FairPlay DRM configuration
-      required:
-      - integration
-      additionalProperties: false
-      description: Optional DRM configuration
     UpdateCustomEndpointBody:
       type: object
       properties:

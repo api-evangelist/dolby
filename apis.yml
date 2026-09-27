@@ -1530,9 +1530,9 @@ common:
 - type: Overlay
   url: overlays/dolby-optiview-ad-engine-overlay.yaml
 - type: Website
-  url: https://optiview.dolby.com
-- type: ParentCompany
   url: https://www.dolby.com
+- type: Portal
+  url: https://optiview.dolby.com
 - type: DeveloperPortal
   url: https://optiview.dolby.com/docs/
 - type: Documentation
@@ -1619,6 +1619,8 @@ common:
   url: rate-limits/dolby-rate-limits.yml
 - type: FinOps
   url: finops/dolby-finops.yml
+- type: GitHubOrganization
+  url: https://github.com/dolbyio-samples
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

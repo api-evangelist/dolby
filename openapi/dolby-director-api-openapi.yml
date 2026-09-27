@@ -157,6 +157,78 @@ paths:
         source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://director.millicast.com/api/director/subscribe \\\n     -d '{\"streamName\": \"my_insecure_stream\", \"streamAccountId\": \"abc123\"}'"
 components:
   schemas:
+    IceServerModel:
+      type: object
+      additionalProperties: false
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+        username:
+          type:
+          - string
+          - 'null'
+        credential:
+          type:
+          - string
+          - 'null'
+    PublishStreamModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      properties:
+        streamName:
+          type: string
+          minLength: 1
+        streamAccountId:
+          type:
+          - string
+          - 'null'
+    SubscribeStreamModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      properties:
+        streamName:
+          type: string
+          minLength: 1
+        streamAccountId:
+          type:
+          - string
+          - 'null'
+          description: Required **only** for published streams which have `subscribeRequiresAuth=false`.
+    SuccessSubscribeDirectorResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DirectorResponseModel'
+    DrmLicenseServers:
+      type: object
+      additionalProperties: false
+      properties:
+        widevineUrl:
+          type:
+          - string
+          - 'null'
+        fairPlayUrl:
+          type:
+          - string
+          - 'null'
+        fairPlayCertUrl:
+          type:
+          - string
+          - 'null'
     DirectorResponseModel:
       type: object
       additionalProperties: false
@@ -180,45 +252,6 @@ components:
         drmObject:
           oneOf:
           - $ref: '#/components/schemas/DrmLicenseServers'
-    SuccessSubscribeDirectorResponseModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/DirectorResponseModel'
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    SubscribeStreamModel:
-      type: object
-      additionalProperties: false
-      required:
-      - streamName
-      properties:
-        streamName:
-          type: string
-          minLength: 1
-        streamAccountId:
-          type:
-          - string
-          - 'null'
-          description: Required **only** for published streams which have `subscribeRequiresAuth=false`.
     SuccessPublishDirectorResponseModel:
       type: object
       additionalProperties: false
@@ -232,22 +265,6 @@ components:
           minLength: 1
         data:
           $ref: '#/components/schemas/PublishDirectorResponseModel'
-    IceServerModel:
-      type: object
-      additionalProperties: false
-      properties:
-        urls:
-          type: array
-          items:
-            type: string
-        username:
-          type:
-          - string
-          - 'null'
-        credential:
-          type:
-          - string
-          - 'null'
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -267,6 +284,18 @@ components:
           - integer
           - 'null'
           format: int32
+        data: {}
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
         data: {}
     PublishDirectorResponseModel:
       type: object
@@ -293,35 +322,6 @@ components:
           - $ref: '#/components/schemas/DrmLicenseServers'
         subscribeRequiresAuth:
           type: boolean
-    DrmLicenseServers:
-      type: object
-      additionalProperties: false
-      properties:
-        widevineUrl:
-          type:
-          - string
-          - 'null'
-        fairPlayUrl:
-          type:
-          - string
-          - 'null'
-        fairPlayCertUrl:
-          type:
-          - string
-          - 'null'
-    PublishStreamModel:
-      type: object
-      additionalProperties: false
-      required:
-      - streamName
-      properties:
-        streamName:
-          type: string
-          minLength: 1
-        streamAccountId:
-          type:
-          - string
-          - 'null'
   securitySchemes:
     Token:
       type: http

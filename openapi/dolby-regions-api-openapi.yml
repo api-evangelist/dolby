@@ -110,6 +110,34 @@ components:
           description: List of SDI devices in the region
       required:
       - data
+    NdiSource:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the NDI source
+        name:
+          type: string
+          description: Name of the NDI source
+        url:
+          type: string
+          description: Current URL of the NDI source
+        lastSeen:
+          type: string
+          description: Timestamp the NDI source was last seen
+        stale:
+          type: boolean
+          description: Whether the NDI source has not been seen recently and may no longer be available
+        inUse:
+          type: boolean
+          description: Whether the NDI source is already connected to a non-deleted ingest
+      required:
+      - id
+      - name
+      - url
+      - lastSeen
+      - stale
+      - inUse
     SdiDevice:
       type: object
       properties:
@@ -171,44 +199,6 @@ components:
       - driverVersion
       - available
       - profile
-    NdiSource:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the NDI source
-        name:
-          type: string
-          description: Name of the NDI source
-        url:
-          type: string
-          description: Current URL of the NDI source
-        lastSeen:
-          type: string
-          description: Timestamp the NDI source was last seen
-        stale:
-          type: boolean
-          description: Whether the NDI source has not been seen recently and may no longer be available
-        inUse:
-          type: boolean
-          description: Whether the NDI source is already connected to a non-deleted ingest
-      required:
-      - id
-      - name
-      - url
-      - lastSeen
-      - stale
-      - inUse
-    NdiSourceListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/NdiSource'
-          description: List of NDI sources in the region
-      required:
-      - data
     RegionListResult:
       type: object
       properties:
@@ -287,6 +277,16 @@ components:
           - type
           - supportedIngestTypes
           description: The requested region
+      required:
+      - data
+    NdiSourceListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NdiSource'
+          description: List of NDI sources in the region
       required:
       - data
   securitySchemes:

@@ -796,6 +796,38 @@ paths:
                 $ref: '#/components/schemas/ViewersInsightsListResult'
 components:
   schemas:
+    AnalyticsListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                description: Timestamp of the data point
+              records:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: Identifier of the grouped entity
+                    amount:
+                      type: number
+                      description: Metric value
+                  required:
+                  - id
+                  - amount
+                description: Records for this time bucket
+            required:
+            - timestamp
+            - records
+          description: List of analytics data points
+      required:
+      - data
     DistributionSecurityKeyObjectResult:
       type: object
       properties:
@@ -813,46 +845,6 @@ components:
           description: Security key object
       required:
       - data
-    ViewersInsightsListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              timestamp:
-                type: string
-                description: Timestamp of the data point
-              amount:
-                type: number
-                description: Number of unique viewers
-            required:
-            - timestamp
-            - amount
-          description: List of viewer count data points
-      required:
-      - data
-    ViewingCountryListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              countryCode:
-                type: string
-                description: ISO country code
-              amount:
-                type: number
-                description: Metric value
-            required:
-            - countryCode
-            - amount
-          description: List of country viewing data
-      required:
-      - data
     CreateDistributionSecurityKeyBody:
       type: object
       properties:
@@ -865,66 +857,6 @@ components:
       required:
       - key
       additionalProperties: false
-    BrowserOsInsightsListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              browserName:
-                type: string
-                description: Browser name
-              browserVersion:
-                type: string
-                description: Browser version
-              osName:
-                type: string
-                description: OS name
-              osVersion:
-                type: string
-                description: OS version
-              amount:
-                type: number
-                description: Number of unique viewers
-            required:
-            - browserName
-            - browserVersion
-            - osName
-            - osVersion
-            - amount
-          description: List of browser/OS insights
-      required:
-      - data
-    CountryInsightsListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              city:
-                type: string
-                description: City name
-              countryCode:
-                type: string
-                description: ISO country code
-              geoLocation:
-                type: string
-                description: Rounded latitude,longitude
-              amount:
-                type: number
-                description: Number of unique viewers
-            required:
-            - city
-            - countryCode
-            - geoLocation
-            - amount
-          description: List of country insights
-      required:
-      - data
     UpdateDistributionBody:
       type: object
       properties:
@@ -1239,6 +1171,323 @@ components:
           description: List of security keys
       required:
       - data
+    DistributionObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Distribution'
+          - description: Distribution object
+      required:
+      - data
+    Distribution:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the distribution
+        createdAt:
+          type: string
+          description: Creation timestamp
+        name:
+          type: string
+          description: Name of the distribution
+        externalId:
+          type: string
+          description: External identifier for the distribution
+        enabled:
+          type: boolean
+          description: Whether the distribution is enabled
+        targetLatency:
+          type: number
+          description: 'Deprecated: use latencies instead.'
+        latencies:
+          type: object
+          properties:
+            hesp:
+              type:
+              - number
+              - 'null'
+              minimum: 1
+              maximum: 30
+              description: 'HESP latency in seconds (1-30, default: 2)'
+            hls:
+              type:
+              - number
+              - 'null'
+              minimum: 6
+              maximum: 30
+              description: 'HLS latency in seconds (6-30, default: 10)'
+          description: Latency configuration per output protocol
+        security:
+          type: object
+          properties:
+            geoBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether geo-blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: Geo-blocking mode
+                countries:
+                  type: array
+                  items:
+                    type: string
+                  description: List of country codes
+              required:
+              - enabled
+              - mode
+              - countries
+              description: Geo-blocking configuration
+            ipBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether IP blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: IP blocking mode
+                cidrs:
+                  type: array
+                  items:
+                    type: string
+                  description: List of CIDR ranges
+              required:
+              - enabled
+              - mode
+              - cidrs
+              description: IP blocking configuration
+            refererBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether referer blocking is enabled
+                allowedDomains:
+                  type: array
+                  items:
+                    type: string
+                  description: List of allowed domains
+                allowNativeApps:
+                  type: boolean
+                  description: Whether native apps are allowed
+              required:
+              - enabled
+              - allowedDomains
+              - allowNativeApps
+              description: Referer blocking configuration
+            rewriteSegmentUrls:
+              type: boolean
+              description: When enabled, a short-lived token is added to the segment URLs, derived from the token that was passed. This only works when JWT security is enabled on the same distribution.
+            keys:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Security key ID
+                  name:
+                    type: string
+                    description: Security key name
+                required:
+                - id
+              description: Security keys
+          required:
+          - geoBlocking
+          - ipBlocking
+          - keys
+          description: Security configuration
+        endpoints:
+          type: object
+          properties:
+            engineIds:
+              type: array
+              items:
+                type: string
+              description: Connected engine IDs
+          required:
+          - engineIds
+          description: Endpoint configuration
+        webRtc:
+          type: object
+          properties:
+            priority:
+              type: number
+              description: WebRTC priority
+            src:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: WebRTC source name
+                accountId:
+                  type: string
+                  description: WebRTC account ID
+                apiUrl:
+                  type: string
+                  description: WebRTC API URL
+              required:
+              - name
+              - accountId
+              - apiUrl
+              description: WebRTC source configuration
+          required:
+          - priority
+          - src
+          description: WebRTC configuration
+        maxBitrate:
+          type: number
+          description: Maximum bitrate limit in bps
+        outputs:
+          type: object
+          properties:
+            hesp:
+              type: boolean
+              default: true
+              description: Enable HESP output. Enabled by default.
+            hls:
+              type: boolean
+              default: true
+              description: Enable HLS output. Enabled by default.
+            hlsMpegTs:
+              type: boolean
+              default: false
+              description: Enable HLS MPEG-TS output. Disabled by default.
+          description: Output format configuration
+        dvr:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Whether DVR is enabled on the distribution
+          description: DVR configuration
+        overrides:
+          type: array
+          items:
+            type: object
+            properties:
+              deviceType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - tv
+                - mobile
+                - desktop
+                - other
+                - null
+                description: Target device type
+              sdkType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - native
+                - web
+                - null
+                description: Target SDK type
+              osName:
+                type:
+                - string
+                - 'null'
+                enum:
+                - apple
+                - android
+                - windows
+                - roku
+                - other
+                - null
+                description: Target OS name
+              profileId:
+                type:
+                - string
+                - 'null'
+                description: Target profile ID
+              targets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    distributionId:
+                      type: string
+                      description: Target distribution ID
+                    weight:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Weight (0-100)
+                  required:
+                  - distributionId
+                  - weight
+                description: Override target distributions with weights
+            required:
+            - targets
+          description: Distribution overrides
+        customEndpoints:
+          type: array
+          items:
+            type: object
+            properties:
+              customEndpointId:
+                type: string
+                description: ID of the connected custom endpoint
+              weight:
+                type: number
+                description: Weight (0-100)
+            required:
+            - customEndpointId
+            - weight
+          description: Connected custom endpoints with weights
+        ads:
+          type: object
+          properties:
+            dai:
+              type: object
+              properties:
+                weight:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  description: Weight for DAI endpoints (0-100)
+                priority:
+                  type: integer
+                  description: Priority for DAI endpoints (any integer, lower = higher priority)
+              required:
+              - weight
+              - priority
+              additionalProperties: false
+              description: DAI endpoint settings
+          additionalProperties: false
+          description: Ads configuration for the distribution
+        playerSettings:
+          type: object
+          properties:
+            hespCooldown:
+              type: number
+              minimum: 0
+              maximum: 300
+              description: Cooldown period in seconds (0-300) before the player retries HESP playback after falling back to another protocol. Defaults to 120 seconds when not set.
+          additionalProperties: false
+          description: Player settings applied to the player configuration in the discovery response
+      required:
+      - id
+      - createdAt
+      - name
+      - enabled
+      - latencies
+      - security
+      - endpoints
+      - dvr
     ViewingBrowserListResult:
       type: object
       properties:
@@ -1263,16 +1512,7 @@ components:
           description: List of browser viewing data
       required:
       - data
-    DistributionObjectResult:
-      type: object
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/Distribution'
-          - description: Distribution object
-      required:
-      - data
-    AnalyticsListResult:
+    ViewersInsightsListResult:
       type: object
       properties:
         data:
@@ -1283,25 +1523,13 @@ components:
               timestamp:
                 type: string
                 description: Timestamp of the data point
-              records:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      description: Identifier of the grouped entity
-                    amount:
-                      type: number
-                      description: Metric value
-                  required:
-                  - id
-                  - amount
-                description: Records for this time bucket
+              amount:
+                type: number
+                description: Number of unique viewers
             required:
             - timestamp
-            - records
-          description: List of analytics data points
+            - amount
+          description: List of viewer count data points
       required:
       - data
     CreateDistributionBody:
@@ -1617,314 +1845,86 @@ components:
       required:
       - data
       - pagination
-    Distribution:
+    BrowserOsInsightsListResult:
       type: object
       properties:
-        id:
-          type: string
-          description: Unique identifier of the distribution
-        createdAt:
-          type: string
-          description: Creation timestamp
-        name:
-          type: string
-          description: Name of the distribution
-        externalId:
-          type: string
-          description: External identifier for the distribution
-        enabled:
-          type: boolean
-          description: Whether the distribution is enabled
-        targetLatency:
-          type: number
-          description: 'Deprecated: use latencies instead.'
-        latencies:
-          type: object
-          properties:
-            hesp:
-              type:
-              - number
-              - 'null'
-              minimum: 1
-              maximum: 30
-              description: 'HESP latency in seconds (1-30, default: 2)'
-            hls:
-              type:
-              - number
-              - 'null'
-              minimum: 6
-              maximum: 30
-              description: 'HLS latency in seconds (6-30, default: 10)'
-          description: Latency configuration per output protocol
-        security:
-          type: object
-          properties:
-            geoBlocking:
-              type: object
-              properties:
-                enabled:
-                  type: boolean
-                  description: Whether geo-blocking is enabled
-                mode:
-                  type: string
-                  enum:
-                  - allow
-                  - deny
-                  description: Geo-blocking mode
-                countries:
-                  type: array
-                  items:
-                    type: string
-                  description: List of country codes
-              required:
-              - enabled
-              - mode
-              - countries
-              description: Geo-blocking configuration
-            ipBlocking:
-              type: object
-              properties:
-                enabled:
-                  type: boolean
-                  description: Whether IP blocking is enabled
-                mode:
-                  type: string
-                  enum:
-                  - allow
-                  - deny
-                  description: IP blocking mode
-                cidrs:
-                  type: array
-                  items:
-                    type: string
-                  description: List of CIDR ranges
-              required:
-              - enabled
-              - mode
-              - cidrs
-              description: IP blocking configuration
-            refererBlocking:
-              type: object
-              properties:
-                enabled:
-                  type: boolean
-                  description: Whether referer blocking is enabled
-                allowedDomains:
-                  type: array
-                  items:
-                    type: string
-                  description: List of allowed domains
-                allowNativeApps:
-                  type: boolean
-                  description: Whether native apps are allowed
-              required:
-              - enabled
-              - allowedDomains
-              - allowNativeApps
-              description: Referer blocking configuration
-            rewriteSegmentUrls:
-              type: boolean
-              description: When enabled, a short-lived token is added to the segment URLs, derived from the token that was passed. This only works when JWT security is enabled on the same distribution.
-            keys:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: Security key ID
-                  name:
-                    type: string
-                    description: Security key name
-                required:
-                - id
-              description: Security keys
-          required:
-          - geoBlocking
-          - ipBlocking
-          - keys
-          description: Security configuration
-        endpoints:
-          type: object
-          properties:
-            engineIds:
-              type: array
-              items:
-                type: string
-              description: Connected engine IDs
-          required:
-          - engineIds
-          description: Endpoint configuration
-        webRtc:
-          type: object
-          properties:
-            priority:
-              type: number
-              description: WebRTC priority
-            src:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: WebRTC source name
-                accountId:
-                  type: string
-                  description: WebRTC account ID
-                apiUrl:
-                  type: string
-                  description: WebRTC API URL
-              required:
-              - name
-              - accountId
-              - apiUrl
-              description: WebRTC source configuration
-          required:
-          - priority
-          - src
-          description: WebRTC configuration
-        maxBitrate:
-          type: number
-          description: Maximum bitrate limit in bps
-        outputs:
-          type: object
-          properties:
-            hesp:
-              type: boolean
-              default: true
-              description: Enable HESP output. Enabled by default.
-            hls:
-              type: boolean
-              default: true
-              description: Enable HLS output. Enabled by default.
-            hlsMpegTs:
-              type: boolean
-              default: false
-              description: Enable HLS MPEG-TS output. Disabled by default.
-          description: Output format configuration
-        dvr:
-          type: object
-          properties:
-            enabled:
-              type: boolean
-              description: Whether DVR is enabled on the distribution
-          description: DVR configuration
-        overrides:
+        data:
           type: array
           items:
             type: object
             properties:
-              deviceType:
-                type:
-                - string
-                - 'null'
-                enum:
-                - tv
-                - mobile
-                - desktop
-                - other
-                - null
-                description: Target device type
-              sdkType:
-                type:
-                - string
-                - 'null'
-                enum:
-                - native
-                - web
-                - null
-                description: Target SDK type
+              browserName:
+                type: string
+                description: Browser name
+              browserVersion:
+                type: string
+                description: Browser version
               osName:
-                type:
-                - string
-                - 'null'
-                enum:
-                - apple
-                - android
-                - windows
-                - roku
-                - other
-                - null
-                description: Target OS name
-              profileId:
-                type:
-                - string
-                - 'null'
-                description: Target profile ID
-              targets:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    distributionId:
-                      type: string
-                      description: Target distribution ID
-                    weight:
-                      type: number
-                      minimum: 0
-                      maximum: 100
-                      description: Weight (0-100)
-                  required:
-                  - distributionId
-                  - weight
-                description: Override target distributions with weights
+                type: string
+                description: OS name
+              osVersion:
+                type: string
+                description: OS version
+              amount:
+                type: number
+                description: Number of unique viewers
             required:
-            - targets
-          description: Distribution overrides
-        customEndpoints:
+            - browserName
+            - browserVersion
+            - osName
+            - osVersion
+            - amount
+          description: List of browser/OS insights
+      required:
+      - data
+    ViewingCountryListResult:
+      type: object
+      properties:
+        data:
           type: array
           items:
             type: object
             properties:
-              customEndpointId:
+              countryCode:
                 type: string
-                description: ID of the connected custom endpoint
-              weight:
+                description: ISO country code
+              amount:
                 type: number
-                description: Weight (0-100)
+                description: Metric value
             required:
-            - customEndpointId
-            - weight
-          description: Connected custom endpoints with weights
-        ads:
-          type: object
-          properties:
-            dai:
-              type: object
-              properties:
-                weight:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
-                  description: Weight for DAI endpoints (0-100)
-                priority:
-                  type: integer
-                  description: Priority for DAI endpoints (any integer, lower = higher priority)
-              required:
-              - weight
-              - priority
-              additionalProperties: false
-              description: DAI endpoint settings
-          additionalProperties: false
-          description: Ads configuration for the distribution
-        playerSettings:
-          type: object
-          properties:
-            hespCooldown:
-              type: number
-              minimum: 0
-              maximum: 300
-              description: Cooldown period in seconds (0-300) before the player retries HESP playback after falling back to another protocol. Defaults to 120 seconds when not set.
-          additionalProperties: false
-          description: Player settings applied to the player configuration in the discovery response
+            - countryCode
+            - amount
+          description: List of country viewing data
       required:
-      - id
-      - createdAt
-      - name
-      - enabled
-      - latencies
-      - security
-      - endpoints
-      - dvr
+      - data
+    CountryInsightsListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              city:
+                type: string
+                description: City name
+              countryCode:
+                type: string
+                description: ISO country code
+              geoLocation:
+                type: string
+                description: Rounded latitude,longitude
+              amount:
+                type: number
+                description: Number of unique viewers
+            required:
+            - city
+            - countryCode
+            - geoLocation
+            - amount
+          description: List of country insights
+      required:
+      - data
   securitySchemes:
     BasicAuth:
       type: http

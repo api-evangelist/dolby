@@ -568,6 +568,93 @@ paths:
                 $ref: '#/components/schemas/EngineObjectResult'
 components:
   schemas:
+    UpdateIngestBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the ingest
+        type:
+          type: string
+          enum:
+          - rtmp-push
+          - rtmp-pull
+          - srt-pull
+          - srt-push
+          - sdi-pull
+          - rtsp-pull
+          - ndi-pull
+          description: 'Ingest type. Note: srt-push requires SRT push to be enabled at organization level'
+        url:
+          type: string
+          description: Source URL
+        region:
+          type: string
+          description: Region ID (required for rtmp-push, srt-pull and rtmp-pull). Must be a single ingest enabled region for pull types. Required and must be a DUPLO region when a 'speech' enhancement is enabled. Required and must be an on-prem region for rtsp-pull, ndi-pull and sdi-pull (ndi-pull and sdi-pull additionally require the region to support the ingest type)
+        captions:
+          type: array
+          items:
+            type: object
+            properties:
+              channel:
+                type: number
+                description: Caption channel number
+              language:
+                type: string
+                description: Caption language code
+              label:
+                type: string
+                description: Caption label
+            required:
+            - channel
+            - language
+          description: Caption configuration (replaces the whole list)
+        tracks:
+          type: object
+          properties:
+            audio:
+              type: array
+              items:
+                type: object
+                properties:
+                  pid:
+                    type: number
+                    description: Audio track PID (mandatory for multi-audio)
+                  language:
+                    type: string
+                    description: Audio track language code
+                  label:
+                    type: string
+                    description: Audio track label
+                required:
+                - language
+                - label
+              description: Audio track configuration
+          description: Audio track configuration
+        sdi:
+          allOf:
+          - $ref: '#/components/schemas/IngestSdi'
+          - description: SDI capture card configuration (replaces the whole object)
+        ndi:
+          allOf:
+          - $ref: '#/components/schemas/IngestNdi'
+          - description: NDI source configuration (replaces the whole object)
+      additionalProperties: false
+    Restream:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: Unique restream ID
+        url:
+          type: string
+          pattern: '^(rtmp|rtmps|srt):'
+          description: Restream destination URL
+      required:
+      - id
+      - url
+      additionalProperties: false
     EngineObjectResult:
       type: object
       properties:
@@ -970,21 +1057,161 @@ components:
           description: Engine object
       required:
       - data
-    Restream:
+    IngestSdi:
       type: object
       properties:
-        id:
+        persistentId:
           type: string
-          minLength: 1
-          description: Unique restream ID
-        url:
+          description: 'Persistent ID of the SDI capture card, identifying it across reboots. Required for sdi-pull ingests: it must match an available SDI device of the region (see `/regions/{regionId}/sdi`) that is not connected to another ingest'
+        audioConnection:
           type: string
-          pattern: '^(rtmp|rtmps|srt):'
-          description: Restream destination URL
-      required:
-      - id
-      - url
+          enum:
+          - auto
+          - sdi
+          - hdmi
+          - optical-sdi
+          - component
+          - composite
+          - svideo
+          description: Audio connection type
+        videoConnection:
+          type: string
+          enum:
+          - auto
+          - sdi
+          - hdmi
+          - optical-sdi
+          - component
+          - composite
+          - svideo
+          description: Video connection type
+        videoMode:
+          type: string
+          enum:
+          - auto
+          - ntsc
+          - ntsc2398
+          - pal
+          - ntsc-p
+          - pal-p
+          - 1080p2398
+          - 1080p24
+          - 1080p25
+          - 1080p2997
+          - 1080p30
+          - 1080i50
+          - 1080i5994
+          - 1080i60
+          - 1080p50
+          - 1080p5994
+          - 1080p60
+          - 720p50
+          - 720p5994
+          - 720p60
+          - 1556p2398
+          - 1556p24
+          - 1556p25
+          - 2kdcip2398
+          - 2kdcip24
+          - 2kdcip25
+          - 2kdcip2997
+          - 2kdcip30
+          - 2kdcip50
+          - 2kdcip5994
+          - 2kdcip60
+          - 2160p2398
+          - 2160p24
+          - 2160p25
+          - 2160p2997
+          - 2160p30
+          - 2160p50
+          - 2160p5994
+          - 2160p60
+          - ntsc-widescreen
+          - ntsc2398-widescreen
+          - pal-widescreen
+          - ntsc-p-widescreen
+          - pal-p-widescreen
+          - 4kdcip2398
+          - 4kdcip24
+          - 4kdcip25
+          - 4kdcip2997
+          - 4kdcip30
+          - 4kdcip50
+          - 4kdcip5994
+          - 4kdcip60
+          - 8kp2398
+          - 8kp24
+          - 8kp25
+          - 8kp2997
+          - 8kp30
+          - 8kp50
+          - 8kp5994
+          - 8kp60
+          - 8kdcip2398
+          - 8kdcip24
+          - 8kdcip25
+          - 8kdcip2997
+          - 8kdcip30
+          - 8kdcip50
+          - 8kdcip5994
+          - 8kdcip60
+          description: Video mode
+        profile:
+          type: string
+          enum:
+          - default
+          - one-sub-device-full
+          - one-sub-device-half
+          - two-sub-devices-full
+          - two-sub-devices-half
+          - four-sub-devices-half
+          description: SDI profile
+        videoFormat:
+          type: string
+          enum:
+          - auto
+          - 8bit-yuv
+          - 10bit-yuv
+          - 8bit-argb
+          - 8bit-bgra
+          - 10bit-rgb
+          description: Video format
       additionalProperties: false
+      description: SDI capture card configuration (only for sdi-pull ingests)
+    IngestObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Ingest'
+          - description: Ingest object
+      required:
+      - data
+    PaginatedIngestResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingest'
+          description: List of ingests
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
     PaginatedEngineResult:
       type: object
       properties:
@@ -1403,6 +1630,87 @@ components:
       required:
       - data
       - pagination
+    Ingest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the ingest
+        name:
+          type: string
+          description: Name of the ingest
+        createdAt:
+          type: string
+          description: Creation timestamp
+        type:
+          type: string
+          enum:
+          - rtmp-push
+          - rtmp-pull
+          - srt-pull
+          - srt-push
+          - sdi-pull
+          - rtsp-pull
+          - ndi-pull
+          description: Ingest type
+        url:
+          type: string
+          description: Ingest URL
+        streamKey:
+          type: string
+          description: Stream key for RTMP push ingests
+        tracks:
+          type: object
+          properties:
+            audio:
+              type: array
+              items:
+                type: object
+                properties:
+                  pid:
+                    type: number
+                    description: Audio track PID (mandatory for multi-audio)
+                  language:
+                    type: string
+                    description: Audio track language code
+                  label:
+                    type: string
+                    description: Audio track label
+                required:
+                - language
+                - label
+              description: Audio track configuration
+          description: Audio track configuration
+        captions:
+          type: array
+          items:
+            type: object
+            properties:
+              channel:
+                type: number
+                description: Caption channel number
+              language:
+                type: string
+                description: Caption language code
+              label:
+                type: string
+                description: Caption label
+            required:
+            - channel
+            - language
+          description: Caption configuration
+        sdi:
+          $ref: '#/components/schemas/IngestSdi'
+        ndi:
+          $ref: '#/components/schemas/IngestNdi'
+      required:
+      - id
+      - name
+      - createdAt
+      - type
+      - url
+      - tracks
+      - captions
     IngestNdi:
       type: object
       properties:
@@ -1488,314 +1796,6 @@ components:
       - name
       - type
       additionalProperties: false
-    UpdateIngestBody:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the ingest
-        type:
-          type: string
-          enum:
-          - rtmp-push
-          - rtmp-pull
-          - srt-pull
-          - srt-push
-          - sdi-pull
-          - rtsp-pull
-          - ndi-pull
-          description: 'Ingest type. Note: srt-push requires SRT push to be enabled at organization level'
-        url:
-          type: string
-          description: Source URL
-        region:
-          type: string
-          description: Region ID (required for rtmp-push, srt-pull and rtmp-pull). Must be a single ingest enabled region for pull types. Required and must be a DUPLO region when a 'speech' enhancement is enabled. Required and must be an on-prem region for rtsp-pull, ndi-pull and sdi-pull (ndi-pull and sdi-pull additionally require the region to support the ingest type)
-        captions:
-          type: array
-          items:
-            type: object
-            properties:
-              channel:
-                type: number
-                description: Caption channel number
-              language:
-                type: string
-                description: Caption language code
-              label:
-                type: string
-                description: Caption label
-            required:
-            - channel
-            - language
-          description: Caption configuration (replaces the whole list)
-        tracks:
-          type: object
-          properties:
-            audio:
-              type: array
-              items:
-                type: object
-                properties:
-                  pid:
-                    type: number
-                    description: Audio track PID (mandatory for multi-audio)
-                  language:
-                    type: string
-                    description: Audio track language code
-                  label:
-                    type: string
-                    description: Audio track label
-                required:
-                - language
-                - label
-              description: Audio track configuration
-          description: Audio track configuration
-        sdi:
-          allOf:
-          - $ref: '#/components/schemas/IngestSdi'
-          - description: SDI capture card configuration (replaces the whole object)
-        ndi:
-          allOf:
-          - $ref: '#/components/schemas/IngestNdi'
-          - description: NDI source configuration (replaces the whole object)
-      additionalProperties: false
-    Ingest:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the ingest
-        name:
-          type: string
-          description: Name of the ingest
-        createdAt:
-          type: string
-          description: Creation timestamp
-        type:
-          type: string
-          enum:
-          - rtmp-push
-          - rtmp-pull
-          - srt-pull
-          - srt-push
-          - sdi-pull
-          - rtsp-pull
-          - ndi-pull
-          description: Ingest type
-        url:
-          type: string
-          description: Ingest URL
-        streamKey:
-          type: string
-          description: Stream key for RTMP push ingests
-        tracks:
-          type: object
-          properties:
-            audio:
-              type: array
-              items:
-                type: object
-                properties:
-                  pid:
-                    type: number
-                    description: Audio track PID (mandatory for multi-audio)
-                  language:
-                    type: string
-                    description: Audio track language code
-                  label:
-                    type: string
-                    description: Audio track label
-                required:
-                - language
-                - label
-              description: Audio track configuration
-          description: Audio track configuration
-        captions:
-          type: array
-          items:
-            type: object
-            properties:
-              channel:
-                type: number
-                description: Caption channel number
-              language:
-                type: string
-                description: Caption language code
-              label:
-                type: string
-                description: Caption label
-            required:
-            - channel
-            - language
-          description: Caption configuration
-        sdi:
-          $ref: '#/components/schemas/IngestSdi'
-        ndi:
-          $ref: '#/components/schemas/IngestNdi'
-      required:
-      - id
-      - name
-      - createdAt
-      - type
-      - url
-      - tracks
-      - captions
-    IngestSdi:
-      type: object
-      properties:
-        persistentId:
-          type: string
-          description: 'Persistent ID of the SDI capture card, identifying it across reboots. Required for sdi-pull ingests: it must match an available SDI device of the region (see `/regions/{regionId}/sdi`) that is not connected to another ingest'
-        audioConnection:
-          type: string
-          enum:
-          - auto
-          - sdi
-          - hdmi
-          - optical-sdi
-          - component
-          - composite
-          - svideo
-          description: Audio connection type
-        videoConnection:
-          type: string
-          enum:
-          - auto
-          - sdi
-          - hdmi
-          - optical-sdi
-          - component
-          - composite
-          - svideo
-          description: Video connection type
-        videoMode:
-          type: string
-          enum:
-          - auto
-          - ntsc
-          - ntsc2398
-          - pal
-          - ntsc-p
-          - pal-p
-          - 1080p2398
-          - 1080p24
-          - 1080p25
-          - 1080p2997
-          - 1080p30
-          - 1080i50
-          - 1080i5994
-          - 1080i60
-          - 1080p50
-          - 1080p5994
-          - 1080p60
-          - 720p50
-          - 720p5994
-          - 720p60
-          - 1556p2398
-          - 1556p24
-          - 1556p25
-          - 2kdcip2398
-          - 2kdcip24
-          - 2kdcip25
-          - 2kdcip2997
-          - 2kdcip30
-          - 2kdcip50
-          - 2kdcip5994
-          - 2kdcip60
-          - 2160p2398
-          - 2160p24
-          - 2160p25
-          - 2160p2997
-          - 2160p30
-          - 2160p50
-          - 2160p5994
-          - 2160p60
-          - ntsc-widescreen
-          - ntsc2398-widescreen
-          - pal-widescreen
-          - ntsc-p-widescreen
-          - pal-p-widescreen
-          - 4kdcip2398
-          - 4kdcip24
-          - 4kdcip25
-          - 4kdcip2997
-          - 4kdcip30
-          - 4kdcip50
-          - 4kdcip5994
-          - 4kdcip60
-          - 8kp2398
-          - 8kp24
-          - 8kp25
-          - 8kp2997
-          - 8kp30
-          - 8kp50
-          - 8kp5994
-          - 8kp60
-          - 8kdcip2398
-          - 8kdcip24
-          - 8kdcip25
-          - 8kdcip2997
-          - 8kdcip30
-          - 8kdcip50
-          - 8kdcip5994
-          - 8kdcip60
-          description: Video mode
-        profile:
-          type: string
-          enum:
-          - default
-          - one-sub-device-full
-          - one-sub-device-half
-          - two-sub-devices-full
-          - two-sub-devices-half
-          - four-sub-devices-half
-          description: SDI profile
-        videoFormat:
-          type: string
-          enum:
-          - auto
-          - 8bit-yuv
-          - 10bit-yuv
-          - 8bit-argb
-          - 8bit-bgra
-          - 10bit-rgb
-          description: Video format
-      additionalProperties: false
-      description: SDI capture card configuration (only for sdi-pull ingests)
-    PaginatedIngestResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ingest'
-          description: List of ingests
-        pagination:
-          type: object
-          properties:
-            hasMore:
-              type: boolean
-              description: Whether more results are available
-            cursor:
-              type: string
-              description: Cursor for the next page of results
-          required:
-          - hasMore
-          - cursor
-          description: Pagination info
-      required:
-      - data
-      - pagination
-    IngestObjectResult:
-      type: object
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/Ingest'
-          - description: Ingest object
-      required:
-      - data
   securitySchemes:
     BasicAuth:
       type: http

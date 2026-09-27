@@ -599,24 +599,7 @@ paths:
       description: Base (for /v1 endpoints)
 components:
   schemas:
-    WebhookType:
-      type: string
-      description: ''
-      x-enumNames:
-      - Recordings
-      - Thumbnail
-      - Transcoder
-      - Media
-      - Feeds
-      - ViewerConnection
-      enum:
-      - Recordings
-      - Thumbnail
-      - Transcoder
-      - Media
-      - Feeds
-      - ViewerConnection
-    FailResponse:
+    SuccessWebhookModel:
       type: object
       additionalProperties: false
       required:
@@ -625,9 +608,23 @@ components:
       properties:
         status:
           type: string
-          default: fail
+          default: success
           minLength: 1
-        data: {}
+        data:
+          $ref: '#/components/schemas/WebhookModel'
+    DisabledInfoModel:
+      type: object
+      additionalProperties: false
+      properties:
+        until:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        reason:
+          type:
+          - string
+          - 'null'
     TestWebhookModel:
       type: object
       additionalProperties: false
@@ -642,54 +639,6 @@ components:
           - string
           - 'null'
           description: TranscoderName to include in test webhook payload. If not provided a default value will be used.
-    SuccessListWebhooksModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/WebhookModel'
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    SuccessWebhookModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/WebhookModel'
     UpdateWebhookModel:
       type: object
       additionalProperties: false
@@ -746,59 +695,6 @@ components:
           description: A regular expression used to filter the events sent to this webhook based on StreamName or TranscoderName. For event types 'feeds', 'media', 'recording', 'thumbnail' and 'viewerConnection' the filter applies to the 'StreamName' field. For event type 'transcoder' the filter applies to the 'TranscoderName' field. Set to null to clear value
           maxLength: 128
           minLength: 1
-    WebhookModel:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: integer
-          description: The unique identifier of this webhook.
-        url:
-          type: string
-          description: Url to send webhook data to.
-        secret:
-          type: string
-          description: Base64 string of signing secret.
-        isFeedHooks:
-          type: boolean
-          description: If true sends webhook events on feeds start/stop.
-        isRecordingHooks:
-          type: boolean
-          description: If true sends webhook events on recording start/error/complete/deleted.
-        isThumbnailHooks:
-          type: boolean
-          description: If true sends webhook events on thumbnail generation.
-        isTranscoderHooks:
-          type: boolean
-          description: If true sends webhook events on transcoder instance updates.
-        isMediaHooks:
-          type: boolean
-          description: If true sends webhook events on media asset processing/errored/completed/deleted. Only media assets of type 'recording' and 'clip' types can trigger webhooks.
-        isViewerConnectionHooks:
-          type: boolean
-          description: If true sends webhooks on important events related to viewers
-        disabled:
-          description: Your webhook may be temporarily disabled if too many attempted webhook events timeout. You can re-enable it immediately by updating the url or setting reenable = true via [Update Webhook](#tag/Webhooks/operation/Webhooks_UpdateWebhook).
-          oneOf:
-          - $ref: '#/components/schemas/DisabledInfoModel'
-        filter:
-          type:
-          - string
-          - 'null'
-          description: A regular expression used to filter the events sent to this webhook based on StreamName or TranscoderName. For event types 'feeds', 'media', 'recording', 'thumbnail' and 'viewerConnection' the filter applies to the 'StreamName' field. For event type 'transcoder' the filter applies to the 'TranscoderName' field.
-    DisabledInfoModel:
-      type: object
-      additionalProperties: false
-      properties:
-        until:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        reason:
-          type:
-          - string
-          - 'null'
     AddWebhookModel:
       type: object
       additionalProperties: false
@@ -851,74 +747,124 @@ components:
           description: A regular expression used to filter the events sent to this webhook based on StreamName or TranscoderName. For event types 'feeds', 'media', 'recording', 'thumbnail' and 'viewerConnection' the filter applies to the 'StreamName' field. For event type 'transcoder' the filter applies to the 'TranscoderName' field.
           maxLength: 128
           minLength: 1
-    CreateWebhookBody:
+    WebhookModel:
       type: object
+      additionalProperties: false
       properties:
-        name:
-          type: string
-          description: Name of the webhook
-        description:
-          type: string
-          description: Description of the webhook
+        id:
+          type: integer
+          description: The unique identifier of this webhook.
         url:
           type: string
-          format: uri
-          description: URL to send webhook events to
-        events:
+          description: Url to send webhook data to.
+        secret:
+          type: string
+          description: Base64 string of signing secret.
+        isFeedHooks:
+          type: boolean
+          description: If true sends webhook events on feeds start/stop.
+        isRecordingHooks:
+          type: boolean
+          description: If true sends webhook events on recording start/error/complete/deleted.
+        isThumbnailHooks:
+          type: boolean
+          description: If true sends webhook events on thumbnail generation.
+        isTranscoderHooks:
+          type: boolean
+          description: If true sends webhook events on transcoder instance updates.
+        isMediaHooks:
+          type: boolean
+          description: If true sends webhook events on media asset processing/errored/completed/deleted. Only media assets of type 'recording' and 'clip' types can trigger webhooks.
+        isViewerConnectionHooks:
+          type: boolean
+          description: If true sends webhooks on important events related to viewers
+        disabled:
+          description: Your webhook may be temporarily disabled if too many attempted webhook events timeout. You can re-enable it immediately by updating the url or setting reenable = true via [Update Webhook](#tag/Webhooks/operation/Webhooks_UpdateWebhook).
+          oneOf:
+          - $ref: '#/components/schemas/DisabledInfoModel'
+        filter:
+          type:
+          - string
+          - 'null'
+          description: A regular expression used to filter the events sent to this webhook based on StreamName or TranscoderName. For event types 'feeds', 'media', 'recording', 'thumbnail' and 'viewerConnection' the filter applies to the 'StreamName' field. For event type 'transcoder' the filter applies to the 'TranscoderName' field.
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessListWebhooksModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
           type: array
           items:
-            type: string
-            enum:
-            - '*'
-            - channel.created
-            - channel.stopped
-            - channel.deleted
-            - channel.deploying
-            - channel.updated
-            - webhook.created
-            - webhook.updated
-            - webhook.deleted
-            - scheduler.created
-            - scheduler.updated
-            - scheduler.deleted
-            - scheduler.active
-            - scheduler.terminated
-            - engine.deploying
-            - engine.waiting
-            - engine.starting
-            - engine.error
-            - engine.playing
-            - engine.ingesting
-            - engine.created
-            - engine.updated
-            - engine.stopping
-            - engine.stopped
-            - engine.deleting
-            - engine.deleted
-            - engine.log.warn
-            - engine.log.error
-            - engine.log.info
-            - ingest.created
-            - ingest.updated
-            - ingest.deleted
-            - distribution.created
-            - distribution.enabled
-            - distribution.disabled
-            - distribution.updated
-            - distribution.deleted
-            - distribution.security.key.added
-            - distribution.security.key.deleted
-            - distribution.security.keys.deleted
-          minItems: 1
-          description: List of events to subscribe to
-        active:
-          type: boolean
-          description: Whether the webhook should be active upon creation. Defaults to false.
+            $ref: '#/components/schemas/WebhookModel'
+    WebhookType:
+      type: string
+      description: ''
+      x-enumNames:
+      - Recordings
+      - Thumbnail
+      - Transcoder
+      - Media
+      - Feeds
+      - ViewerConnection
+      enum:
+      - Recordings
+      - Thumbnail
+      - Transcoder
+      - Media
+      - Feeds
+      - ViewerConnection
+    WebhookSecretResult:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            secret:
+              type: string
+              description: The webhook signing secret
+          required:
+          - secret
+          description: Secret object
       required:
-      - name
-      - url
-      - events
-      additionalProperties: false
+      - data
     UpdateWebhookBody:
       type: object
       properties:
@@ -982,108 +928,6 @@ components:
           type: boolean
           description: Whether the webhook is active
       additionalProperties: false
-    Webhook:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the webhook
-        createdAt:
-          type: string
-          description: Creation timestamp
-        updatedAt:
-          type: string
-          description: Last update timestamp
-        name:
-          type: string
-          description: Name of the webhook
-        active:
-          type: boolean
-          description: Whether the webhook is active
-        description:
-          type: string
-          description: Description of the webhook
-        url:
-          type: string
-          description: URL to send webhook events to
-        events:
-          type: array
-          items:
-            type: string
-            enum:
-            - '*'
-            - channel.created
-            - channel.stopped
-            - channel.deleted
-            - channel.deploying
-            - channel.updated
-            - webhook.created
-            - webhook.updated
-            - webhook.deleted
-            - scheduler.created
-            - scheduler.updated
-            - scheduler.deleted
-            - scheduler.active
-            - scheduler.terminated
-            - engine.deploying
-            - engine.waiting
-            - engine.starting
-            - engine.error
-            - engine.playing
-            - engine.ingesting
-            - engine.created
-            - engine.updated
-            - engine.stopping
-            - engine.stopped
-            - engine.deleting
-            - engine.deleted
-            - engine.log.warn
-            - engine.log.error
-            - engine.log.info
-            - ingest.created
-            - ingest.updated
-            - ingest.deleted
-            - distribution.created
-            - distribution.enabled
-            - distribution.disabled
-            - distribution.updated
-            - distribution.deleted
-            - distribution.security.key.added
-            - distribution.security.key.deleted
-            - distribution.security.keys.deleted
-          description: List of subscribed events. "*" means all events.
-      required:
-      - id
-      - createdAt
-      - updatedAt
-      - name
-      - active
-      - url
-      - events
-    PaginatedWebhookResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Webhook'
-          description: List of webhooks
-        pagination:
-          type: object
-          properties:
-            hasMore:
-              type: boolean
-              description: Whether more results are available
-            cursor:
-              type: string
-              description: Cursor for the next page of results
-          required:
-          - hasMore
-          - cursor
-          description: Pagination info
-      required:
-      - data
-      - pagination
     PaginatedWebhookLogResult:
       type: object
       properties:
@@ -1108,20 +952,6 @@ components:
       required:
       - data
       - pagination
-    WebhookSecretResult:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            secret:
-              type: string
-              description: The webhook signing secret
-          required:
-          - secret
-          description: Secret object
-      required:
-      - data
     WebhookLog:
       type: object
       properties:
@@ -1285,6 +1115,30 @@ components:
       - type
       - statusCode
       - requestData
+    PaginatedWebhookResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Webhook'
+          description: List of webhooks
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
     WebhookObjectResult:
       type: object
       properties:
@@ -1294,6 +1148,152 @@ components:
           - description: Webhook object
       required:
       - data
+    Webhook:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the webhook
+        createdAt:
+          type: string
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          description: Last update timestamp
+        name:
+          type: string
+          description: Name of the webhook
+        active:
+          type: boolean
+          description: Whether the webhook is active
+        description:
+          type: string
+          description: Description of the webhook
+        url:
+          type: string
+          description: URL to send webhook events to
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+            - '*'
+            - channel.created
+            - channel.stopped
+            - channel.deleted
+            - channel.deploying
+            - channel.updated
+            - webhook.created
+            - webhook.updated
+            - webhook.deleted
+            - scheduler.created
+            - scheduler.updated
+            - scheduler.deleted
+            - scheduler.active
+            - scheduler.terminated
+            - engine.deploying
+            - engine.waiting
+            - engine.starting
+            - engine.error
+            - engine.playing
+            - engine.ingesting
+            - engine.created
+            - engine.updated
+            - engine.stopping
+            - engine.stopped
+            - engine.deleting
+            - engine.deleted
+            - engine.log.warn
+            - engine.log.error
+            - engine.log.info
+            - ingest.created
+            - ingest.updated
+            - ingest.deleted
+            - distribution.created
+            - distribution.enabled
+            - distribution.disabled
+            - distribution.updated
+            - distribution.deleted
+            - distribution.security.key.added
+            - distribution.security.key.deleted
+            - distribution.security.keys.deleted
+          description: List of subscribed events. "*" means all events.
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      - name
+      - active
+      - url
+      - events
+    CreateWebhookBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the webhook
+        description:
+          type: string
+          description: Description of the webhook
+        url:
+          type: string
+          format: uri
+          description: URL to send webhook events to
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+            - '*'
+            - channel.created
+            - channel.stopped
+            - channel.deleted
+            - channel.deploying
+            - channel.updated
+            - webhook.created
+            - webhook.updated
+            - webhook.deleted
+            - scheduler.created
+            - scheduler.updated
+            - scheduler.deleted
+            - scheduler.active
+            - scheduler.terminated
+            - engine.deploying
+            - engine.waiting
+            - engine.starting
+            - engine.error
+            - engine.playing
+            - engine.ingesting
+            - engine.created
+            - engine.updated
+            - engine.stopping
+            - engine.stopped
+            - engine.deleting
+            - engine.deleted
+            - engine.log.warn
+            - engine.log.error
+            - engine.log.info
+            - ingest.created
+            - ingest.updated
+            - ingest.deleted
+            - distribution.created
+            - distribution.enabled
+            - distribution.disabled
+            - distribution.updated
+            - distribution.deleted
+            - distribution.security.key.added
+            - distribution.security.key.deleted
+            - distribution.security.keys.deleted
+          minItems: 1
+          description: List of events to subscribe to
+        active:
+          type: boolean
+          description: Whether the webhook should be active upon creation. Defaults to false.
+      required:
+      - name
+      - url
+      - events
+      additionalProperties: false
   securitySchemes:
     API_Secret:
       type: http

@@ -38364,569 +38364,133 @@ paths:
       description: Base (for /v1 endpoints)
 components:
   schemas:
-    CountryInsightsListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              city:
-                type: string
-                description: City name
-              countryCode:
-                type: string
-                description: ISO country code
-              geoLocation:
-                type: string
-                description: Rounded latitude,longitude
-              amount:
-                type: number
-                description: Number of unique viewers
-            required:
-            - city
-            - countryCode
-            - geoLocation
-            - amount
-          description: List of country insights
-      required:
-      - data
-    UpdateChannelBody:
+    CreateCustomEndpointBody:
       type: object
       properties:
         name:
           type: string
-          description: Name of the channel
-        externalId:
+          minLength: 1
+          description: Name of the custom endpoint
+        src:
           type: string
-          description: Deprecated, use 'externalIds' instead. Shorthand for a single-entry 'externalIds'. For now, responses will keep returning 'externalId' with the first entry of 'externalIds'.
-          deprecated: true
-        externalIds:
+          minLength: 1
+          description: Source URL
+        srcType:
+          type: string
+          enum:
+          - hesp
+          - hls
+          - dash
+          description: Source type (hesp, hls or dash)
+        provider:
+          type: string
+          minLength: 1
+          description: Provider name (must be configured for the organization)
+        adSystem:
+          type: string
+          minLength: 1
+          description: Ad system name (must be configured for the organization). 'sgai' is always allowed. Defaults to 'sgai' if not specified
+        drmConfig:
+          $ref: '#/components/schemas/CustomEndpointDrmConfig'
+        cdn:
+          type: string
+          minLength: 1
+          pattern: ^[a-zA-Z0-9]+$
+          description: CDN identifier
+        priority:
+          type: integer
+          description: Priority (lower is higher priority)
+      required:
+      - name
+      - src
+      - srcType
+      - provider
+      - cdn
+      - priority
+      additionalProperties: false
+    PaginatedEngineRunResult:
+      type: object
+      properties:
+        data:
           type: array
           items:
-            type: string
-            minLength: 1
-          description: External identifiers for the channel. Replaces the full list; an empty array clears all external IDs. Mutually exclusive with externalId.
-        timeout:
-          type: number
-          minimum: 0
-          description: Timeout in seconds (minimum 60). To never stop, specify 0
-        ads:
+            $ref: '#/components/schemas/EngineRun'
+          description: List of engine runs
+        pagination:
           type: object
           properties:
-            enabled:
+            hasMore:
               type: boolean
-              description: Whether OptiView ads are enabled on the channel
-            customAssetKey:
+              description: Whether more results are available
+            cursor:
               type: string
-              description: DAI asset key, only possible when Google is linked to your ads account
-            timebase:
-              type: string
-              enum:
-              - wallclock
-              - pts
-              description: Timebase for ad insertion. Defaults to "wallclock"
-            settings:
-              type: object
-              properties:
-                assetKey:
-                  type: string
-                  description: Deprecated. Use customAssetKey instead.
-                  deprecated: true
-                layout:
-                  type: string
-                  enum:
-                  - SINGLE
-                  - DOUBLE
-                  - LSHAPE_AD
-                  - LSHAPE_CONTENT
-                  deprecated: true
-                enableBumperAds:
-                  type: boolean
-                  deprecated: true
-                podDuration:
-                  type: number
-                  deprecated: true
-                customAdTagParameters:
-                  type: object
-                  additionalProperties:
-                    type: string
-                  deprecated: true
-              description: Deprecated. V1 ads settings.
-              deprecated: true
+              description: Cursor for the next page of results
           required:
-          - enabled
-          description: OptiView Ads configuration. Only available when OptiView Ads is enabled for your organization.
-        dvr:
-          type: object
-          properties:
-            enabled:
-              type: boolean
-              description: Whether DVR is enabled
-            windowInSeconds:
-              type: number
-              minimum: 60
-              maximum: 86400
-              description: DVR window in seconds (60-86400)
-          required:
-          - enabled
-          description: DVR configuration. Only available when DVR feature is enabled for your organization.
-        nielsen:
-          type: object
-          properties:
-            enabled:
-              type: boolean
-              description: Whether Nielsen is enabled
-          required:
-          - enabled
-          description: Nielsen configuration. Only available when Nielsen feature is enabled for your organization.
-        instreamMetadata:
-          type: object
-          properties:
-            enabled:
-              type: boolean
-              description: Whether instream metadata is enabled. Supported metadata is h264 registered or unregistered SEI metadata
-            uuids:
-              type: array
-              items:
-                type: string
-                format: uuid
-              description: Array of instream metadata SEI UUIDs
-          required:
-          - enabled
-          description: Instream metadata configuration
-      additionalProperties: false
-    IngestNdi:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
+    Restream:
       type: object
       properties:
         id:
           type: string
-          description: 'ID of the NDI source. Required for ndi-pull ingests: it must match a non-stale NDI source of the region (see `/regions/{regionId}/ndi`) that is not connected to another ingest'
+          minLength: 1
+          description: Unique restream ID
+        url:
+          type: string
+          pattern: '^(rtmp|rtmps|srt):'
+          description: Restream destination URL
       required:
       - id
+      - url
       additionalProperties: false
-      description: NDI source configuration (only for ndi-pull ingests)
-    ChannelCreated:
-      allOf:
-      - $ref: '#/components/schemas/Channel'
-      - type: object
-        properties:
-          ingests:
-            type: array
-            items:
-              $ref: '#/components/schemas/Ingest'
-            description: Connected ingests
-          engines:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                  description: Unique identifier of the engine
-                name:
-                  type: string
-                  description: Name of the engine
-                createdAt:
-                  type: string
-                  description: Creation timestamp
-                updatedAt:
-                  type: string
-                  description: Last update timestamp
-                quality:
-                  type: object
-                  properties:
-                    abrLadderId:
-                      type: string
-                      description: ABR ladder ID
-                  required:
-                  - abrLadderId
-                  description: Quality configuration
-                overlays:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      url:
-                        type: string
-                        description: URL of the overlay image
-                      position:
-                        type: object
-                        properties:
-                          top:
-                            type: integer
-                            minimum: 0
-                            description: Pixels from top
-                          bottom:
-                            type: integer
-                            minimum: 0
-                            description: Pixels from bottom (ignored if top is present)
-                          left:
-                            type: integer
-                            minimum: 0
-                            description: Pixels from left
-                          right:
-                            type: integer
-                            minimum: 0
-                            description: Pixels from right (ignored if left is present)
-                        description: Overlay position
-                      size:
-                        type: object
-                        properties:
-                          width:
-                            type: integer
-                            minimum: 0
-                            description: Width in pixels
-                          height:
-                            type: integer
-                            minimum: 0
-                            description: Height in pixels
-                        description: Overlay size
-                      opacity:
-                        type: number
-                        minimum: 0
-                        maximum: 1
-                        description: Overlay opacity (`0`=fully transparent, `1`=fully opaque)
-                    required:
-                    - url
-                  description: Image overlay configuration
-                drm:
-                  type: boolean
-                  description: Whether DRM is enabled
-                drmProvider:
-                  type: string
-                  enum:
-                  - ezdrm
-                  - drmtoday
-                  description: DRM provider used by this engine
-                priority:
-                  type: number
-                  description: Engine priority
-                status:
-                  type: string
-                  enum:
-                  - stopped
-                  - deploying
-                  - starting
-                  - waiting
-                  - ingesting
-                  - playing
-                  - stopping
-                  - error
-                  - deleting
-                  - deleted
-                  description: Current status of the engine
-                daiAssetKey:
-                  type:
-                  - string
-                  - 'null'
-                  description: DAI asset key
-                outputs:
-                  type: object
-                  properties:
-                    hesp:
-                      type: boolean
-                      default: true
-                      description: Enable HESP output. Enabled by default.
-                    hls:
-                      type: boolean
-                      default: true
-                      description: Enable HLS output. Enabled by default.
-                    hlsMpegTs:
-                      type: boolean
-                      default: false
-                      description: Enable HLS MPEG-TS output. Only available when enabled for your organization.
-                    llHls:
-                      type: boolean
-                      default: false
-                      description: Enable Low-Latency HLS output. Enabling this also enables HLS output. Disabled by default.
-                  description: Output format configuration
-                vision:
-                  type:
-                  - object
-                  - 'null'
-                  properties:
-                    toneLut:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        saturationBoost:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - high
-                          - low
-                          - null
-                          description: Saturation boost level
-                        strength:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - low
-                          - medium
-                          - high
-                          - null
-                          description: Tone mapping strength
-                      additionalProperties: false
-                      description: Tone mapping LUT configuration
-                    masteringDisplay:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        primaries:
-                          type:
-                          - object
-                          - 'null'
-                          properties:
-                            type:
-                              type:
-                              - string
-                              - 'null'
-                              enum:
-                              - rec2020
-                              - p3d65
-                              - rec709
-                              - custom
-                              - null
-                              description: Color primaries preset
-                            red:
-                              type:
-                              - object
-                              - 'null'
-                              properties:
-                                x:
-                                  type: number
-                                  description: Chromaticity x coordinate
-                                y:
-                                  type: number
-                                  description: Chromaticity y coordinate
-                              required:
-                              - x
-                              - y
-                              additionalProperties: false
-                              description: Custom red primary coordinates (required when type is `custom`)
-                            green:
-                              type:
-                              - object
-                              - 'null'
-                              properties:
-                                x:
-                                  type: number
-                                  description: Chromaticity x coordinate
-                                y:
-                                  type: number
-                                  description: Chromaticity y coordinate
-                              required:
-                              - x
-                              - y
-                              additionalProperties: false
-                              description: Custom green primary coordinates (required when type is `custom`)
-                            blue:
-                              type:
-                              - object
-                              - 'null'
-                              properties:
-                                x:
-                                  type: number
-                                  description: Chromaticity x coordinate
-                                y:
-                                  type: number
-                                  description: Chromaticity y coordinate
-                              required:
-                              - x
-                              - y
-                              additionalProperties: false
-                              description: Custom blue primary coordinates (required when type is `custom`)
-                          additionalProperties: false
-                          description: Mastering display color primaries
-                        whitePoint:
-                          type:
-                          - object
-                          - 'null'
-                          properties:
-                            type:
-                              type:
-                              - string
-                              - 'null'
-                              enum:
-                              - d65
-                              - d60
-                              - dci
-                              - custom
-                              - null
-                              description: White point preset
-                            x:
-                              type:
-                              - number
-                              - 'null'
-                              description: Custom white point x coordinate (required when type is `custom`)
-                            y:
-                              type:
-                              - number
-                              - 'null'
-                              description: Custom white point y coordinate (required when type is `custom`)
-                          additionalProperties: false
-                          description: Mastering display white point
-                        maxDisplayMasteringLuminance:
-                          type:
-                          - number
-                          - 'null'
-                          minimum: 0
-                          maximum: 10000
-                          description: Maximum display mastering luminance in nits (0-10000)
-                        minDisplayMasteringLuminance:
-                          type:
-                          - number
-                          - 'null'
-                          minimum: 0
-                          description: Minimum display mastering luminance in nits
-                      additionalProperties: false
-                      description: Mastering display configuration
-                    contentLightLevels:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        cllMode:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - auto
-                          - expert
-                          - null
-                          description: Content light level mode. `expert` requires maxCll and maxFall (nits)
-                        maxCll:
-                          type:
-                          - number
-                          - 'null'
-                          minimum: 0
-                          description: Maximum content light level in nits (required when cllMode is `expert`)
-                        maxFall:
-                          type:
-                          - number
-                          - 'null'
-                          minimum: 0
-                          description: Maximum frame-average light level in nits (required when cllMode is `expert`)
-                      additionalProperties: false
-                      description: Content light level configuration
-                    globalLook:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        l8Mode:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - 'off'
-                          - quickControls
-                          - null
-                          description: L8 global look mode
-                        l8ContrastBoost:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - 'off'
-                          - low
-                          - mid
-                          - high
-                          - null
-                          description: L8 contrast boost (required when l8Mode is `quickControls`)
-                        l8MidBoost:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - 'off'
-                          - low
-                          - mid
-                          - high
-                          - null
-                          description: L8 mid boost (required when l8Mode is `quickControls`)
-                        l8SaturationBoost:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - 'off'
-                          - low
-                          - mid
-                          - high
-                          - null
-                          description: L8 saturation boost (required when l8Mode is `quickControls`)
-                      additionalProperties: false
-                      description: Global look (L8) configuration
-                    contentType:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        l11ContentType:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - default
-                          - cinema
-                          - game
-                          - sport
-                          - ugc
-                          - null
-                          description: L11 content type
-                        l11WhitePointK:
-                          type:
-                          - number
-                          - 'null'
-                          description: L11 white point in Kelvin, snapped to the 16 RPU steps
-                      additionalProperties: false
-                      description: Content type (L11) configuration
-                  additionalProperties: false
-                  description: Vision configuration
-                atmos:
-                  type:
-                  - object
-                  - 'null'
-                  properties:
-                    dialnorm:
-                      type: integer
-                      minimum: -31
-                      maximum: -1
-                      description: Dolby Atmos dialnorm value. Must be an integer between -1 and -31.
-                  required:
-                  - dialnorm
-                  additionalProperties: false
-                  description: Dolby Atmos configuration
-              required:
-              - id
-              - name
-              - createdAt
-              - updatedAt
-              - quality
-              - overlays
-              - drm
-              - priority
-              - status
-              - outputs
-            description: Connected engines
-          distributions:
-            type: array
-            items:
-              $ref: '#/components/schemas/Distribution'
-            description: Connected distributions
-        required:
-        - ingests
-        - engines
-        - distributions
-      description: Created channel with connected resources
-    AnalyticsListResult:
+    ChannelDrmConfigsResult:
+      type: object
+      properties:
+        contentProtections:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelDrmContentProtection'
+          description: List of DRM content protection configurations
+      required:
+      - contentProtections
+    PaginatedChannelResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+          description: List of channels
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
+    DistributionObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Distribution'
+          - description: Distribution object
+      required:
+      - data
+    PaginatedEngineResult:
       type: object
       properties:
         data:
@@ -38934,30 +38498,440 @@ components:
           items:
             type: object
             properties:
-              timestamp:
+              id:
                 type: string
-                description: Timestamp of the data point
-              records:
+                description: Unique identifier of the engine
+              name:
+                type: string
+                description: Name of the engine
+              createdAt:
+                type: string
+                description: Creation timestamp
+              updatedAt:
+                type: string
+                description: Last update timestamp
+              quality:
+                type: object
+                properties:
+                  abrLadderId:
+                    type: string
+                    description: ABR ladder ID
+                required:
+                - abrLadderId
+                description: Quality configuration
+              overlays:
                 type: array
                 items:
                   type: object
                   properties:
-                    id:
+                    url:
                       type: string
-                      description: Identifier of the grouped entity
-                    amount:
+                      description: URL of the overlay image
+                    position:
+                      type: object
+                      properties:
+                        top:
+                          type: integer
+                          minimum: 0
+                          description: Pixels from top
+                        bottom:
+                          type: integer
+                          minimum: 0
+                          description: Pixels from bottom (ignored if top is present)
+                        left:
+                          type: integer
+                          minimum: 0
+                          description: Pixels from left
+                        right:
+                          type: integer
+                          minimum: 0
+                          description: Pixels from right (ignored if left is present)
+                      description: Overlay position
+                    size:
+                      type: object
+                      properties:
+                        width:
+                          type: integer
+                          minimum: 0
+                          description: Width in pixels
+                        height:
+                          type: integer
+                          minimum: 0
+                          description: Height in pixels
+                      description: Overlay size
+                    opacity:
                       type: number
-                      description: Metric value
+                      minimum: 0
+                      maximum: 1
+                      description: Overlay opacity (`0`=fully transparent, `1`=fully opaque)
                   required:
-                  - id
-                  - amount
-                description: Records for this time bucket
+                  - url
+                description: Image overlay configuration
+              drm:
+                type: boolean
+                description: Whether DRM is enabled
+              drmProvider:
+                type: string
+                enum:
+                - ezdrm
+                - drmtoday
+                description: DRM provider used by this engine
+              priority:
+                type: number
+                description: Engine priority
+              status:
+                type: string
+                enum:
+                - stopped
+                - deploying
+                - starting
+                - waiting
+                - ingesting
+                - playing
+                - stopping
+                - error
+                - deleting
+                - deleted
+                description: Current status of the engine
+              daiAssetKey:
+                type:
+                - string
+                - 'null'
+                description: DAI asset key
+              outputs:
+                type: object
+                properties:
+                  hesp:
+                    type: boolean
+                    default: true
+                    description: Enable HESP output. Enabled by default.
+                  hls:
+                    type: boolean
+                    default: true
+                    description: Enable HLS output. Enabled by default.
+                  hlsMpegTs:
+                    type: boolean
+                    default: false
+                    description: Enable HLS MPEG-TS output. Only available when enabled for your organization.
+                  llHls:
+                    type: boolean
+                    default: false
+                    description: Enable Low-Latency HLS output. Enabling this also enables HLS output. Disabled by default.
+                description: Output format configuration
+              vision:
+                type:
+                - object
+                - 'null'
+                properties:
+                  toneLut:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      saturationBoost:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - high
+                        - low
+                        - null
+                        description: Saturation boost level
+                      strength:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - low
+                        - medium
+                        - high
+                        - null
+                        description: Tone mapping strength
+                    additionalProperties: false
+                    description: Tone mapping LUT configuration
+                  masteringDisplay:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      primaries:
+                        type:
+                        - object
+                        - 'null'
+                        properties:
+                          type:
+                            type:
+                            - string
+                            - 'null'
+                            enum:
+                            - rec2020
+                            - p3d65
+                            - rec709
+                            - custom
+                            - null
+                            description: Color primaries preset
+                          red:
+                            type:
+                            - object
+                            - 'null'
+                            properties:
+                              x:
+                                type: number
+                                description: Chromaticity x coordinate
+                              y:
+                                type: number
+                                description: Chromaticity y coordinate
+                            required:
+                            - x
+                            - y
+                            additionalProperties: false
+                            description: Custom red primary coordinates (required when type is `custom`)
+                          green:
+                            type:
+                            - object
+                            - 'null'
+                            properties:
+                              x:
+                                type: number
+                                description: Chromaticity x coordinate
+                              y:
+                                type: number
+                                description: Chromaticity y coordinate
+                            required:
+                            - x
+                            - y
+                            additionalProperties: false
+                            description: Custom green primary coordinates (required when type is `custom`)
+                          blue:
+                            type:
+                            - object
+                            - 'null'
+                            properties:
+                              x:
+                                type: number
+                                description: Chromaticity x coordinate
+                              y:
+                                type: number
+                                description: Chromaticity y coordinate
+                            required:
+                            - x
+                            - y
+                            additionalProperties: false
+                            description: Custom blue primary coordinates (required when type is `custom`)
+                        additionalProperties: false
+                        description: Mastering display color primaries
+                      whitePoint:
+                        type:
+                        - object
+                        - 'null'
+                        properties:
+                          type:
+                            type:
+                            - string
+                            - 'null'
+                            enum:
+                            - d65
+                            - d60
+                            - dci
+                            - custom
+                            - null
+                            description: White point preset
+                          x:
+                            type:
+                            - number
+                            - 'null'
+                            description: Custom white point x coordinate (required when type is `custom`)
+                          y:
+                            type:
+                            - number
+                            - 'null'
+                            description: Custom white point y coordinate (required when type is `custom`)
+                        additionalProperties: false
+                        description: Mastering display white point
+                      maxDisplayMasteringLuminance:
+                        type:
+                        - number
+                        - 'null'
+                        minimum: 0
+                        maximum: 10000
+                        description: Maximum display mastering luminance in nits (0-10000)
+                      minDisplayMasteringLuminance:
+                        type:
+                        - number
+                        - 'null'
+                        minimum: 0
+                        description: Minimum display mastering luminance in nits
+                    additionalProperties: false
+                    description: Mastering display configuration
+                  contentLightLevels:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      cllMode:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - auto
+                        - expert
+                        - null
+                        description: Content light level mode. `expert` requires maxCll and maxFall (nits)
+                      maxCll:
+                        type:
+                        - number
+                        - 'null'
+                        minimum: 0
+                        description: Maximum content light level in nits (required when cllMode is `expert`)
+                      maxFall:
+                        type:
+                        - number
+                        - 'null'
+                        minimum: 0
+                        description: Maximum frame-average light level in nits (required when cllMode is `expert`)
+                    additionalProperties: false
+                    description: Content light level configuration
+                  globalLook:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      l8Mode:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - 'off'
+                        - quickControls
+                        - null
+                        description: L8 global look mode
+                      l8ContrastBoost:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - 'off'
+                        - low
+                        - mid
+                        - high
+                        - null
+                        description: L8 contrast boost (required when l8Mode is `quickControls`)
+                      l8MidBoost:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - 'off'
+                        - low
+                        - mid
+                        - high
+                        - null
+                        description: L8 mid boost (required when l8Mode is `quickControls`)
+                      l8SaturationBoost:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - 'off'
+                        - low
+                        - mid
+                        - high
+                        - null
+                        description: L8 saturation boost (required when l8Mode is `quickControls`)
+                    additionalProperties: false
+                    description: Global look (L8) configuration
+                  contentType:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      l11ContentType:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - default
+                        - cinema
+                        - game
+                        - sport
+                        - ugc
+                        - null
+                        description: L11 content type
+                      l11WhitePointK:
+                        type:
+                        - number
+                        - 'null'
+                        description: L11 white point in Kelvin, snapped to the 16 RPU steps
+                    additionalProperties: false
+                    description: Content type (L11) configuration
+                additionalProperties: false
+                description: Vision configuration
+              atmos:
+                type:
+                - object
+                - 'null'
+                properties:
+                  dialnorm:
+                    type: integer
+                    minimum: -31
+                    maximum: -1
+                    description: Dolby Atmos dialnorm value. Must be an integer between -1 and -31.
+                required:
+                - dialnorm
+                additionalProperties: false
+                description: Dolby Atmos configuration
             required:
-            - timestamp
-            - records
-          description: List of analytics data points
+            - id
+            - name
+            - createdAt
+            - updatedAt
+            - quality
+            - overlays
+            - drm
+            - priority
+            - status
+            - outputs
+          description: List of engines
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
       required:
       - data
+      - pagination
+    PaginatedIngestResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingest'
+          description: List of ingests
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
     Distribution:
       type: object
       properties:
@@ -39266,766 +39240,6 @@ components:
       - security
       - endpoints
       - dvr
-    EngineObjectResult:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              description: Unique identifier of the engine
-            name:
-              type: string
-              description: Name of the engine
-            createdAt:
-              type: string
-              description: Creation timestamp
-            updatedAt:
-              type: string
-              description: Last update timestamp
-            quality:
-              type: object
-              properties:
-                abrLadderId:
-                  type: string
-                  description: ABR ladder ID
-              required:
-              - abrLadderId
-              description: Quality configuration
-            overlays:
-              type: array
-              items:
-                type: object
-                properties:
-                  url:
-                    type: string
-                    description: URL of the overlay image
-                  position:
-                    type: object
-                    properties:
-                      top:
-                        type: integer
-                        minimum: 0
-                        description: Pixels from top
-                      bottom:
-                        type: integer
-                        minimum: 0
-                        description: Pixels from bottom (ignored if top is present)
-                      left:
-                        type: integer
-                        minimum: 0
-                        description: Pixels from left
-                      right:
-                        type: integer
-                        minimum: 0
-                        description: Pixels from right (ignored if left is present)
-                    description: Overlay position
-                  size:
-                    type: object
-                    properties:
-                      width:
-                        type: integer
-                        minimum: 0
-                        description: Width in pixels
-                      height:
-                        type: integer
-                        minimum: 0
-                        description: Height in pixels
-                    description: Overlay size
-                  opacity:
-                    type: number
-                    minimum: 0
-                    maximum: 1
-                    description: Overlay opacity (`0`=fully transparent, `1`=fully opaque)
-                required:
-                - url
-              description: Image overlay configuration
-            drm:
-              type: boolean
-              description: Whether DRM is enabled
-            drmProvider:
-              type: string
-              enum:
-              - ezdrm
-              - drmtoday
-              description: DRM provider used by this engine
-            priority:
-              type: number
-              description: Engine priority
-            status:
-              type: string
-              enum:
-              - stopped
-              - deploying
-              - starting
-              - waiting
-              - ingesting
-              - playing
-              - stopping
-              - error
-              - deleting
-              - deleted
-              description: Current status of the engine
-            daiAssetKey:
-              type:
-              - string
-              - 'null'
-              description: DAI asset key
-            outputs:
-              type: object
-              properties:
-                hesp:
-                  type: boolean
-                  default: true
-                  description: Enable HESP output. Enabled by default.
-                hls:
-                  type: boolean
-                  default: true
-                  description: Enable HLS output. Enabled by default.
-                hlsMpegTs:
-                  type: boolean
-                  default: false
-                  description: Enable HLS MPEG-TS output. Only available when enabled for your organization.
-                llHls:
-                  type: boolean
-                  default: false
-                  description: Enable Low-Latency HLS output. Enabling this also enables HLS output. Disabled by default.
-              description: Output format configuration
-            vision:
-              type:
-              - object
-              - 'null'
-              properties:
-                toneLut:
-                  type:
-                  - object
-                  - 'null'
-                  properties:
-                    saturationBoost:
-                      type:
-                      - string
-                      - 'null'
-                      enum:
-                      - high
-                      - low
-                      - null
-                      description: Saturation boost level
-                    strength:
-                      type:
-                      - string
-                      - 'null'
-                      enum:
-                      - low
-                      - medium
-                      - high
-                      - null
-                      description: Tone mapping strength
-                  additionalProperties: false
-                  description: Tone mapping LUT configuration
-                masteringDisplay:
-                  type:
-                  - object
-                  - 'null'
-                  properties:
-                    primaries:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        type:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - rec2020
-                          - p3d65
-                          - rec709
-                          - custom
-                          - null
-                          description: Color primaries preset
-                        red:
-                          type:
-                          - object
-                          - 'null'
-                          properties:
-                            x:
-                              type: number
-                              description: Chromaticity x coordinate
-                            y:
-                              type: number
-                              description: Chromaticity y coordinate
-                          required:
-                          - x
-                          - y
-                          additionalProperties: false
-                          description: Custom red primary coordinates (required when type is `custom`)
-                        green:
-                          type:
-                          - object
-                          - 'null'
-                          properties:
-                            x:
-                              type: number
-                              description: Chromaticity x coordinate
-                            y:
-                              type: number
-                              description: Chromaticity y coordinate
-                          required:
-                          - x
-                          - y
-                          additionalProperties: false
-                          description: Custom green primary coordinates (required when type is `custom`)
-                        blue:
-                          type:
-                          - object
-                          - 'null'
-                          properties:
-                            x:
-                              type: number
-                              description: Chromaticity x coordinate
-                            y:
-                              type: number
-                              description: Chromaticity y coordinate
-                          required:
-                          - x
-                          - y
-                          additionalProperties: false
-                          description: Custom blue primary coordinates (required when type is `custom`)
-                      additionalProperties: false
-                      description: Mastering display color primaries
-                    whitePoint:
-                      type:
-                      - object
-                      - 'null'
-                      properties:
-                        type:
-                          type:
-                          - string
-                          - 'null'
-                          enum:
-                          - d65
-                          - d60
-                          - dci
-                          - custom
-                          - null
-                          description: White point preset
-                        x:
-                          type:
-                          - number
-                          - 'null'
-                          description: Custom white point x coordinate (required when type is `custom`)
-                        y:
-                          type:
-                          - number
-                          - 'null'
-                          description: Custom white point y coordinate (required when type is `custom`)
-                      additionalProperties: false
-                      description: Mastering display white point
-                    maxDisplayMasteringLuminance:
-                      type:
-                      - number
-                      - 'null'
-                      minimum: 0
-                      maximum: 10000
-                      description: Maximum display mastering luminance in nits (0-10000)
-                    minDisplayMasteringLuminance:
-                      type:
-                      - number
-                      - 'null'
-                      minimum: 0
-                      description: Minimum display mastering luminance in nits
-                  additionalProperties: false
-                  description: Mastering display configuration
-                contentLightLevels:
-                  type:
-                  - object
-                  - 'null'
-                  properties:
-                    cllMode:
-                      type:
-                      - string
-                      - 'null'
-                      enum:
-                      - auto
-                      - expert
-                      - null
-                      description: Content light level mode. `expert` requires maxCll and maxFall (nits)
-                    maxCll:
-                      type:
-                      - number
-                      - 'null'
-                      minimum: 0
-                      description: Maximum content light level in nits (required when cllMode is `expert`)
-                    maxFall:
-                      type:
-                      - number
-                      - 'null'
-                      minimum: 0
-                      description: Maximum frame-average light level in nits (required when cllMode is `expert`)
-                  additionalProperties: false
-                  description: Content light level configuration
-                globalLook:
-                  type:
-                  - object
-                  - 'null'
-                  properties:
-                    l8Mode:
-                      type:
-                      - string
-                      - 'null'
-                      enum:
-                      - 'off'
-                      - quickControls
-                      - null
-                      description: L8 global look mode
-                    l8ContrastBoost:
-                      type:
-                      - string
-                      - 'null'
-                      enum:
-                      - 'off'
-                      - low
-                      - mid
-                      - high
-                      - null
-                      description: L8 contrast boost (required when l8Mode is `quickControls`)
-                    l8MidBoost:
-                      type:
-                      - string
-                      - 'null'
-                      enum:
-                      - 'off'
-                      - low
-                      - mid
-                      - high
-                      - null
-                      description: L8 mid boost (required when l8Mode is `quickControls`)
-                    l8SaturationBoost:
-                      type:
-                      - string
-                      - 'null'
-                      enum:
-                      - 'off'
-                      - low
-                      - mid
-                      - high
-                      - null
-                      description: L8 saturation boost (required when l8Mode is `quickControls`)
-                  additionalProperties: false
-                  description: Global look (L8) configuration
-                contentType:
-                  type:
-                  - object
-                  - 'null'
-                  properties:
-                    l11ContentType:
-                      type:
-                      - string
-                      - 'null'
-                      enum:
-                      - default
-                      - cinema
-                      - game
-                      - sport
-                      - ugc
-                      - null
-                      description: L11 content type
-                    l11WhitePointK:
-                      type:
-                      - number
-                      - 'null'
-                      description: L11 white point in Kelvin, snapped to the 16 RPU steps
-                  additionalProperties: false
-                  description: Content type (L11) configuration
-              additionalProperties: false
-              description: Vision configuration
-            atmos:
-              type:
-              - object
-              - 'null'
-              properties:
-                dialnorm:
-                  type: integer
-                  minimum: -31
-                  maximum: -1
-                  description: Dolby Atmos dialnorm value. Must be an integer between -1 and -31.
-              required:
-              - dialnorm
-              additionalProperties: false
-              description: Dolby Atmos configuration
-          required:
-          - id
-          - name
-          - createdAt
-          - updatedAt
-          - quality
-          - overlays
-          - drm
-          - priority
-          - status
-          - outputs
-          description: Engine object
-      required:
-      - data
-    Restream:
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 1
-          description: Unique restream ID
-        url:
-          type: string
-          pattern: '^(rtmp|rtmps|srt):'
-          description: Restream destination URL
-      required:
-      - id
-      - url
-      additionalProperties: false
-    BrowserOsInsightsListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              browserName:
-                type: string
-                description: Browser name
-              browserVersion:
-                type: string
-                description: Browser version
-              osName:
-                type: string
-                description: OS name
-              osVersion:
-                type: string
-                description: OS version
-              amount:
-                type: number
-                description: Number of unique viewers
-            required:
-            - browserName
-            - browserVersion
-            - osName
-            - osVersion
-            - amount
-          description: List of browser/OS insights
-      required:
-      - data
-    ViewingBrowserListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              browserName:
-                type: string
-                description: Browser name
-              hardwareType:
-                type: string
-                description: Hardware type
-              amount:
-                type: number
-                description: Metric value
-            required:
-            - browserName
-            - hardwareType
-            - amount
-          description: List of browser viewing data
-      required:
-      - data
-    CustomEndpointObjectResult:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/CustomEndpoint'
-      required:
-      - data
-    PaginatedChannelResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Channel'
-          description: List of channels
-        pagination:
-          type: object
-          properties:
-            hasMore:
-              type: boolean
-              description: Whether more results are available
-            cursor:
-              type: string
-              description: Cursor for the next page of results
-          required:
-          - hasMore
-          - cursor
-          description: Pagination info
-      required:
-      - data
-      - pagination
-    Ingest:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the ingest
-        name:
-          type: string
-          description: Name of the ingest
-        createdAt:
-          type: string
-          description: Creation timestamp
-        type:
-          type: string
-          enum:
-          - rtmp-push
-          - rtmp-pull
-          - srt-pull
-          - srt-push
-          - sdi-pull
-          - rtsp-pull
-          - ndi-pull
-          description: Ingest type
-        url:
-          type: string
-          description: Ingest URL
-        streamKey:
-          type: string
-          description: Stream key for RTMP push ingests
-        tracks:
-          type: object
-          properties:
-            audio:
-              type: array
-              items:
-                type: object
-                properties:
-                  pid:
-                    type: number
-                    description: Audio track PID (mandatory for multi-audio)
-                  language:
-                    type: string
-                    description: Audio track language code
-                  label:
-                    type: string
-                    description: Audio track label
-                required:
-                - language
-                - label
-              description: Audio track configuration
-          description: Audio track configuration
-        captions:
-          type: array
-          items:
-            type: object
-            properties:
-              channel:
-                type: number
-                description: Caption channel number
-              language:
-                type: string
-                description: Caption language code
-              label:
-                type: string
-                description: Caption label
-            required:
-            - channel
-            - language
-          description: Caption configuration
-        sdi:
-          $ref: '#/components/schemas/IngestSdi'
-        ndi:
-          $ref: '#/components/schemas/IngestNdi'
-      required:
-      - id
-      - name
-      - createdAt
-      - type
-      - url
-      - tracks
-      - captions
-    PaginatedDistributionResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Distribution'
-          description: List of distributions
-        pagination:
-          type: object
-          properties:
-            hasMore:
-              type: boolean
-              description: Whether more results are available
-            cursor:
-              type: string
-              description: Cursor for the next page of results
-          required:
-          - hasMore
-          - cursor
-          description: Pagination info
-      required:
-      - data
-      - pagination
-    IngestObjectResult:
-      type: object
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/Ingest'
-          - description: Ingest object
-      required:
-      - data
-    ChannelObjectResultWithIncludes:
-      type: object
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/Channel'
-          - description: Channel object
-        ingests:
-          $ref: '#/components/schemas/IncludedIngests'
-        engines:
-          $ref: '#/components/schemas/IncludedEngines'
-        distributions:
-          $ref: '#/components/schemas/IncludedDistributions'
-      required:
-      - data
-    CustomEndpoint:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Unique identifier
-        createdAt:
-          type: string
-          description: Creation timestamp
-        updatedAt:
-          type: string
-          description: Last update timestamp
-        organizationId:
-          type: string
-          description: Organization ID
-        channelId:
-          type: string
-          description: Channel ID
-        name:
-          type: string
-          description: Name
-        src:
-          type: string
-          description: Source URL
-        srcType:
-          type: string
-          enum:
-          - hesp
-          - hls
-          - dash
-          description: Source type
-        provider:
-          type: string
-          description: Provider
-        adSystem:
-          type: string
-          description: Ad system (defaults to 'sgai')
-        drmConfig:
-          type:
-          - object
-          - 'null'
-          properties:
-            integration:
-              type: string
-              enum:
-              - ezdrm
-              - mediakind
-              - drmtoday
-              description: DRM integration type
-            merchant:
-              type: string
-              description: Merchant identifier, for integrations that identify the customer per license request
-            widevine:
-              type: object
-              properties:
-                licenseUrl:
-                  type: string
-                  description: Widevine license URL
-              required:
-              - licenseUrl
-              description: Widevine DRM configuration
-            playready:
-              type: object
-              properties:
-                licenseUrl:
-                  type: string
-                  description: PlayReady license URL
-              required:
-              - licenseUrl
-              description: PlayReady DRM configuration
-            fairplay:
-              type: object
-              properties:
-                licenseUrl:
-                  type: string
-                  description: FairPlay license URL
-                certificateUrl:
-                  type: string
-                  description: FairPlay certificate URL
-              required:
-              - licenseUrl
-              - certificateUrl
-              description: FairPlay DRM configuration
-          required:
-          - integration
-          additionalProperties: false
-          description: DRM configuration
-        cdn:
-          type: string
-          description: CDN identifier
-        priority:
-          type: number
-          description: Priority
-      required:
-      - id
-      - createdAt
-      - updatedAt
-      - organizationId
-      - channelId
-      - name
-      - src
-      - srcType
-      - provider
-      - adSystem
-      - cdn
-      - priority
-      description: Custom endpoint object
-    ViewingCountryListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              countryCode:
-                type: string
-                description: ISO country code
-              amount:
-                type: number
-                description: Metric value
-            required:
-            - countryCode
-            - amount
-          description: List of country viewing data
-      required:
-      - data
     ChannelObjectResult:
       type: object
       properties:
@@ -40033,13 +39247,6 @@ components:
           allOf:
           - $ref: '#/components/schemas/Channel'
           - description: Channel object
-      required:
-      - data
-    ChannelCreatedObjectResult:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ChannelCreated'
       required:
       - data
     Channel:
@@ -40170,54 +39377,33 @@ components:
       - timeout
       - perpetual
       - organizationId
-    CustomEndpointDrmConfig:
+    ChannelCreatedObjectResult:
       type: object
       properties:
-        integration:
-          type: string
-          enum:
-          - ezdrm
-          - mediakind
-          - drmtoday
-          description: DRM integration type
-        merchant:
-          type: string
-          description: Merchant identifier, for integrations that identify the customer per license request
-        widevine:
-          type: object
-          properties:
-            licenseUrl:
-              type: string
-              description: Widevine license URL
-          required:
-          - licenseUrl
-          description: Widevine DRM configuration
-        playready:
-          type: object
-          properties:
-            licenseUrl:
-              type: string
-              description: PlayReady license URL
-          required:
-          - licenseUrl
-          description: PlayReady DRM configuration
-        fairplay:
-          type: object
-          properties:
-            licenseUrl:
-              type: string
-              description: FairPlay license URL
-            certificateUrl:
-              type: string
-              description: FairPlay certificate URL
-          required:
-          - licenseUrl
-          - certificateUrl
-          description: FairPlay DRM configuration
+        data:
+          $ref: '#/components/schemas/ChannelCreated'
       required:
-      - integration
-      additionalProperties: false
-      description: Optional DRM configuration
+      - data
+    ViewingCountryListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              countryCode:
+                type: string
+                description: ISO country code
+              amount:
+                type: number
+                description: Metric value
+            required:
+            - countryCode
+            - amount
+          description: List of country viewing data
+      required:
+      - data
     CreateIngestBody:
       type: object
       properties:
@@ -40293,6 +39479,164 @@ components:
       - name
       - type
       additionalProperties: false
+    SendInstreamMetadataBody:
+      type: string
+      format: binary
+      description: Binary blob of instream metadata as the payload for the UUID
+    IncludedIngests:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingest'
+          description: First 10 ingests
+        hasMore:
+          type: boolean
+          description: Whether there are more than 10 ingests
+        link:
+          type: string
+          description: Link to the full ingests list
+        count:
+          type: number
+          description: Total number of ingests
+      required:
+      - data
+      - hasMore
+      - link
+      - count
+      description: Included ingests preview
+    IngestSdi:
+      type: object
+      properties:
+        persistentId:
+          type: string
+          description: 'Persistent ID of the SDI capture card, identifying it across reboots. Required for sdi-pull ingests: it must match an available SDI device of the region (see `/regions/{regionId}/sdi`) that is not connected to another ingest'
+        audioConnection:
+          type: string
+          enum:
+          - auto
+          - sdi
+          - hdmi
+          - optical-sdi
+          - component
+          - composite
+          - svideo
+          description: Audio connection type
+        videoConnection:
+          type: string
+          enum:
+          - auto
+          - sdi
+          - hdmi
+          - optical-sdi
+          - component
+          - composite
+          - svideo
+          description: Video connection type
+        videoMode:
+          type: string
+          enum:
+          - auto
+          - ntsc
+          - ntsc2398
+          - pal
+          - ntsc-p
+          - pal-p
+          - 1080p2398
+          - 1080p24
+          - 1080p25
+          - 1080p2997
+          - 1080p30
+          - 1080i50
+          - 1080i5994
+          - 1080i60
+          - 1080p50
+          - 1080p5994
+          - 1080p60
+          - 720p50
+          - 720p5994
+          - 720p60
+          - 1556p2398
+          - 1556p24
+          - 1556p25
+          - 2kdcip2398
+          - 2kdcip24
+          - 2kdcip25
+          - 2kdcip2997
+          - 2kdcip30
+          - 2kdcip50
+          - 2kdcip5994
+          - 2kdcip60
+          - 2160p2398
+          - 2160p24
+          - 2160p25
+          - 2160p2997
+          - 2160p30
+          - 2160p50
+          - 2160p5994
+          - 2160p60
+          - ntsc-widescreen
+          - ntsc2398-widescreen
+          - pal-widescreen
+          - ntsc-p-widescreen
+          - pal-p-widescreen
+          - 4kdcip2398
+          - 4kdcip24
+          - 4kdcip25
+          - 4kdcip2997
+          - 4kdcip30
+          - 4kdcip50
+          - 4kdcip5994
+          - 4kdcip60
+          - 8kp2398
+          - 8kp24
+          - 8kp25
+          - 8kp2997
+          - 8kp30
+          - 8kp50
+          - 8kp5994
+          - 8kp60
+          - 8kdcip2398
+          - 8kdcip24
+          - 8kdcip25
+          - 8kdcip2997
+          - 8kdcip30
+          - 8kdcip50
+          - 8kdcip5994
+          - 8kdcip60
+          description: Video mode
+        profile:
+          type: string
+          enum:
+          - default
+          - one-sub-device-full
+          - one-sub-device-half
+          - two-sub-devices-full
+          - two-sub-devices-half
+          - four-sub-devices-half
+          description: SDI profile
+        videoFormat:
+          type: string
+          enum:
+          - auto
+          - 8bit-yuv
+          - 10bit-yuv
+          - 8bit-argb
+          - 8bit-bgra
+          - 10bit-rgb
+          description: Video format
+      additionalProperties: false
+      description: SDI capture card configuration (only for sdi-pull ingests)
+    IngestObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Ingest'
+          - description: Ingest object
+      required:
+      - data
     CreateChannelBody:
       type: object
       properties:
@@ -41076,14 +40420,1151 @@ components:
       required:
       - name
       additionalProperties: false
-    PaginatedEngineRunResult:
+    CustomEndpoint:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        createdAt:
+          type: string
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          description: Last update timestamp
+        organizationId:
+          type: string
+          description: Organization ID
+        channelId:
+          type: string
+          description: Channel ID
+        name:
+          type: string
+          description: Name
+        src:
+          type: string
+          description: Source URL
+        srcType:
+          type: string
+          enum:
+          - hesp
+          - hls
+          - dash
+          description: Source type
+        provider:
+          type: string
+          description: Provider
+        adSystem:
+          type: string
+          description: Ad system (defaults to 'sgai')
+        drmConfig:
+          type:
+          - object
+          - 'null'
+          properties:
+            integration:
+              type: string
+              enum:
+              - ezdrm
+              - mediakind
+              - drmtoday
+              description: DRM integration type
+            merchant:
+              type: string
+              description: Merchant identifier, for integrations that identify the customer per license request
+            widevine:
+              type: object
+              properties:
+                licenseUrl:
+                  type: string
+                  description: Widevine license URL
+              required:
+              - licenseUrl
+              description: Widevine DRM configuration
+            playready:
+              type: object
+              properties:
+                licenseUrl:
+                  type: string
+                  description: PlayReady license URL
+              required:
+              - licenseUrl
+              description: PlayReady DRM configuration
+            fairplay:
+              type: object
+              properties:
+                licenseUrl:
+                  type: string
+                  description: FairPlay license URL
+                certificateUrl:
+                  type: string
+                  description: FairPlay certificate URL
+              required:
+              - licenseUrl
+              - certificateUrl
+              description: FairPlay DRM configuration
+          required:
+          - integration
+          additionalProperties: false
+          description: DRM configuration
+        cdn:
+          type: string
+          description: CDN identifier
+        priority:
+          type: number
+          description: Priority
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      - organizationId
+      - channelId
+      - name
+      - src
+      - srcType
+      - provider
+      - adSystem
+      - cdn
+      - priority
+      description: Custom endpoint object
+    BrowserOsInsightsListResult:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/EngineRun'
-          description: List of engine runs
+            type: object
+            properties:
+              browserName:
+                type: string
+                description: Browser name
+              browserVersion:
+                type: string
+                description: Browser version
+              osName:
+                type: string
+                description: OS name
+              osVersion:
+                type: string
+                description: OS version
+              amount:
+                type: number
+                description: Number of unique viewers
+            required:
+            - browserName
+            - browserVersion
+            - osName
+            - osVersion
+            - amount
+          description: List of browser/OS insights
+      required:
+      - data
+    EngineRun:
+      type: object
+      properties:
+        engineId:
+          type: string
+          description: Engine ID
+        start:
+          type: string
+          description: Run start timestamp
+        end:
+          type: string
+          description: Run end timestamp
+        config:
+          type: object
+          properties:
+            ingest:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: Ingest type used
+                url:
+                  type: string
+                  description: Ingest URL used
+              required:
+              - type
+            abrLadderId:
+              type: string
+              description: ABR ladder ID used
+            drm:
+              type: boolean
+              description: Whether DRM was enabled
+          required:
+          - ingest
+          - abrLadderId
+          - drm
+          description: Run configuration
+        startType:
+          type: string
+          description: How the run was started
+        startId:
+          type: string
+          description: ID of the entity who did the start action
+        stopType:
+          type: string
+          description: How the run was stopped
+        stopId:
+          type: string
+          description: ID of entity who did the stop action
+      required:
+      - engineId
+      - start
+      - config
+      - startType
+      - startId
+    CustomEndpointListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomEndpoint'
+          description: List of custom endpoints
+      required:
+      - data
+    AnalyticsListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                description: Timestamp of the data point
+              records:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: Identifier of the grouped entity
+                    amount:
+                      type: number
+                      description: Metric value
+                  required:
+                  - id
+                  - amount
+                description: Records for this time bucket
+            required:
+            - timestamp
+            - records
+          description: List of analytics data points
+      required:
+      - data
+    Ingest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the ingest
+        name:
+          type: string
+          description: Name of the ingest
+        createdAt:
+          type: string
+          description: Creation timestamp
+        type:
+          type: string
+          enum:
+          - rtmp-push
+          - rtmp-pull
+          - srt-pull
+          - srt-push
+          - sdi-pull
+          - rtsp-pull
+          - ndi-pull
+          description: Ingest type
+        url:
+          type: string
+          description: Ingest URL
+        streamKey:
+          type: string
+          description: Stream key for RTMP push ingests
+        tracks:
+          type: object
+          properties:
+            audio:
+              type: array
+              items:
+                type: object
+                properties:
+                  pid:
+                    type: number
+                    description: Audio track PID (mandatory for multi-audio)
+                  language:
+                    type: string
+                    description: Audio track language code
+                  label:
+                    type: string
+                    description: Audio track label
+                required:
+                - language
+                - label
+              description: Audio track configuration
+          description: Audio track configuration
+        captions:
+          type: array
+          items:
+            type: object
+            properties:
+              channel:
+                type: number
+                description: Caption channel number
+              language:
+                type: string
+                description: Caption language code
+              label:
+                type: string
+                description: Caption label
+            required:
+            - channel
+            - language
+          description: Caption configuration
+        sdi:
+          $ref: '#/components/schemas/IngestSdi'
+        ndi:
+          $ref: '#/components/schemas/IngestNdi'
+      required:
+      - id
+      - name
+      - createdAt
+      - type
+      - url
+      - tracks
+      - captions
+    ChannelCreated:
+      allOf:
+      - $ref: '#/components/schemas/Channel'
+      - type: object
+        properties:
+          ingests:
+            type: array
+            items:
+              $ref: '#/components/schemas/Ingest'
+            description: Connected ingests
+          engines:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: Unique identifier of the engine
+                name:
+                  type: string
+                  description: Name of the engine
+                createdAt:
+                  type: string
+                  description: Creation timestamp
+                updatedAt:
+                  type: string
+                  description: Last update timestamp
+                quality:
+                  type: object
+                  properties:
+                    abrLadderId:
+                      type: string
+                      description: ABR ladder ID
+                  required:
+                  - abrLadderId
+                  description: Quality configuration
+                overlays:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      url:
+                        type: string
+                        description: URL of the overlay image
+                      position:
+                        type: object
+                        properties:
+                          top:
+                            type: integer
+                            minimum: 0
+                            description: Pixels from top
+                          bottom:
+                            type: integer
+                            minimum: 0
+                            description: Pixels from bottom (ignored if top is present)
+                          left:
+                            type: integer
+                            minimum: 0
+                            description: Pixels from left
+                          right:
+                            type: integer
+                            minimum: 0
+                            description: Pixels from right (ignored if left is present)
+                        description: Overlay position
+                      size:
+                        type: object
+                        properties:
+                          width:
+                            type: integer
+                            minimum: 0
+                            description: Width in pixels
+                          height:
+                            type: integer
+                            minimum: 0
+                            description: Height in pixels
+                        description: Overlay size
+                      opacity:
+                        type: number
+                        minimum: 0
+                        maximum: 1
+                        description: Overlay opacity (`0`=fully transparent, `1`=fully opaque)
+                    required:
+                    - url
+                  description: Image overlay configuration
+                drm:
+                  type: boolean
+                  description: Whether DRM is enabled
+                drmProvider:
+                  type: string
+                  enum:
+                  - ezdrm
+                  - drmtoday
+                  description: DRM provider used by this engine
+                priority:
+                  type: number
+                  description: Engine priority
+                status:
+                  type: string
+                  enum:
+                  - stopped
+                  - deploying
+                  - starting
+                  - waiting
+                  - ingesting
+                  - playing
+                  - stopping
+                  - error
+                  - deleting
+                  - deleted
+                  description: Current status of the engine
+                daiAssetKey:
+                  type:
+                  - string
+                  - 'null'
+                  description: DAI asset key
+                outputs:
+                  type: object
+                  properties:
+                    hesp:
+                      type: boolean
+                      default: true
+                      description: Enable HESP output. Enabled by default.
+                    hls:
+                      type: boolean
+                      default: true
+                      description: Enable HLS output. Enabled by default.
+                    hlsMpegTs:
+                      type: boolean
+                      default: false
+                      description: Enable HLS MPEG-TS output. Only available when enabled for your organization.
+                    llHls:
+                      type: boolean
+                      default: false
+                      description: Enable Low-Latency HLS output. Enabling this also enables HLS output. Disabled by default.
+                  description: Output format configuration
+                vision:
+                  type:
+                  - object
+                  - 'null'
+                  properties:
+                    toneLut:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        saturationBoost:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - high
+                          - low
+                          - null
+                          description: Saturation boost level
+                        strength:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - low
+                          - medium
+                          - high
+                          - null
+                          description: Tone mapping strength
+                      additionalProperties: false
+                      description: Tone mapping LUT configuration
+                    masteringDisplay:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        primaries:
+                          type:
+                          - object
+                          - 'null'
+                          properties:
+                            type:
+                              type:
+                              - string
+                              - 'null'
+                              enum:
+                              - rec2020
+                              - p3d65
+                              - rec709
+                              - custom
+                              - null
+                              description: Color primaries preset
+                            red:
+                              type:
+                              - object
+                              - 'null'
+                              properties:
+                                x:
+                                  type: number
+                                  description: Chromaticity x coordinate
+                                y:
+                                  type: number
+                                  description: Chromaticity y coordinate
+                              required:
+                              - x
+                              - y
+                              additionalProperties: false
+                              description: Custom red primary coordinates (required when type is `custom`)
+                            green:
+                              type:
+                              - object
+                              - 'null'
+                              properties:
+                                x:
+                                  type: number
+                                  description: Chromaticity x coordinate
+                                y:
+                                  type: number
+                                  description: Chromaticity y coordinate
+                              required:
+                              - x
+                              - y
+                              additionalProperties: false
+                              description: Custom green primary coordinates (required when type is `custom`)
+                            blue:
+                              type:
+                              - object
+                              - 'null'
+                              properties:
+                                x:
+                                  type: number
+                                  description: Chromaticity x coordinate
+                                y:
+                                  type: number
+                                  description: Chromaticity y coordinate
+                              required:
+                              - x
+                              - y
+                              additionalProperties: false
+                              description: Custom blue primary coordinates (required when type is `custom`)
+                          additionalProperties: false
+                          description: Mastering display color primaries
+                        whitePoint:
+                          type:
+                          - object
+                          - 'null'
+                          properties:
+                            type:
+                              type:
+                              - string
+                              - 'null'
+                              enum:
+                              - d65
+                              - d60
+                              - dci
+                              - custom
+                              - null
+                              description: White point preset
+                            x:
+                              type:
+                              - number
+                              - 'null'
+                              description: Custom white point x coordinate (required when type is `custom`)
+                            y:
+                              type:
+                              - number
+                              - 'null'
+                              description: Custom white point y coordinate (required when type is `custom`)
+                          additionalProperties: false
+                          description: Mastering display white point
+                        maxDisplayMasteringLuminance:
+                          type:
+                          - number
+                          - 'null'
+                          minimum: 0
+                          maximum: 10000
+                          description: Maximum display mastering luminance in nits (0-10000)
+                        minDisplayMasteringLuminance:
+                          type:
+                          - number
+                          - 'null'
+                          minimum: 0
+                          description: Minimum display mastering luminance in nits
+                      additionalProperties: false
+                      description: Mastering display configuration
+                    contentLightLevels:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        cllMode:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - auto
+                          - expert
+                          - null
+                          description: Content light level mode. `expert` requires maxCll and maxFall (nits)
+                        maxCll:
+                          type:
+                          - number
+                          - 'null'
+                          minimum: 0
+                          description: Maximum content light level in nits (required when cllMode is `expert`)
+                        maxFall:
+                          type:
+                          - number
+                          - 'null'
+                          minimum: 0
+                          description: Maximum frame-average light level in nits (required when cllMode is `expert`)
+                      additionalProperties: false
+                      description: Content light level configuration
+                    globalLook:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        l8Mode:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - 'off'
+                          - quickControls
+                          - null
+                          description: L8 global look mode
+                        l8ContrastBoost:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - 'off'
+                          - low
+                          - mid
+                          - high
+                          - null
+                          description: L8 contrast boost (required when l8Mode is `quickControls`)
+                        l8MidBoost:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - 'off'
+                          - low
+                          - mid
+                          - high
+                          - null
+                          description: L8 mid boost (required when l8Mode is `quickControls`)
+                        l8SaturationBoost:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - 'off'
+                          - low
+                          - mid
+                          - high
+                          - null
+                          description: L8 saturation boost (required when l8Mode is `quickControls`)
+                      additionalProperties: false
+                      description: Global look (L8) configuration
+                    contentType:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        l11ContentType:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - default
+                          - cinema
+                          - game
+                          - sport
+                          - ugc
+                          - null
+                          description: L11 content type
+                        l11WhitePointK:
+                          type:
+                          - number
+                          - 'null'
+                          description: L11 white point in Kelvin, snapped to the 16 RPU steps
+                      additionalProperties: false
+                      description: Content type (L11) configuration
+                  additionalProperties: false
+                  description: Vision configuration
+                atmos:
+                  type:
+                  - object
+                  - 'null'
+                  properties:
+                    dialnorm:
+                      type: integer
+                      minimum: -31
+                      maximum: -1
+                      description: Dolby Atmos dialnorm value. Must be an integer between -1 and -31.
+                  required:
+                  - dialnorm
+                  additionalProperties: false
+                  description: Dolby Atmos configuration
+              required:
+              - id
+              - name
+              - createdAt
+              - updatedAt
+              - quality
+              - overlays
+              - drm
+              - priority
+              - status
+              - outputs
+            description: Connected engines
+          distributions:
+            type: array
+            items:
+              $ref: '#/components/schemas/Distribution'
+            description: Connected distributions
+        required:
+        - ingests
+        - engines
+        - distributions
+      description: Created channel with connected resources
+    UpdateChannelBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the channel
+        externalId:
+          type: string
+          description: Deprecated, use 'externalIds' instead. Shorthand for a single-entry 'externalIds'. For now, responses will keep returning 'externalId' with the first entry of 'externalIds'.
+          deprecated: true
+        externalIds:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          description: External identifiers for the channel. Replaces the full list; an empty array clears all external IDs. Mutually exclusive with externalId.
+        timeout:
+          type: number
+          minimum: 0
+          description: Timeout in seconds (minimum 60). To never stop, specify 0
+        ads:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Whether OptiView ads are enabled on the channel
+            customAssetKey:
+              type: string
+              description: DAI asset key, only possible when Google is linked to your ads account
+            timebase:
+              type: string
+              enum:
+              - wallclock
+              - pts
+              description: Timebase for ad insertion. Defaults to "wallclock"
+            settings:
+              type: object
+              properties:
+                assetKey:
+                  type: string
+                  description: Deprecated. Use customAssetKey instead.
+                  deprecated: true
+                layout:
+                  type: string
+                  enum:
+                  - SINGLE
+                  - DOUBLE
+                  - LSHAPE_AD
+                  - LSHAPE_CONTENT
+                  deprecated: true
+                enableBumperAds:
+                  type: boolean
+                  deprecated: true
+                podDuration:
+                  type: number
+                  deprecated: true
+                customAdTagParameters:
+                  type: object
+                  additionalProperties:
+                    type: string
+                  deprecated: true
+              description: Deprecated. V1 ads settings.
+              deprecated: true
+          required:
+          - enabled
+          description: OptiView Ads configuration. Only available when OptiView Ads is enabled for your organization.
+        dvr:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Whether DVR is enabled
+            windowInSeconds:
+              type: number
+              minimum: 60
+              maximum: 86400
+              description: DVR window in seconds (60-86400)
+          required:
+          - enabled
+          description: DVR configuration. Only available when DVR feature is enabled for your organization.
+        nielsen:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Whether Nielsen is enabled
+          required:
+          - enabled
+          description: Nielsen configuration. Only available when Nielsen feature is enabled for your organization.
+        instreamMetadata:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Whether instream metadata is enabled. Supported metadata is h264 registered or unregistered SEI metadata
+            uuids:
+              type: array
+              items:
+                type: string
+                format: uuid
+              description: Array of instream metadata SEI UUIDs
+          required:
+          - enabled
+          description: Instream metadata configuration
+      additionalProperties: false
+    CustomEndpointObjectResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/CustomEndpoint'
+      required:
+      - data
+    CreateDistributionBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the distribution
+        externalId:
+          type: string
+          description: External identifier for the distribution
+        enabled:
+          type: boolean
+          description: Whether the distribution is enabled
+        targetLatency:
+          type: number
+          description: 'Deprecated: use latencies.hesp instead. If set, will be applied as latencies.hesp.'
+        latencies:
+          type: object
+          properties:
+            hesp:
+              type:
+              - number
+              - 'null'
+              minimum: 1
+              maximum: 30
+              description: 'HESP latency in seconds (1-30, default: 2)'
+            hls:
+              type:
+              - number
+              - 'null'
+              minimum: 6
+              maximum: 30
+              description: 'HLS latency in seconds (6-30, default: 10)'
+          description: Latency configuration per output protocol
+        security:
+          type: object
+          properties:
+            geoBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether geo-blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: Geo-blocking mode
+                countries:
+                  type: array
+                  items:
+                    type: string
+                  description: List of country codes
+              description: Geo-blocking configuration
+            ipBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether IP blocking is enabled
+                mode:
+                  type: string
+                  enum:
+                  - allow
+                  - deny
+                  description: IP blocking mode
+                cidrs:
+                  type: array
+                  items:
+                    type: string
+                  description: List of CIDR ranges
+              description: IP blocking configuration
+            refererBlocking:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Whether referer blocking is enabled
+                allowedDomains:
+                  type: array
+                  items:
+                    type: string
+                  description: List of allowed domains. Matched exactly against the referer host including port (e.g. example.com). `localhost` with an optional port (e.g. localhost:3000) is also allowed.
+                allowNativeApps:
+                  type: boolean
+                  description: Whether native apps are allowed
+              description: Referer blocking configuration
+            rewriteSegmentUrls:
+              type: boolean
+              description: When enabled, a short-lived token is added to the segment URLs, derived from the token that was passed. This only works when JWT security is enabled on the same distribution.
+            keys:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Name of the security key
+                  key:
+                    type: string
+                    description: Security key value
+                required:
+                - key
+              maxItems: 2
+              description: Security keys (max 2, create only)
+          description: Security configuration
+        endpoints:
+          type: object
+          properties:
+            engineIds:
+              type: array
+              items:
+                type: string
+              description: Engine IDs to connect
+          description: Endpoint configuration
+        webRtc:
+          type:
+          - object
+          - 'null'
+          properties:
+            priority:
+              type: number
+              description: WebRTC priority
+            src:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: WebRTC source name
+                accountId:
+                  type: string
+                  description: WebRTC account ID
+                apiUrl:
+                  type: string
+                  description: WebRTC API URL
+              required:
+              - name
+              - accountId
+              - apiUrl
+              description: WebRTC source configuration
+          required:
+          - priority
+          - src
+          description: WebRTC configuration
+        outputs:
+          type: object
+          properties:
+            hesp:
+              type: boolean
+              default: true
+              description: Enable HESP output. Enabled by default.
+            hls:
+              type: boolean
+              default: true
+              description: Enable HLS output. Enabled by default.
+            hlsMpegTs:
+              type: boolean
+              default: false
+              description: Enable HLS MPEG-TS output. Disabled by default.
+          description: Output format configuration
+        maxBitrate:
+          type:
+          - number
+          - 'null'
+          description: Maximum bitrate limit in bps
+        dvr:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Whether DVR is enabled on the distribution
+          description: DVR configuration
+        overrides:
+          type: array
+          items:
+            type: object
+            properties:
+              deviceType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - tv
+                - mobile
+                - desktop
+                - other
+                - null
+                description: Target device type
+              sdkType:
+                type:
+                - string
+                - 'null'
+                enum:
+                - native
+                - web
+                - null
+                description: Target SDK type
+              osName:
+                type:
+                - string
+                - 'null'
+                enum:
+                - apple
+                - android
+                - windows
+                - roku
+                - other
+                - null
+                description: Target OS name
+              profileId:
+                type:
+                - string
+                - 'null'
+                description: Target profile ID
+              targets:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    distributionId:
+                      type: string
+                      description: Target distribution ID
+                    weight:
+                      type: number
+                      minimum: 0
+                      maximum: 100
+                      description: Weight (0-100)
+                  required:
+                  - distributionId
+                  - weight
+                description: Override target distributions with weights
+            required:
+            - targets
+          description: Distribution overrides for device targeting
+        customEndpoints:
+          type: array
+          items:
+            type: object
+            properties:
+              customEndpointId:
+                type: string
+                description: ID of the custom endpoint to connect
+              weight:
+                type: integer
+                minimum: 0
+                maximum: 100
+                default: 100
+                description: Weight (0-100, default 100)
+            required:
+            - customEndpointId
+          description: Custom endpoints to connect to this distribution
+        ads:
+          type:
+          - object
+          - 'null'
+          properties:
+            dai:
+              type: object
+              properties:
+                weight:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  description: Weight for DAI endpoints (0-100)
+                priority:
+                  type: integer
+                  description: Priority for DAI endpoints (any integer, lower = higher priority)
+              required:
+              - weight
+              - priority
+              additionalProperties: false
+              description: DAI endpoint settings
+          additionalProperties: false
+          description: Ads configuration for the distribution
+        playerSettings:
+          type:
+          - object
+          - 'null'
+          properties:
+            hespCooldown:
+              type: number
+              minimum: 0
+              maximum: 300
+              description: Cooldown period in seconds (0-300) before the player retries HESP playback after falling back to another protocol. Defaults to 120 seconds when not set.
+          additionalProperties: false
+          description: Player settings applied to the player configuration in the discovery response
+      required:
+      - name
+      additionalProperties: false
+    PaginatedDistributionResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Distribution'
+          description: List of distributions
         pagination:
           type: object
           properties:
@@ -41100,138 +41581,96 @@ components:
       required:
       - data
       - pagination
-    IngestSdi:
+    ViewersInsightsListResult:
       type: object
       properties:
-        persistentId:
-          type: string
-          description: 'Persistent ID of the SDI capture card, identifying it across reboots. Required for sdi-pull ingests: it must match an available SDI device of the region (see `/regions/{regionId}/sdi`) that is not connected to another ingest'
-        audioConnection:
-          type: string
-          enum:
-          - auto
-          - sdi
-          - hdmi
-          - optical-sdi
-          - component
-          - composite
-          - svideo
-          description: Audio connection type
-        videoConnection:
-          type: string
-          enum:
-          - auto
-          - sdi
-          - hdmi
-          - optical-sdi
-          - component
-          - composite
-          - svideo
-          description: Video connection type
-        videoMode:
-          type: string
-          enum:
-          - auto
-          - ntsc
-          - ntsc2398
-          - pal
-          - ntsc-p
-          - pal-p
-          - 1080p2398
-          - 1080p24
-          - 1080p25
-          - 1080p2997
-          - 1080p30
-          - 1080i50
-          - 1080i5994
-          - 1080i60
-          - 1080p50
-          - 1080p5994
-          - 1080p60
-          - 720p50
-          - 720p5994
-          - 720p60
-          - 1556p2398
-          - 1556p24
-          - 1556p25
-          - 2kdcip2398
-          - 2kdcip24
-          - 2kdcip25
-          - 2kdcip2997
-          - 2kdcip30
-          - 2kdcip50
-          - 2kdcip5994
-          - 2kdcip60
-          - 2160p2398
-          - 2160p24
-          - 2160p25
-          - 2160p2997
-          - 2160p30
-          - 2160p50
-          - 2160p5994
-          - 2160p60
-          - ntsc-widescreen
-          - ntsc2398-widescreen
-          - pal-widescreen
-          - ntsc-p-widescreen
-          - pal-p-widescreen
-          - 4kdcip2398
-          - 4kdcip24
-          - 4kdcip25
-          - 4kdcip2997
-          - 4kdcip30
-          - 4kdcip50
-          - 4kdcip5994
-          - 4kdcip60
-          - 8kp2398
-          - 8kp24
-          - 8kp25
-          - 8kp2997
-          - 8kp30
-          - 8kp50
-          - 8kp5994
-          - 8kp60
-          - 8kdcip2398
-          - 8kdcip24
-          - 8kdcip25
-          - 8kdcip2997
-          - 8kdcip30
-          - 8kdcip50
-          - 8kdcip5994
-          - 8kdcip60
-          description: Video mode
-        profile:
-          type: string
-          enum:
-          - default
-          - one-sub-device-full
-          - one-sub-device-half
-          - two-sub-devices-full
-          - two-sub-devices-half
-          - four-sub-devices-half
-          description: SDI profile
-        videoFormat:
-          type: string
-          enum:
-          - auto
-          - 8bit-yuv
-          - 10bit-yuv
-          - 8bit-argb
-          - 8bit-bgra
-          - 10bit-rgb
-          description: Video format
-      additionalProperties: false
-      description: SDI capture card configuration (only for sdi-pull ingests)
-    ChannelDrmConfigsResult:
-      type: object
-      properties:
-        contentProtections:
+        data:
           type: array
           items:
-            $ref: '#/components/schemas/ChannelDrmContentProtection'
-          description: List of DRM content protection configurations
+            type: object
+            properties:
+              timestamp:
+                type: string
+                description: Timestamp of the data point
+              amount:
+                type: number
+                description: Number of unique viewers
+            required:
+            - timestamp
+            - amount
+          description: List of viewer count data points
       required:
-      - contentProtections
+      - data
+    ChannelDrmContentProtection:
+      type: object
+      properties:
+        integration:
+          type: string
+          description: DRM integration type
+        merchant:
+          type: string
+          description: Merchant identifier, for integrations that identify the customer per license request
+        widevine:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: Widevine license acquisition URL
+          required:
+          - licenseUrl
+          description: Widevine configuration
+        playready:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: PlayReady license acquisition URL
+          required:
+          - licenseUrl
+          description: PlayReady configuration
+        fairplay:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: FairPlay license acquisition URL
+            certificateUrl:
+              type: string
+              description: FairPlay certificate URL
+          required:
+          - licenseUrl
+          - certificateUrl
+          description: FairPlay configuration
+      required:
+      - integration
+    CountryInsightsListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              city:
+                type: string
+                description: City name
+              countryCode:
+                type: string
+                description: ISO country code
+              geoLocation:
+                type: string
+                description: Rounded latitude,longitude
+              amount:
+                type: number
+                description: Number of unique viewers
+            required:
+            - city
+            - countryCode
+            - geoLocation
+            - amount
+          description: List of country insights
+      required:
+      - data
     IncludedDistributions:
       type: object
       properties:
@@ -41255,6 +41694,54 @@ components:
       - link
       - count
       description: Included distributions preview
+    CustomEndpointDrmConfig:
+      type: object
+      properties:
+        integration:
+          type: string
+          enum:
+          - ezdrm
+          - mediakind
+          - drmtoday
+          description: DRM integration type
+        merchant:
+          type: string
+          description: Merchant identifier, for integrations that identify the customer per license request
+        widevine:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: Widevine license URL
+          required:
+          - licenseUrl
+          description: Widevine DRM configuration
+        playready:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: PlayReady license URL
+          required:
+          - licenseUrl
+          description: PlayReady DRM configuration
+        fairplay:
+          type: object
+          properties:
+            licenseUrl:
+              type: string
+              description: FairPlay license URL
+            certificateUrl:
+              type: string
+              description: FairPlay certificate URL
+          required:
+          - licenseUrl
+          - certificateUrl
+          description: FairPlay DRM configuration
+      required:
+      - integration
+      additionalProperties: false
+      description: Optional DRM configuration
     IncludedEngines:
       type: object
       properties:
@@ -41672,944 +42159,457 @@ components:
       - link
       - count
       description: Included engines preview
-    ViewersInsightsListResult:
+    EngineObjectResult:
       type: object
       properties:
         data:
-          type: array
-          items:
-            type: object
-            properties:
-              timestamp:
-                type: string
-                description: Timestamp of the data point
-              amount:
-                type: number
-                description: Number of unique viewers
-            required:
-            - timestamp
-            - amount
-          description: List of viewer count data points
-      required:
-      - data
-    CreateCustomEndpointBody:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Name of the custom endpoint
-        src:
-          type: string
-          minLength: 1
-          description: Source URL
-        srcType:
-          type: string
-          enum:
-          - hesp
-          - hls
-          - dash
-          description: Source type (hesp, hls or dash)
-        provider:
-          type: string
-          minLength: 1
-          description: Provider name (must be configured for the organization)
-        adSystem:
-          type: string
-          minLength: 1
-          description: Ad system name (must be configured for the organization). 'sgai' is always allowed. Defaults to 'sgai' if not specified
-        drmConfig:
-          $ref: '#/components/schemas/CustomEndpointDrmConfig'
-        cdn:
-          type: string
-          minLength: 1
-          pattern: ^[a-zA-Z0-9]+$
-          description: CDN identifier
-        priority:
-          type: integer
-          description: Priority (lower is higher priority)
-      required:
-      - name
-      - src
-      - srcType
-      - provider
-      - cdn
-      - priority
-      additionalProperties: false
-    IncludedIngests:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ingest'
-          description: First 10 ingests
-        hasMore:
-          type: boolean
-          description: Whether there are more than 10 ingests
-        link:
-          type: string
-          description: Link to the full ingests list
-        count:
-          type: number
-          description: Total number of ingests
-      required:
-      - data
-      - hasMore
-      - link
-      - count
-      description: Included ingests preview
-    PaginatedEngineResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                description: Unique identifier of the engine
-              name:
-                type: string
-                description: Name of the engine
-              createdAt:
-                type: string
-                description: Creation timestamp
-              updatedAt:
-                type: string
-                description: Last update timestamp
-              quality:
-                type: object
-                properties:
-                  abrLadderId:
-                    type: string
-                    description: ABR ladder ID
-                required:
-                - abrLadderId
-                description: Quality configuration
-              overlays:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    url:
-                      type: string
-                      description: URL of the overlay image
-                    position:
-                      type: object
-                      properties:
-                        top:
-                          type: integer
-                          minimum: 0
-                          description: Pixels from top
-                        bottom:
-                          type: integer
-                          minimum: 0
-                          description: Pixels from bottom (ignored if top is present)
-                        left:
-                          type: integer
-                          minimum: 0
-                          description: Pixels from left
-                        right:
-                          type: integer
-                          minimum: 0
-                          description: Pixels from right (ignored if left is present)
-                      description: Overlay position
-                    size:
-                      type: object
-                      properties:
-                        width:
-                          type: integer
-                          minimum: 0
-                          description: Width in pixels
-                        height:
-                          type: integer
-                          minimum: 0
-                          description: Height in pixels
-                      description: Overlay size
-                    opacity:
-                      type: number
-                      minimum: 0
-                      maximum: 1
-                      description: Overlay opacity (`0`=fully transparent, `1`=fully opaque)
-                  required:
-                  - url
-                description: Image overlay configuration
-              drm:
-                type: boolean
-                description: Whether DRM is enabled
-              drmProvider:
-                type: string
-                enum:
-                - ezdrm
-                - drmtoday
-                description: DRM provider used by this engine
-              priority:
-                type: number
-                description: Engine priority
-              status:
-                type: string
-                enum:
-                - stopped
-                - deploying
-                - starting
-                - waiting
-                - ingesting
-                - playing
-                - stopping
-                - error
-                - deleting
-                - deleted
-                description: Current status of the engine
-              daiAssetKey:
-                type:
-                - string
-                - 'null'
-                description: DAI asset key
-              outputs:
-                type: object
-                properties:
-                  hesp:
-                    type: boolean
-                    default: true
-                    description: Enable HESP output. Enabled by default.
-                  hls:
-                    type: boolean
-                    default: true
-                    description: Enable HLS output. Enabled by default.
-                  hlsMpegTs:
-                    type: boolean
-                    default: false
-                    description: Enable HLS MPEG-TS output. Only available when enabled for your organization.
-                  llHls:
-                    type: boolean
-                    default: false
-                    description: Enable Low-Latency HLS output. Enabling this also enables HLS output. Disabled by default.
-                description: Output format configuration
-              vision:
-                type:
-                - object
-                - 'null'
-                properties:
-                  toneLut:
-                    type:
-                    - object
-                    - 'null'
-                    properties:
-                      saturationBoost:
-                        type:
-                        - string
-                        - 'null'
-                        enum:
-                        - high
-                        - low
-                        - null
-                        description: Saturation boost level
-                      strength:
-                        type:
-                        - string
-                        - 'null'
-                        enum:
-                        - low
-                        - medium
-                        - high
-                        - null
-                        description: Tone mapping strength
-                    additionalProperties: false
-                    description: Tone mapping LUT configuration
-                  masteringDisplay:
-                    type:
-                    - object
-                    - 'null'
-                    properties:
-                      primaries:
-                        type:
-                        - object
-                        - 'null'
-                        properties:
-                          type:
-                            type:
-                            - string
-                            - 'null'
-                            enum:
-                            - rec2020
-                            - p3d65
-                            - rec709
-                            - custom
-                            - null
-                            description: Color primaries preset
-                          red:
-                            type:
-                            - object
-                            - 'null'
-                            properties:
-                              x:
-                                type: number
-                                description: Chromaticity x coordinate
-                              y:
-                                type: number
-                                description: Chromaticity y coordinate
-                            required:
-                            - x
-                            - y
-                            additionalProperties: false
-                            description: Custom red primary coordinates (required when type is `custom`)
-                          green:
-                            type:
-                            - object
-                            - 'null'
-                            properties:
-                              x:
-                                type: number
-                                description: Chromaticity x coordinate
-                              y:
-                                type: number
-                                description: Chromaticity y coordinate
-                            required:
-                            - x
-                            - y
-                            additionalProperties: false
-                            description: Custom green primary coordinates (required when type is `custom`)
-                          blue:
-                            type:
-                            - object
-                            - 'null'
-                            properties:
-                              x:
-                                type: number
-                                description: Chromaticity x coordinate
-                              y:
-                                type: number
-                                description: Chromaticity y coordinate
-                            required:
-                            - x
-                            - y
-                            additionalProperties: false
-                            description: Custom blue primary coordinates (required when type is `custom`)
-                        additionalProperties: false
-                        description: Mastering display color primaries
-                      whitePoint:
-                        type:
-                        - object
-                        - 'null'
-                        properties:
-                          type:
-                            type:
-                            - string
-                            - 'null'
-                            enum:
-                            - d65
-                            - d60
-                            - dci
-                            - custom
-                            - null
-                            description: White point preset
-                          x:
-                            type:
-                            - number
-                            - 'null'
-                            description: Custom white point x coordinate (required when type is `custom`)
-                          y:
-                            type:
-                            - number
-                            - 'null'
-                            description: Custom white point y coordinate (required when type is `custom`)
-                        additionalProperties: false
-                        description: Mastering display white point
-                      maxDisplayMasteringLuminance:
-                        type:
-                        - number
-                        - 'null'
-                        minimum: 0
-                        maximum: 10000
-                        description: Maximum display mastering luminance in nits (0-10000)
-                      minDisplayMasteringLuminance:
-                        type:
-                        - number
-                        - 'null'
-                        minimum: 0
-                        description: Minimum display mastering luminance in nits
-                    additionalProperties: false
-                    description: Mastering display configuration
-                  contentLightLevels:
-                    type:
-                    - object
-                    - 'null'
-                    properties:
-                      cllMode:
-                        type:
-                        - string
-                        - 'null'
-                        enum:
-                        - auto
-                        - expert
-                        - null
-                        description: Content light level mode. `expert` requires maxCll and maxFall (nits)
-                      maxCll:
-                        type:
-                        - number
-                        - 'null'
-                        minimum: 0
-                        description: Maximum content light level in nits (required when cllMode is `expert`)
-                      maxFall:
-                        type:
-                        - number
-                        - 'null'
-                        minimum: 0
-                        description: Maximum frame-average light level in nits (required when cllMode is `expert`)
-                    additionalProperties: false
-                    description: Content light level configuration
-                  globalLook:
-                    type:
-                    - object
-                    - 'null'
-                    properties:
-                      l8Mode:
-                        type:
-                        - string
-                        - 'null'
-                        enum:
-                        - 'off'
-                        - quickControls
-                        - null
-                        description: L8 global look mode
-                      l8ContrastBoost:
-                        type:
-                        - string
-                        - 'null'
-                        enum:
-                        - 'off'
-                        - low
-                        - mid
-                        - high
-                        - null
-                        description: L8 contrast boost (required when l8Mode is `quickControls`)
-                      l8MidBoost:
-                        type:
-                        - string
-                        - 'null'
-                        enum:
-                        - 'off'
-                        - low
-                        - mid
-                        - high
-                        - null
-                        description: L8 mid boost (required when l8Mode is `quickControls`)
-                      l8SaturationBoost:
-                        type:
-                        - string
-                        - 'null'
-                        enum:
-                        - 'off'
-                        - low
-                        - mid
-                        - high
-                        - null
-                        description: L8 saturation boost (required when l8Mode is `quickControls`)
-                    additionalProperties: false
-                    description: Global look (L8) configuration
-                  contentType:
-                    type:
-                    - object
-                    - 'null'
-                    properties:
-                      l11ContentType:
-                        type:
-                        - string
-                        - 'null'
-                        enum:
-                        - default
-                        - cinema
-                        - game
-                        - sport
-                        - ugc
-                        - null
-                        description: L11 content type
-                      l11WhitePointK:
-                        type:
-                        - number
-                        - 'null'
-                        description: L11 white point in Kelvin, snapped to the 16 RPU steps
-                    additionalProperties: false
-                    description: Content type (L11) configuration
-                additionalProperties: false
-                description: Vision configuration
-              atmos:
-                type:
-                - object
-                - 'null'
-                properties:
-                  dialnorm:
-                    type: integer
-                    minimum: -31
-                    maximum: -1
-                    description: Dolby Atmos dialnorm value. Must be an integer between -1 and -31.
-                required:
-                - dialnorm
-                additionalProperties: false
-                description: Dolby Atmos configuration
-            required:
-            - id
-            - name
-            - createdAt
-            - updatedAt
-            - quality
-            - overlays
-            - drm
-            - priority
-            - status
-            - outputs
-          description: List of engines
-        pagination:
           type: object
           properties:
-            hasMore:
-              type: boolean
-              description: Whether more results are available
-            cursor:
+            id:
               type: string
-              description: Cursor for the next page of results
+              description: Unique identifier of the engine
+            name:
+              type: string
+              description: Name of the engine
+            createdAt:
+              type: string
+              description: Creation timestamp
+            updatedAt:
+              type: string
+              description: Last update timestamp
+            quality:
+              type: object
+              properties:
+                abrLadderId:
+                  type: string
+                  description: ABR ladder ID
+              required:
+              - abrLadderId
+              description: Quality configuration
+            overlays:
+              type: array
+              items:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    description: URL of the overlay image
+                  position:
+                    type: object
+                    properties:
+                      top:
+                        type: integer
+                        minimum: 0
+                        description: Pixels from top
+                      bottom:
+                        type: integer
+                        minimum: 0
+                        description: Pixels from bottom (ignored if top is present)
+                      left:
+                        type: integer
+                        minimum: 0
+                        description: Pixels from left
+                      right:
+                        type: integer
+                        minimum: 0
+                        description: Pixels from right (ignored if left is present)
+                    description: Overlay position
+                  size:
+                    type: object
+                    properties:
+                      width:
+                        type: integer
+                        minimum: 0
+                        description: Width in pixels
+                      height:
+                        type: integer
+                        minimum: 0
+                        description: Height in pixels
+                    description: Overlay size
+                  opacity:
+                    type: number
+                    minimum: 0
+                    maximum: 1
+                    description: Overlay opacity (`0`=fully transparent, `1`=fully opaque)
+                required:
+                - url
+              description: Image overlay configuration
+            drm:
+              type: boolean
+              description: Whether DRM is enabled
+            drmProvider:
+              type: string
+              enum:
+              - ezdrm
+              - drmtoday
+              description: DRM provider used by this engine
+            priority:
+              type: number
+              description: Engine priority
+            status:
+              type: string
+              enum:
+              - stopped
+              - deploying
+              - starting
+              - waiting
+              - ingesting
+              - playing
+              - stopping
+              - error
+              - deleting
+              - deleted
+              description: Current status of the engine
+            daiAssetKey:
+              type:
+              - string
+              - 'null'
+              description: DAI asset key
+            outputs:
+              type: object
+              properties:
+                hesp:
+                  type: boolean
+                  default: true
+                  description: Enable HESP output. Enabled by default.
+                hls:
+                  type: boolean
+                  default: true
+                  description: Enable HLS output. Enabled by default.
+                hlsMpegTs:
+                  type: boolean
+                  default: false
+                  description: Enable HLS MPEG-TS output. Only available when enabled for your organization.
+                llHls:
+                  type: boolean
+                  default: false
+                  description: Enable Low-Latency HLS output. Enabling this also enables HLS output. Disabled by default.
+              description: Output format configuration
+            vision:
+              type:
+              - object
+              - 'null'
+              properties:
+                toneLut:
+                  type:
+                  - object
+                  - 'null'
+                  properties:
+                    saturationBoost:
+                      type:
+                      - string
+                      - 'null'
+                      enum:
+                      - high
+                      - low
+                      - null
+                      description: Saturation boost level
+                    strength:
+                      type:
+                      - string
+                      - 'null'
+                      enum:
+                      - low
+                      - medium
+                      - high
+                      - null
+                      description: Tone mapping strength
+                  additionalProperties: false
+                  description: Tone mapping LUT configuration
+                masteringDisplay:
+                  type:
+                  - object
+                  - 'null'
+                  properties:
+                    primaries:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - rec2020
+                          - p3d65
+                          - rec709
+                          - custom
+                          - null
+                          description: Color primaries preset
+                        red:
+                          type:
+                          - object
+                          - 'null'
+                          properties:
+                            x:
+                              type: number
+                              description: Chromaticity x coordinate
+                            y:
+                              type: number
+                              description: Chromaticity y coordinate
+                          required:
+                          - x
+                          - y
+                          additionalProperties: false
+                          description: Custom red primary coordinates (required when type is `custom`)
+                        green:
+                          type:
+                          - object
+                          - 'null'
+                          properties:
+                            x:
+                              type: number
+                              description: Chromaticity x coordinate
+                            y:
+                              type: number
+                              description: Chromaticity y coordinate
+                          required:
+                          - x
+                          - y
+                          additionalProperties: false
+                          description: Custom green primary coordinates (required when type is `custom`)
+                        blue:
+                          type:
+                          - object
+                          - 'null'
+                          properties:
+                            x:
+                              type: number
+                              description: Chromaticity x coordinate
+                            y:
+                              type: number
+                              description: Chromaticity y coordinate
+                          required:
+                          - x
+                          - y
+                          additionalProperties: false
+                          description: Custom blue primary coordinates (required when type is `custom`)
+                      additionalProperties: false
+                      description: Mastering display color primaries
+                    whitePoint:
+                      type:
+                      - object
+                      - 'null'
+                      properties:
+                        type:
+                          type:
+                          - string
+                          - 'null'
+                          enum:
+                          - d65
+                          - d60
+                          - dci
+                          - custom
+                          - null
+                          description: White point preset
+                        x:
+                          type:
+                          - number
+                          - 'null'
+                          description: Custom white point x coordinate (required when type is `custom`)
+                        y:
+                          type:
+                          - number
+                          - 'null'
+                          description: Custom white point y coordinate (required when type is `custom`)
+                      additionalProperties: false
+                      description: Mastering display white point
+                    maxDisplayMasteringLuminance:
+                      type:
+                      - number
+                      - 'null'
+                      minimum: 0
+                      maximum: 10000
+                      description: Maximum display mastering luminance in nits (0-10000)
+                    minDisplayMasteringLuminance:
+                      type:
+                      - number
+                      - 'null'
+                      minimum: 0
+                      description: Minimum display mastering luminance in nits
+                  additionalProperties: false
+                  description: Mastering display configuration
+                contentLightLevels:
+                  type:
+                  - object
+                  - 'null'
+                  properties:
+                    cllMode:
+                      type:
+                      - string
+                      - 'null'
+                      enum:
+                      - auto
+                      - expert
+                      - null
+                      description: Content light level mode. `expert` requires maxCll and maxFall (nits)
+                    maxCll:
+                      type:
+                      - number
+                      - 'null'
+                      minimum: 0
+                      description: Maximum content light level in nits (required when cllMode is `expert`)
+                    maxFall:
+                      type:
+                      - number
+                      - 'null'
+                      minimum: 0
+                      description: Maximum frame-average light level in nits (required when cllMode is `expert`)
+                  additionalProperties: false
+                  description: Content light level configuration
+                globalLook:
+                  type:
+                  - object
+                  - 'null'
+                  properties:
+                    l8Mode:
+                      type:
+                      - string
+                      - 'null'
+                      enum:
+                      - 'off'
+                      - quickControls
+                      - null
+                      description: L8 global look mode
+                    l8ContrastBoost:
+                      type:
+                      - string
+                      - 'null'
+                      enum:
+                      - 'off'
+                      - low
+                      - mid
+                      - high
+                      - null
+                      description: L8 contrast boost (required when l8Mode is `quickControls`)
+                    l8MidBoost:
+                      type:
+                      - string
+                      - 'null'
+                      enum:
+                      - 'off'
+                      - low
+                      - mid
+                      - high
+                      - null
+                      description: L8 mid boost (required when l8Mode is `quickControls`)
+                    l8SaturationBoost:
+                      type:
+                      - string
+                      - 'null'
+                      enum:
+                      - 'off'
+                      - low
+                      - mid
+                      - high
+                      - null
+                      description: L8 saturation boost (required when l8Mode is `quickControls`)
+                  additionalProperties: false
+                  description: Global look (L8) configuration
+                contentType:
+                  type:
+                  - object
+                  - 'null'
+                  properties:
+                    l11ContentType:
+                      type:
+                      - string
+                      - 'null'
+                      enum:
+                      - default
+                      - cinema
+                      - game
+                      - sport
+                      - ugc
+                      - null
+                      description: L11 content type
+                    l11WhitePointK:
+                      type:
+                      - number
+                      - 'null'
+                      description: L11 white point in Kelvin, snapped to the 16 RPU steps
+                  additionalProperties: false
+                  description: Content type (L11) configuration
+              additionalProperties: false
+              description: Vision configuration
+            atmos:
+              type:
+              - object
+              - 'null'
+              properties:
+                dialnorm:
+                  type: integer
+                  minimum: -31
+                  maximum: -1
+                  description: Dolby Atmos dialnorm value. Must be an integer between -1 and -31.
+              required:
+              - dialnorm
+              additionalProperties: false
+              description: Dolby Atmos configuration
           required:
-          - hasMore
-          - cursor
-          description: Pagination info
+          - id
+          - name
+          - createdAt
+          - updatedAt
+          - quality
+          - overlays
+          - drm
+          - priority
+          - status
+          - outputs
+          description: Engine object
       required:
       - data
-      - pagination
-    DistributionObjectResult:
+    ViewingBrowserListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              browserName:
+                type: string
+                description: Browser name
+              hardwareType:
+                type: string
+                description: Hardware type
+              amount:
+                type: number
+                description: Metric value
+            required:
+            - browserName
+            - hardwareType
+            - amount
+          description: List of browser viewing data
+      required:
+      - data
+    IngestNdi:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'ID of the NDI source. Required for ndi-pull ingests: it must match a non-stale NDI source of the region (see `/regions/{regionId}/ndi`) that is not connected to another ingest'
+      required:
+      - id
+      additionalProperties: false
+      description: NDI source configuration (only for ndi-pull ingests)
+    ChannelObjectResultWithIncludes:
       type: object
       properties:
         data:
           allOf:
-          - $ref: '#/components/schemas/Distribution'
-          - description: Distribution object
+          - $ref: '#/components/schemas/Channel'
+          - description: Channel object
+        ingests:
+          $ref: '#/components/schemas/IncludedIngests'
+        engines:
+          $ref: '#/components/schemas/IncludedEngines'
+        distributions:
+          $ref: '#/components/schemas/IncludedDistributions'
       required:
       - data
-    CustomEndpointListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomEndpoint'
-          description: List of custom endpoints
-      required:
-      - data
-    ChannelDrmContentProtection:
-      type: object
-      properties:
-        integration:
-          type: string
-          description: DRM integration type
-        merchant:
-          type: string
-          description: Merchant identifier, for integrations that identify the customer per license request
-        widevine:
-          type: object
-          properties:
-            licenseUrl:
-              type: string
-              description: Widevine license acquisition URL
-          required:
-          - licenseUrl
-          description: Widevine configuration
-        playready:
-          type: object
-          properties:
-            licenseUrl:
-              type: string
-              description: PlayReady license acquisition URL
-          required:
-          - licenseUrl
-          description: PlayReady configuration
-        fairplay:
-          type: object
-          properties:
-            licenseUrl:
-              type: string
-              description: FairPlay license acquisition URL
-            certificateUrl:
-              type: string
-              description: FairPlay certificate URL
-          required:
-          - licenseUrl
-          - certificateUrl
-          description: FairPlay configuration
-      required:
-      - integration
-    EngineRun:
-      type: object
-      properties:
-        engineId:
-          type: string
-          description: Engine ID
-        start:
-          type: string
-          description: Run start timestamp
-        end:
-          type: string
-          description: Run end timestamp
-        config:
-          type: object
-          properties:
-            ingest:
-              type: object
-              properties:
-                type:
-                  type: string
-                  description: Ingest type used
-                url:
-                  type: string
-                  description: Ingest URL used
-              required:
-              - type
-            abrLadderId:
-              type: string
-              description: ABR ladder ID used
-            drm:
-              type: boolean
-              description: Whether DRM was enabled
-          required:
-          - ingest
-          - abrLadderId
-          - drm
-          description: Run configuration
-        startType:
-          type: string
-          description: How the run was started
-        startId:
-          type: string
-          description: ID of the entity who did the start action
-        stopType:
-          type: string
-          description: How the run was stopped
-        stopId:
-          type: string
-          description: ID of entity who did the stop action
-      required:
-      - engineId
-      - start
-      - config
-      - startType
-      - startId
-    SendInstreamMetadataBody:
-      type: string
-      format: binary
-      description: Binary blob of instream metadata as the payload for the UUID
-    CreateDistributionBody:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the distribution
-        externalId:
-          type: string
-          description: External identifier for the distribution
-        enabled:
-          type: boolean
-          description: Whether the distribution is enabled
-        targetLatency:
-          type: number
-          description: 'Deprecated: use latencies.hesp instead. If set, will be applied as latencies.hesp.'
-        latencies:
-          type: object
-          properties:
-            hesp:
-              type:
-              - number
-              - 'null'
-              minimum: 1
-              maximum: 30
-              description: 'HESP latency in seconds (1-30, default: 2)'
-            hls:
-              type:
-              - number
-              - 'null'
-              minimum: 6
-              maximum: 30
-              description: 'HLS latency in seconds (6-30, default: 10)'
-          description: Latency configuration per output protocol
-        security:
-          type: object
-          properties:
-            geoBlocking:
-              type: object
-              properties:
-                enabled:
-                  type: boolean
-                  description: Whether geo-blocking is enabled
-                mode:
-                  type: string
-                  enum:
-                  - allow
-                  - deny
-                  description: Geo-blocking mode
-                countries:
-                  type: array
-                  items:
-                    type: string
-                  description: List of country codes
-              description: Geo-blocking configuration
-            ipBlocking:
-              type: object
-              properties:
-                enabled:
-                  type: boolean
-                  description: Whether IP blocking is enabled
-                mode:
-                  type: string
-                  enum:
-                  - allow
-                  - deny
-                  description: IP blocking mode
-                cidrs:
-                  type: array
-                  items:
-                    type: string
-                  description: List of CIDR ranges
-              description: IP blocking configuration
-            refererBlocking:
-              type: object
-              properties:
-                enabled:
-                  type: boolean
-                  description: Whether referer blocking is enabled
-                allowedDomains:
-                  type: array
-                  items:
-                    type: string
-                  description: List of allowed domains. Matched exactly against the referer host including port (e.g. example.com). `localhost` with an optional port (e.g. localhost:3000) is also allowed.
-                allowNativeApps:
-                  type: boolean
-                  description: Whether native apps are allowed
-              description: Referer blocking configuration
-            rewriteSegmentUrls:
-              type: boolean
-              description: When enabled, a short-lived token is added to the segment URLs, derived from the token that was passed. This only works when JWT security is enabled on the same distribution.
-            keys:
-              type: array
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    description: Name of the security key
-                  key:
-                    type: string
-                    description: Security key value
-                required:
-                - key
-              maxItems: 2
-              description: Security keys (max 2, create only)
-          description: Security configuration
-        endpoints:
-          type: object
-          properties:
-            engineIds:
-              type: array
-              items:
-                type: string
-              description: Engine IDs to connect
-          description: Endpoint configuration
-        webRtc:
-          type:
-          - object
-          - 'null'
-          properties:
-            priority:
-              type: number
-              description: WebRTC priority
-            src:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: WebRTC source name
-                accountId:
-                  type: string
-                  description: WebRTC account ID
-                apiUrl:
-                  type: string
-                  description: WebRTC API URL
-              required:
-              - name
-              - accountId
-              - apiUrl
-              description: WebRTC source configuration
-          required:
-          - priority
-          - src
-          description: WebRTC configuration
-        outputs:
-          type: object
-          properties:
-            hesp:
-              type: boolean
-              default: true
-              description: Enable HESP output. Enabled by default.
-            hls:
-              type: boolean
-              default: true
-              description: Enable HLS output. Enabled by default.
-            hlsMpegTs:
-              type: boolean
-              default: false
-              description: Enable HLS MPEG-TS output. Disabled by default.
-          description: Output format configuration
-        maxBitrate:
-          type:
-          - number
-          - 'null'
-          description: Maximum bitrate limit in bps
-        dvr:
-          type: object
-          properties:
-            enabled:
-              type: boolean
-              description: Whether DVR is enabled on the distribution
-          description: DVR configuration
-        overrides:
-          type: array
-          items:
-            type: object
-            properties:
-              deviceType:
-                type:
-                - string
-                - 'null'
-                enum:
-                - tv
-                - mobile
-                - desktop
-                - other
-                - null
-                description: Target device type
-              sdkType:
-                type:
-                - string
-                - 'null'
-                enum:
-                - native
-                - web
-                - null
-                description: Target SDK type
-              osName:
-                type:
-                - string
-                - 'null'
-                enum:
-                - apple
-                - android
-                - windows
-                - roku
-                - other
-                - null
-                description: Target OS name
-              profileId:
-                type:
-                - string
-                - 'null'
-                description: Target profile ID
-              targets:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    distributionId:
-                      type: string
-                      description: Target distribution ID
-                    weight:
-                      type: number
-                      minimum: 0
-                      maximum: 100
-                      description: Weight (0-100)
-                  required:
-                  - distributionId
-                  - weight
-                description: Override target distributions with weights
-            required:
-            - targets
-          description: Distribution overrides for device targeting
-        customEndpoints:
-          type: array
-          items:
-            type: object
-            properties:
-              customEndpointId:
-                type: string
-                description: ID of the custom endpoint to connect
-              weight:
-                type: integer
-                minimum: 0
-                maximum: 100
-                default: 100
-                description: Weight (0-100, default 100)
-            required:
-            - customEndpointId
-          description: Custom endpoints to connect to this distribution
-        ads:
-          type:
-          - object
-          - 'null'
-          properties:
-            dai:
-              type: object
-              properties:
-                weight:
-                  type: integer
-                  minimum: 0
-                  maximum: 100
-                  description: Weight for DAI endpoints (0-100)
-                priority:
-                  type: integer
-                  description: Priority for DAI endpoints (any integer, lower = higher priority)
-              required:
-              - weight
-              - priority
-              additionalProperties: false
-              description: DAI endpoint settings
-          additionalProperties: false
-          description: Ads configuration for the distribution
-        playerSettings:
-          type:
-          - object
-          - 'null'
-          properties:
-            hespCooldown:
-              type: number
-              minimum: 0
-              maximum: 300
-              description: Cooldown period in seconds (0-300) before the player retries HESP playback after falling back to another protocol. Defaults to 120 seconds when not set.
-          additionalProperties: false
-          description: Player settings applied to the player configuration in the discovery response
-      required:
-      - name
-      additionalProperties: false
-    PaginatedIngestResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Ingest'
-          description: List of ingests
-        pagination:
-          type: object
-          properties:
-            hasMore:
-              type: boolean
-              description: Whether more results are available
-            cursor:
-              type: string
-              description: Cursor for the next page of results
-          required:
-          - hasMore
-          - cursor
-          description: Pagination info
-      required:
-      - data
-      - pagination
   securitySchemes:
     basicAuth:
       type: http

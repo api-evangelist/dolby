@@ -731,133 +731,6 @@ paths:
       - API_Secret: []
 components:
   schemas:
-    MediaAssetType2:
-      type: string
-      description: ''
-      x-enumNames:
-      - FullRecording
-      - Clip
-      - StorageValidation
-      - Timeline
-      - Vod
-      enum:
-      - FullRecording
-      - Clip
-      - StorageValidation
-      - Timeline
-      - Vod
-    SuccessResponseOfClipRequestResponseModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/ClipRequestResponseModel'
-    ClipRequestStatus:
-      type: string
-      description: ''
-      x-enumNames:
-      - Open
-      - InProgress
-      - Complete
-      - Error
-      - Invalid
-      - Started
-      - Deleted
-      - Expiring
-      - Deleting
-      enum:
-      - Open
-      - InProgress
-      - Complete
-      - Error
-      - Invalid
-      - Started
-      - Deleted
-      - Expiring
-      - Deleting
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    MediaAssetResponseMinimalModel:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-        status:
-          $ref: '#/components/schemas/MediaAssetStatus2'
-    ListRecordBlocksSortBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - RecordedOn
-      - StoppedOn
-      enum:
-      - RecordedOn
-      - StoppedOn
-    RecordDownloadUrl2:
-      type: object
-      additionalProperties: false
-      properties:
-        downloadUrl:
-          type: string
-        downloadExpiresOn:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    RemoveClipSourcesModel:
-      type: object
-      additionalProperties: false
-      required:
-      - clipSourceIds
-      properties:
-        clipSourceIds:
-          type: array
-          minItems: 1
-          items:
-            type: integer
-    RecordBlocksExpiryRuleModel:
-      type: object
-      additionalProperties: false
-      properties:
-        timeSpan:
-          oneOf:
-          - $ref: '#/components/schemas/TimeSpanModel'
-        isCustom:
-          type: boolean
-          description: 'Indicates whether expiry rule is custom set or using system preset. There will be no guarantee that system preset remains unchanged. '
-    SuccessResponseOfSuccessValidateRecordStorageResponse2:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/SuccessValidateRecordStorageResponse2'
     UpdateRecordBlocksExpiryRuleModel:
       type: object
       additionalProperties: false
@@ -868,85 +741,14 @@ components:
           description: 'Update account level expiry rule for clip creation. '
           oneOf:
           - $ref: '#/components/schemas/TimeSpanModel'
-    RecordFileStorageAwsModel:
-      type: object
-      additionalProperties: false
-      required:
-      - bucketName
-      - bucketRegion
-      properties:
-        bucketName:
-          type: string
-          minLength: 1
-        bucketRegion:
-          type: string
-          minLength: 1
-    RecordFileStorageResponseModel:
+    ValidateRecordStorageProfileModel:
       type: object
       additionalProperties: false
       properties:
-        storageType:
-          description: Storage provider type
+        storage:
+          description: Storage settings.
           oneOf:
-          - $ref: '#/components/schemas/RecordFileUploadStorageType'
-        storagePath:
-          type:
-          - string
-          - 'null'
-          description: 'Path to clip storage location. Available only for external storage configurations. '
-    SuccessResponseOfDeleteMediaAssetsResponse3:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/DeleteMediaAssetsResponse3'
-    ClipRequestResponseMinimalModel:
-      type: object
-      additionalProperties: false
-      properties:
-        clipName:
-          type:
-          - string
-          - 'null'
-          description: Clip label if assigned by user
-        clipRequestId:
-          type: string
-          description: Id associated with clipping request
-        startTime:
-          type:
-          - string
-          - 'null'
-          format: date
-        stopTime:
-          type:
-          - string
-          - 'null'
-          format: date
-        expiresOn:
-          type:
-          - string
-          - 'null'
-          format: date
-    SuccessResponseOfDownloadMediaAssetModel2:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/DownloadMediaAssetModel2'
+          - $ref: '#/components/schemas/UpdateRecordFileStorageModel'
     ListMediaAssetSortBy2:
       type: string
       description: ''
@@ -962,58 +764,28 @@ components:
       - StreamName
       - TokenId
       - Token
-    UpdateRecordFileStorageGcsModel:
-      type: object
-      additionalProperties: false
-      required:
-      - bucketName
-      properties:
-        bucketName:
-          type: string
-          minLength: 1
-    ListClipSourcesResponseModel:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: integer
-        recordedOn:
-          type: string
-        stoppedOn:
-          type:
-          - string
-          - 'null'
-        streamName:
-          type: string
-        sourceId:
-          type:
-          - string
-          - 'null'
-        simulcastId:
-          type:
-          - string
-          - 'null'
-        priority:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        tokenId:
-          type: integer
-        status:
-          $ref: '#/components/schemas/MediaAssetStatus2'
-    RemoveMediaAssetsModel:
-      type: object
-      additionalProperties: false
-      required:
-      - mediaAssetIds
-      properties:
-        mediaAssetIds:
-          type: array
-          maxItems: 1000
-          minItems: 1
-          items:
-            type: string
+    ListRecordBlocksSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - RecordedOn
+      - StoppedOn
+      enum:
+      - RecordedOn
+      - StoppedOn
+    RecordFileUploadStorageType:
+      type: string
+      description: ''
+      x-enumNames:
+      - Default
+      - Gcs
+      - AwsS3
+      - DolbyStorage
+      enum:
+      - Default
+      - Gcs
+      - AwsS3
+      - DolbyStorage
     ListMediaAssetFilterParameters:
       type: object
       additionalProperties: false
@@ -1042,55 +814,267 @@ components:
           - string
           - 'null'
           description: 'Optional. Filter by clipName. '
-    ValidateRecordStorageProfileModel:
+    RecordFileStorageResponseModel:
       type: object
       additionalProperties: false
       properties:
-        storage:
-          description: Storage settings.
+        storageType:
+          description: Storage provider type
           oneOf:
-          - $ref: '#/components/schemas/UpdateRecordFileStorageModel'
-    ListClipRequestsSortBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - RecordedOn
-      - ExpiresOn
-      enum:
-      - RecordedOn
-      - ExpiresOn
-    FilterByClipRequestStatus:
-      type: string
-      description: ''
-      x-enumNames:
-      - Open
-      - InProgress
-      - Complete
-      - Error
-      - RawError
-      - Invalid
-      - Started
-      enum:
-      - Open
-      - InProgress
-      - Complete
-      - Error
-      - RawError
-      - Invalid
-      - Started
-    DeleteMediaAssetsResponse3:
+          - $ref: '#/components/schemas/RecordFileUploadStorageType'
+        storagePath:
+          type:
+          - string
+          - 'null'
+          description: 'Path to clip storage location. Available only for external storage configurations. '
+    ClipRequestResponseMinimalModel:
       type: object
       additionalProperties: false
       properties:
-        itemsDeleted:
-          type: integer
-          format: int32
+        clipName:
+          type:
+          - string
+          - 'null'
+          description: Clip label if assigned by user
+        clipRequestId:
+          type: string
+          description: Id associated with clipping request
+        startTime:
+          type:
+          - string
+          - 'null'
+          format: date
+        stopTime:
+          type:
+          - string
+          - 'null'
+          format: date
+        expiresOn:
+          type:
+          - string
+          - 'null'
+          format: date
+    DeleteMediaAssetsResponse2:
+      type: object
+      additionalProperties: false
+      properties:
         errors:
           type:
           - array
           - 'null'
           items:
-            $ref: '#/components/schemas/MediaAssetDeletionError3'
+            $ref: '#/components/schemas/MediaAssetDeletionError2'
+    MediaAssetResponseMinimalModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        status:
+          $ref: '#/components/schemas/MediaAssetStatus2'
+    CreateClipRequestModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      - startTime
+      properties:
+        tokenId:
+          type:
+          - integer
+          - 'null'
+          description: Publish token of stream.
+        streamName:
+          type: string
+          description: Name of stream to create live clip.
+          minLength: 1
+        sourceId:
+          type:
+          - string
+          - 'null'
+          description: 'Optional. '
+        simulcastId:
+          type:
+          - string
+          - 'null'
+          description: 'Optional. '
+        clipName:
+          type:
+          - string
+          - 'null'
+          description: 'Optional. Provide a label for the live recording clip. <br /> <br />ClipNames may not exceed 256 characters. ClipNames must meet the naming requirements recommended by [Google Cloud Storage](https://cloud.google.com/storage/docs/objects#naming) and [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-guidelines). <br /> <br />If a media asset is uploaded to third party storage, the `clipName` will be used as the name of the uploaded object. To avoid failed uploads the name should be either unique to avoid conflict with existing objects in the upload location or if overwriting existing objects is desired, appropriate permissions must be granted: [DELETE permissions must be granted to Dolby.io](https://optiview.dolby.com/docs/millicast/distribution/stream-recordings/how-to-setup-media-storage/#setting-up-cloud-storage). <br /> <br />ClipNames may not contain carriage return or line feed characters, or any of the characters #, [, ], *, ?, :, ", “, ”, <, >, |, /, {, }, ^, %, `, ~.'
+          maxLength: 256
+          minLength: 1
+        storage:
+          description: 'Optional. Provide storage configurations for clip. If unspecified, defaults to Dolby.io''s storage buckets. <br /> <br />If specifying user-defined storage, please refer to setup instructions to grant Dolby.io upload access to buckets and ensure that configurations have been tested using [Test Storage Configuration](#tag/RecordFileTasks/operation/RecordFileTasks_TestRecordFileStorage). '
+          oneOf:
+          - $ref: '#/components/schemas/RecordFileStorageModel'
+        expiresOn:
+          type:
+          - string
+          - 'null'
+          description: 'Optional. Provide expiry time for live recording clip. <br /><br />If not specified, file will be retained until removed via [Delete Files](#operation/RecordFilesV2_DeleteRecordFileItems). <br /><br />Has no effect when files are uploaded to user-specified storage locations. '
+          format: date
+        priority:
+          type:
+          - integer
+          - 'null'
+          description: Optional. Priority level of stream(s) to clip. By default the stream with highest priority for a given sourceId will be chosen to clip.
+          format: int32
+        startTime:
+          type: string
+          description: Start time of live recording clip. Must be provided to disambiguate between discontinuous streams. Recordings returned will start on or after specified time, depending on the actual start time of the content request. Time must be set in the past. <br /><br />ISO 8601 format should be used (eg 2020-01-01T00:00:00Z), all times are expected to be UTC.
+          format: date
+          minLength: 1
+        stopTime:
+          type:
+          - string
+          - 'null'
+          description: Optional. Stop time of live recording clip. If not provided, defaults to the current time. Time must be set in the past. <br /><br />ISO 8601 format should be used (eg 2020-01-01T00:00:00Z), all times are expected to be UTC.
+          format: date
+    UpdateRecordFileStorageModel:
+      type: object
+      additionalProperties: false
+      properties:
+        objectPrefix:
+          type:
+          - string
+          - 'null'
+          description: Update storage object prefix. Set to empty string to clear exisiting value.
+        storageType:
+          oneOf:
+          - $ref: '#/components/schemas/RecordFileUploadStorageType'
+        gcsStorageConfig:
+          oneOf:
+          - $ref: '#/components/schemas/UpdateRecordFileStorageGcsModel'
+        awsS3StorageConfig:
+          oneOf:
+          - $ref: '#/components/schemas/UpdateRecordFileStorageAwsModel'
+    SuccessResponseOfDeleteMediaAssetsResponse3:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DeleteMediaAssetsResponse3'
+    MediaAssetType2:
+      type: string
+      description: ''
+      x-enumNames:
+      - FullRecording
+      - Clip
+      - StorageValidation
+      - Timeline
+      - Vod
+      enum:
+      - FullRecording
+      - Clip
+      - StorageValidation
+      - Timeline
+      - Vod
+    RemoveClipSourcesModel:
+      type: object
+      additionalProperties: false
+      required:
+      - clipSourceIds
+      properties:
+        clipSourceIds:
+          type: array
+          minItems: 1
+          items:
+            type: integer
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessResponseOfClipRequestResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/ClipRequestResponseModel'
+    ListClipRequestsFilterParameters:
+      type: object
+      additionalProperties: false
+      properties:
+        tokenId:
+          type:
+          - integer
+          - 'null'
+          description: Optional. Filter by tokenId.
+        streamName:
+          type:
+          - string
+          - 'null'
+          description: Optional. Filter by streamName.
+        sourceId:
+          type:
+          - string
+          - 'null'
+          description: 'Optional. Filter by sourceId. '
+        simulcastId:
+          type:
+          - string
+          - 'null'
+          description: 'Optional. Filter by simulcastId. '
+        status:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FilterByClipRequestStatus'
+        clipRequestId:
+          type:
+          - string
+          - 'null'
+          description: 'Optional. Filter by clipRequestId. '
+        clipName:
+          type:
+          - string
+          - 'null'
+          description: 'Optional. Filter by clipName. '
+        priority:
+          type:
+          - integer
+          - 'null'
+          description: 'Optional. Filter by priority. '
+          format: int32
+    UpdateRecordFileStorageAwsModel:
+      type: object
+      additionalProperties: false
+      required:
+      - bucketName
+      - bucketRegion
+      properties:
+        bucketName:
+          type: string
+          minLength: 1
+        bucketRegion:
+          type: string
+          minLength: 1
     FilterByMediaAssetStatus:
       type: string
       description: ''
@@ -1125,84 +1109,80 @@ components:
           default: success
           minLength: 1
         data: {}
-    RecordMetadata:
-      type: object
-      additionalProperties: false
-      required:
-      - tracks
-      - thumbnails
-      properties:
-        format:
-          type: string
-        sizes:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: integer
-            format: uint64
-        duration:
-          type: integer
-          description: Duration of this asset, in seconds.
-        tracks:
-          type: array
-          items:
-            $ref: '#/components/schemas/RecordMediaTrack'
-        thumbnails:
-          type: array
-          description: The list of thumbnails.
-          items:
-            type: string
-        fileCount:
-          type:
-          - integer
-          - 'null'
-          description: The number of files.
-    ErrorResponse:
+    SuccessListClipSourcesModel:
       type: object
       additionalProperties: false
       required:
       - status
-      - message
+      - data
       properties:
         status:
           type: string
-          default: error
+          default: success
           minLength: 1
-        message:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListClipSourcesResponseModel'
+    DeleteMediaAssetsResponse3:
+      type: object
+      additionalProperties: false
+      properties:
+        itemsDeleted:
+          type: integer
+          format: int32
+        errors:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/MediaAssetDeletionError3'
+    SuccessListMediaAssetModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
           type: string
+          default: success
           minLength: 1
-        code:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaAssetResponseModel2'
+    ListClipSourcesResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+        recordedOn:
+          type: string
+        stoppedOn:
+          type:
+          - string
+          - 'null'
+        streamName:
+          type: string
+        sourceId:
+          type:
+          - string
+          - 'null'
+        simulcastId:
+          type:
+          - string
+          - 'null'
+        priority:
           type:
           - integer
           - 'null'
           format: int32
-        data: {}
-    UpdateRecordFileStorageAwsModel:
-      type: object
-      additionalProperties: false
-      required:
-      - bucketName
-      - bucketRegion
-      properties:
-        bucketName:
-          type: string
-          minLength: 1
-        bucketRegion:
-          type: string
-          minLength: 1
-    MediaAssetDeletionError2:
-      type: object
-      additionalProperties: false
-      properties:
-        mediaAssetId:
-          type:
-          - string
-          - 'null'
-        error:
-          type:
-          - string
-          - 'null'
+        tokenId:
+          type: integer
+        status:
+          $ref: '#/components/schemas/MediaAssetStatus2'
     MediaAssetResponseModel2:
       type: object
       additionalProperties: false
@@ -1263,6 +1243,311 @@ components:
         storage:
           oneOf:
           - $ref: '#/components/schemas/RecordFileStorageResponseModel'
+    SuccessResponseOfDeleteMediaAssetsResponse2:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DeleteMediaAssetsResponse2'
+    RecordFileStorageGcsModel:
+      type: object
+      additionalProperties: false
+      required:
+      - bucketName
+      properties:
+        bucketName:
+          type: string
+          description: 'Name of bucket to upload clips to. Please ensure Dolby.io''s service account is granted access to `gs://bucketName`. '
+          minLength: 1
+    ClipRequestResponseBaseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        clipName:
+          type:
+          - string
+          - 'null'
+          description: Clip label if assigned by user
+        clipRequestId:
+          type: string
+          description: Id associated with clipping request
+        startTime:
+          type:
+          - string
+          - 'null'
+          format: date
+        stopTime:
+          type:
+          - string
+          - 'null'
+          format: date
+        expiresOn:
+          type:
+          - string
+          - 'null'
+          format: date
+        status:
+          $ref: '#/components/schemas/ClipRequestStatus'
+        streamName:
+          type: string
+        sourceId:
+          type:
+          - string
+          - 'null'
+        simulcastId:
+          type:
+          - string
+          - 'null'
+        tokenId:
+          type:
+          - integer
+          - 'null'
+        itemType:
+          $ref: '#/components/schemas/MediaAssetType2'
+        priority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        storage:
+          description: Storage information
+          oneOf:
+          - $ref: '#/components/schemas/RecordFileStorageResponseModel'
+        removedOn:
+          type:
+          - string
+          - 'null'
+          format: date
+    RecordBlocksExpiryRuleModel:
+      type: object
+      additionalProperties: false
+      properties:
+        timeSpan:
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+        isCustom:
+          type: boolean
+          description: 'Indicates whether expiry rule is custom set or using system preset. There will be no guarantee that system preset remains unchanged. '
+    DownloadMediaAssetModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        sourceId:
+          type:
+          - string
+          - 'null'
+        simulcastId:
+          type:
+          - string
+          - 'null'
+        priority:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        itemType:
+          $ref: '#/components/schemas/MediaAssetType2'
+        clipMetadata:
+          description: Metadata if recording is a clip
+          oneOf:
+          - $ref: '#/components/schemas/ClipRequestResponseMinimalModel'
+        tokenId:
+          type:
+          - integer
+          - 'null'
+        streamName:
+          type: string
+        recordedOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        stoppedOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        removedOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        metadata:
+          oneOf:
+          - $ref: '#/components/schemas/RecordMetadata'
+        error:
+          type:
+          - string
+          - 'null'
+        storage:
+          oneOf:
+          - $ref: '#/components/schemas/RecordFileStorageResponseModel'
+        id:
+          type:
+          - string
+          - 'null'
+        status:
+          $ref: '#/components/schemas/MediaAssetStatus2'
+        download:
+          oneOf:
+          - $ref: '#/components/schemas/RecordDownloadUrl2'
+    RecordMediaTrack:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+        codec:
+          type: string
+        bitrate:
+          type: integer
+        width:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        height:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        framerate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        channels:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        samplerate:
+          type:
+          - integer
+          - 'null'
+          format: int64
+    MediaAssetDeletionError3:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        error:
+          type:
+          - string
+          - 'null'
+    FilterByClipRequestStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Open
+      - InProgress
+      - Complete
+      - Error
+      - RawError
+      - Invalid
+      - Started
+      enum:
+      - Open
+      - InProgress
+      - Complete
+      - Error
+      - RawError
+      - Invalid
+      - Started
+    RecordFileStorageAwsModel:
+      type: object
+      additionalProperties: false
+      required:
+      - bucketName
+      - bucketRegion
+      properties:
+        bucketName:
+          type: string
+          minLength: 1
+        bucketRegion:
+          type: string
+          minLength: 1
+    UpdateRecordFileStorageGcsModel:
+      type: object
+      additionalProperties: false
+      required:
+      - bucketName
+      properties:
+        bucketName:
+          type: string
+          minLength: 1
+    RecordFileStorageModel:
+      type: object
+      additionalProperties: false
+      properties:
+        objectPrefix:
+          type:
+          - string
+          - 'null'
+          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. Ignored when using Dolby.io's storage buckets. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
+        storageType:
+          description: 'Optional. Storage provider type. If not specified, defaults to Dolby.io''s storage buckets. '
+          default: Default
+          oneOf:
+          - $ref: '#/components/schemas/RecordFileUploadStorageType'
+        gcsStorageConfig:
+          description: Optional unless `"Gcs"` is specified for `StorageType`
+          oneOf:
+          - $ref: '#/components/schemas/RecordFileStorageGcsModel'
+        awsS3StorageConfig:
+          description: Optional unless `"AwsS3"` is specified for `StorageType`
+          oneOf:
+          - $ref: '#/components/schemas/RecordFileStorageAwsModel'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    ListClipRequestsSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - RecordedOn
+      - ExpiresOn
+      enum:
+      - RecordedOn
+      - ExpiresOn
+    RecordDownloadUrl2:
+      type: object
+      additionalProperties: false
+      properties:
+        downloadUrl:
+          type: string
+        downloadExpiresOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
     ClipRequestResponseModel:
       type: object
       additionalProperties: false
@@ -1329,193 +1614,6 @@ components:
           description: 'List of media asset ids and statuses associated with this clip request. Call Read Media Asset to retrieve the record file and information about each media asset. '
           items:
             $ref: '#/components/schemas/MediaAssetResponseMinimalModel'
-    ListClipRequestsFilterParameters:
-      type: object
-      additionalProperties: false
-      properties:
-        tokenId:
-          type:
-          - integer
-          - 'null'
-          description: Optional. Filter by tokenId.
-        streamName:
-          type:
-          - string
-          - 'null'
-          description: Optional. Filter by streamName.
-        sourceId:
-          type:
-          - string
-          - 'null'
-          description: 'Optional. Filter by sourceId. '
-        simulcastId:
-          type:
-          - string
-          - 'null'
-          description: 'Optional. Filter by simulcastId. '
-        status:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/FilterByClipRequestStatus'
-        clipRequestId:
-          type:
-          - string
-          - 'null'
-          description: 'Optional. Filter by clipRequestId. '
-        clipName:
-          type:
-          - string
-          - 'null'
-          description: 'Optional. Filter by clipName. '
-        priority:
-          type:
-          - integer
-          - 'null'
-          description: 'Optional. Filter by priority. '
-          format: int32
-    MediaAssetStatus2:
-      type: string
-      description: ''
-      x-enumNames:
-      - Started
-      - Transcode
-      - InProgress
-      - Deleted
-      - Invalid
-      - Expiring
-      - Complete
-      - Deleting
-      - Error
-      enum:
-      - Started
-      - Transcode
-      - InProgress
-      - Deleted
-      - Invalid
-      - Expiring
-      - Complete
-      - Deleting
-      - Error
-    CreateClipRequestModel:
-      type: object
-      additionalProperties: false
-      required:
-      - streamName
-      - startTime
-      properties:
-        tokenId:
-          type:
-          - integer
-          - 'null'
-          description: Publish token of stream.
-        streamName:
-          type: string
-          description: Name of stream to create live clip.
-          minLength: 1
-        sourceId:
-          type:
-          - string
-          - 'null'
-          description: 'Optional. '
-        simulcastId:
-          type:
-          - string
-          - 'null'
-          description: 'Optional. '
-        clipName:
-          type:
-          - string
-          - 'null'
-          description: 'Optional. Provide a label for the live recording clip. <br /> <br />ClipNames may not exceed 256 characters. ClipNames must meet the naming requirements recommended by [Google Cloud Storage](https://cloud.google.com/storage/docs/objects#naming) and [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-keys.html#object-key-guidelines). <br /> <br />If a media asset is uploaded to third party storage, the `clipName` will be used as the name of the uploaded object. To avoid failed uploads the name should be either unique to avoid conflict with existing objects in the upload location or if overwriting existing objects is desired, appropriate permissions must be granted: [DELETE permissions must be granted to Dolby.io](https://optiview.dolby.com/docs/millicast/distribution/stream-recordings/how-to-setup-media-storage/#setting-up-cloud-storage). <br /> <br />ClipNames may not contain carriage return or line feed characters, or any of the characters #, [, ], *, ?, :, ", “, ”, <, >, |, /, {, }, ^, %, `, ~.'
-          maxLength: 256
-          minLength: 1
-        storage:
-          description: 'Optional. Provide storage configurations for clip. If unspecified, defaults to Dolby.io''s storage buckets. <br /> <br />If specifying user-defined storage, please refer to setup instructions to grant Dolby.io upload access to buckets and ensure that configurations have been tested using [Test Storage Configuration](#tag/RecordFileTasks/operation/RecordFileTasks_TestRecordFileStorage). '
-          oneOf:
-          - $ref: '#/components/schemas/RecordFileStorageModel'
-        expiresOn:
-          type:
-          - string
-          - 'null'
-          description: 'Optional. Provide expiry time for live recording clip. <br /><br />If not specified, file will be retained until removed via [Delete Files](#operation/RecordFilesV2_DeleteRecordFileItems). <br /><br />Has no effect when files are uploaded to user-specified storage locations. '
-          format: date
-        priority:
-          type:
-          - integer
-          - 'null'
-          description: Optional. Priority level of stream(s) to clip. By default the stream with highest priority for a given sourceId will be chosen to clip.
-          format: int32
-        startTime:
-          type: string
-          description: Start time of live recording clip. Must be provided to disambiguate between discontinuous streams. Recordings returned will start on or after specified time, depending on the actual start time of the content request. Time must be set in the past. <br /><br />ISO 8601 format should be used (eg 2020-01-01T00:00:00Z), all times are expected to be UTC.
-          format: date
-          minLength: 1
-        stopTime:
-          type:
-          - string
-          - 'null'
-          description: Optional. Stop time of live recording clip. If not provided, defaults to the current time. Time must be set in the past. <br /><br />ISO 8601 format should be used (eg 2020-01-01T00:00:00Z), all times are expected to be UTC.
-          format: date
-    RecordFileUploadStorageType:
-      type: string
-      description: ''
-      x-enumNames:
-      - Default
-      - Gcs
-      - AwsS3
-      - DolbyStorage
-      enum:
-      - Default
-      - Gcs
-      - AwsS3
-      - DolbyStorage
-    RecordFileStorageGcsModel:
-      type: object
-      additionalProperties: false
-      required:
-      - bucketName
-      properties:
-        bucketName:
-          type: string
-          description: 'Name of bucket to upload clips to. Please ensure Dolby.io''s service account is granted access to `gs://bucketName`. '
-          minLength: 1
-    RecordMediaTrack:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-        codec:
-          type: string
-        bitrate:
-          type: integer
-        width:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        height:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        framerate:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        channels:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        samplerate:
-          type:
-          - integer
-          - 'null'
-          format: int64
     SuccessResponseOfRecordBlocksExpiryRuleModel:
       type: object
       additionalProperties: false
@@ -1529,80 +1627,6 @@ components:
           minLength: 1
         data:
           $ref: '#/components/schemas/RecordBlocksExpiryRuleModel'
-    ClipRequestResponseBaseModel:
-      type: object
-      additionalProperties: false
-      properties:
-        clipName:
-          type:
-          - string
-          - 'null'
-          description: Clip label if assigned by user
-        clipRequestId:
-          type: string
-          description: Id associated with clipping request
-        startTime:
-          type:
-          - string
-          - 'null'
-          format: date
-        stopTime:
-          type:
-          - string
-          - 'null'
-          format: date
-        expiresOn:
-          type:
-          - string
-          - 'null'
-          format: date
-        status:
-          $ref: '#/components/schemas/ClipRequestStatus'
-        streamName:
-          type: string
-        sourceId:
-          type:
-          - string
-          - 'null'
-        simulcastId:
-          type:
-          - string
-          - 'null'
-        tokenId:
-          type:
-          - integer
-          - 'null'
-        itemType:
-          $ref: '#/components/schemas/MediaAssetType2'
-        priority:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        storage:
-          description: Storage information
-          oneOf:
-          - $ref: '#/components/schemas/RecordFileStorageResponseModel'
-        removedOn:
-          type:
-          - string
-          - 'null'
-          format: date
-    SuccessListClipSourcesModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ListClipSourcesResponseModel'
     SuccessListClipRequestsModel:
       type: object
       additionalProperties: false
@@ -1618,148 +1642,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ClipRequestResponseBaseModel'
-    MediaAssetDeletionError3:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-        error:
-          type:
-          - string
-          - 'null'
-    SuccessResponseOfDeleteMediaAssetsResponse2:
+    RemoveMediaAssetsModel:
       type: object
       additionalProperties: false
       required:
-      - status
-      - data
+      - mediaAssetIds
       properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/DeleteMediaAssetsResponse2'
-    DeleteMediaAssetsResponse2:
-      type: object
-      additionalProperties: false
-      properties:
-        errors:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/MediaAssetDeletionError2'
-    TimeSpanModel:
-      type: object
-      additionalProperties: false
-      properties:
-        days:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          maximum: 365.0
-          minimum: 1.0
-    SuccessListMediaAssetModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
+        mediaAssetIds:
           type: array
+          maxItems: 1000
+          minItems: 1
           items:
-            $ref: '#/components/schemas/MediaAssetResponseModel2'
-    DownloadMediaAssetModel2:
-      type: object
-      additionalProperties: false
-      properties:
-        sourceId:
-          type:
-          - string
-          - 'null'
-        simulcastId:
-          type:
-          - string
-          - 'null'
-        priority:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        itemType:
-          $ref: '#/components/schemas/MediaAssetType2'
-        clipMetadata:
-          description: Metadata if recording is a clip
-          oneOf:
-          - $ref: '#/components/schemas/ClipRequestResponseMinimalModel'
-        tokenId:
-          type:
-          - integer
-          - 'null'
-        streamName:
-          type: string
-        recordedOn:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        stoppedOn:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        removedOn:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        metadata:
-          oneOf:
-          - $ref: '#/components/schemas/RecordMetadata'
-        error:
-          type:
-          - string
-          - 'null'
-        storage:
-          oneOf:
-          - $ref: '#/components/schemas/RecordFileStorageResponseModel'
-        id:
-          type:
-          - string
-          - 'null'
-        status:
-          $ref: '#/components/schemas/MediaAssetStatus2'
-        download:
-          oneOf:
-          - $ref: '#/components/schemas/RecordDownloadUrl2'
-    UpdateRecordFileStorageModel:
-      type: object
-      additionalProperties: false
-      properties:
-        objectPrefix:
-          type:
-          - string
-          - 'null'
-          description: Update storage object prefix. Set to empty string to clear exisiting value.
-        storageType:
-          oneOf:
-          - $ref: '#/components/schemas/RecordFileUploadStorageType'
-        gcsStorageConfig:
-          oneOf:
-          - $ref: '#/components/schemas/UpdateRecordFileStorageGcsModel'
-        awsS3StorageConfig:
-          oneOf:
-          - $ref: '#/components/schemas/UpdateRecordFileStorageAwsModel'
+            type: string
     ListAvailableClipSourcesFilterParameters:
       type: object
       additionalProperties: false
@@ -1790,28 +1684,99 @@ components:
           - 'null'
           description: Optional. Filter by Priority.
           format: int32
-    RecordFileStorageModel:
+    SuccessResponseOfDownloadMediaAssetModel2:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DownloadMediaAssetModel2'
+    RecordMetadata:
+      type: object
+      additionalProperties: false
+      required:
+      - tracks
+      - thumbnails
+      properties:
+        format:
+          type: string
+        sizes:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: integer
+            format: uint64
+        duration:
+          type: integer
+          description: Duration of this asset, in seconds.
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordMediaTrack'
+        thumbnails:
+          type: array
+          description: The list of thumbnails.
+          items:
+            type: string
+        fileCount:
+          type:
+          - integer
+          - 'null'
+          description: The number of files.
+    TimeSpanModel:
       type: object
       additionalProperties: false
       properties:
-        objectPrefix:
+        days:
           type:
-          - string
+          - integer
           - 'null'
-          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. Ignored when using Dolby.io's storage buckets. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
-        storageType:
-          description: 'Optional. Storage provider type. If not specified, defaults to Dolby.io''s storage buckets. '
-          default: Default
-          oneOf:
-          - $ref: '#/components/schemas/RecordFileUploadStorageType'
-        gcsStorageConfig:
-          description: Optional unless `"Gcs"` is specified for `StorageType`
-          oneOf:
-          - $ref: '#/components/schemas/RecordFileStorageGcsModel'
-        awsS3StorageConfig:
-          description: Optional unless `"AwsS3"` is specified for `StorageType`
-          oneOf:
-          - $ref: '#/components/schemas/RecordFileStorageAwsModel'
+          format: int32
+          maximum: 365.0
+          minimum: 1.0
+    SuccessResponseOfSuccessValidateRecordStorageResponse2:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/SuccessValidateRecordStorageResponse2'
+    ClipRequestStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Open
+      - InProgress
+      - Complete
+      - Error
+      - Invalid
+      - Started
+      - Deleted
+      - Expiring
+      - Deleting
+      enum:
+      - Open
+      - InProgress
+      - Complete
+      - Error
+      - Invalid
+      - Started
+      - Deleted
+      - Expiring
+      - Deleting
     SuccessValidateRecordStorageResponse2:
       type: object
       additionalProperties: false
@@ -1828,6 +1793,41 @@ components:
           - string
           - 'null'
           description: 'Test vector uploaded to specified storage path. Expect to see this in your cloud storage if access permissions were currectly configured. '
+    MediaAssetDeletionError2:
+      type: object
+      additionalProperties: false
+      properties:
+        mediaAssetId:
+          type:
+          - string
+          - 'null'
+        error:
+          type:
+          - string
+          - 'null'
+    MediaAssetStatus2:
+      type: string
+      description: ''
+      x-enumNames:
+      - Started
+      - Transcode
+      - InProgress
+      - Deleted
+      - Invalid
+      - Expiring
+      - Complete
+      - Deleting
+      - Error
+      enum:
+      - Started
+      - Transcode
+      - InProgress
+      - Deleted
+      - Invalid
+      - Expiring
+      - Complete
+      - Deleting
+      - Error
   securitySchemes:
     API_Secret:
       type: http

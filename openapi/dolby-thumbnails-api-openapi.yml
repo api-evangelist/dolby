@@ -59,6 +59,20 @@ paths:
       - API_Secret: []
 components:
   schemas:
+    TriggerThumbnailRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        streamName:
+          type:
+          - string
+          - 'null'
+          description: The name of the stream.
+        tokenId:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the token.
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -92,20 +106,6 @@ components:
           minLength: 1
         data:
           type: boolean
-    TriggerThumbnailRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        streamName:
-          type:
-          - string
-          - 'null'
-          description: The name of the stream.
-        tokenId:
-          type:
-          - integer
-          - 'null'
-          description: The identifier of the token.
     FailResponse:
       type: object
       additionalProperties: false

@@ -151,6 +151,16 @@ paths:
         source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/v2/subscribe_token/100')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\"label\": \"new_label_name\", \"refreshToken\": true}\nres = http.put(uri, data.to_json, headers)\nputs res.body"
 components:
   schemas:
+    TrackingInformation:
+      type: object
+      additionalProperties: false
+      properties:
+        trackingId:
+          type:
+          - string
+          - 'null'
+          description: Optional. Tracking identifier for Stream Syndication.
+          maxLength: 128
     TokenStreamNameViewModel:
       type: object
       additionalProperties: false
@@ -166,143 +176,6 @@ components:
           type: boolean
           description: Set to true if the name of the stream is a regular expression.
           default: false
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    TrackingInformation:
-      type: object
-      additionalProperties: false
-      properties:
-        trackingId:
-          type:
-          - string
-          - 'null'
-          description: Optional. Tracking identifier for Stream Syndication.
-          maxLength: 128
-    UpdateSubscribeTokenV2:
-      type: object
-      additionalProperties: false
-      properties:
-        label:
-          type:
-          - string
-          - 'null'
-          maxLength: 128
-        isActive:
-          type:
-          - boolean
-          - 'null'
-        addTokenStreams:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/TokenStreamNameViewModel'
-        removeTokenStreams:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        allowedOrigins:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        allowedIpAddresses:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        bindIpsOnUsage:
-          type:
-          - integer
-          - 'null'
-          maximum: 4294967295.0
-          minimum: 0.0
-        originCluster:
-          type:
-          - string
-          - 'null'
-        refreshToken:
-          type:
-          - boolean
-          - 'null'
-          description: Generate new unique token, invalidating previous token.
-        allowedCountries:
-          type:
-          - array
-          - 'null'
-          description: The list of allowed countries.
-          items:
-            type: string
-        deniedCountries:
-          type:
-          - array
-          - 'null'
-          description: The list of denied countries.
-          items:
-            type: string
-    GeoCascadeModel2:
-      type: object
-      additionalProperties: false
-      properties:
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
-        clusters:
-          type:
-          - array
-          - 'null'
-          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
-          items:
-            type: string
-    SuccessResponseSubscribeTokenV2:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/SubscribeTokenResponseV2'
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
     SubscribeTokenResponseV2:
       type: object
       additionalProperties: false
@@ -400,6 +273,133 @@ components:
           type:
           - boolean
           - 'null'
+    SuccessResponseSubscribeTokenV2:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/SubscribeTokenResponseV2'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    GeoCascadeModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
+    UpdateSubscribeTokenV2:
+      type: object
+      additionalProperties: false
+      properties:
+        label:
+          type:
+          - string
+          - 'null'
+          maxLength: 128
+        isActive:
+          type:
+          - boolean
+          - 'null'
+        addTokenStreams:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/TokenStreamNameViewModel'
+        removeTokenStreams:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        allowedOrigins:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        allowedIpAddresses:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        bindIpsOnUsage:
+          type:
+          - integer
+          - 'null'
+          maximum: 4294967295.0
+          minimum: 0.0
+        originCluster:
+          type:
+          - string
+          - 'null'
+        refreshToken:
+          type:
+          - boolean
+          - 'null'
+          description: Generate new unique token, invalidating previous token.
+        allowedCountries:
+          type:
+          - array
+          - 'null'
+          description: The list of allowed countries.
+          items:
+            type: string
+        deniedCountries:
+          type:
+          - array
+          - 'null'
+          description: The list of denied countries.
+          items:
+            type: string
   securitySchemes:
     API_Secret:
       type: http

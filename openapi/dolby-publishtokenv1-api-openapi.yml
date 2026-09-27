@@ -1529,6 +1529,16 @@ paths:
         source: "require 'net/http'\nrequire 'uri'\n\nuri = URI('https://api.millicast.com/api/publish_token/100/restream/sync')\nheaders = {\n  'Authorization': 'Bearer your_api_secret'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\nres = http.get(uri, headers)\nputs res.body"
 components:
   schemas:
+    TokenStreamNameModel:
+      type: object
+      additionalProperties: false
+      properties:
+        streamName:
+          type: string
+          description: The name of the stream.
+        isRegex:
+          type: boolean
+          description: Flag indicating whether the provided name is a regular expression.
     RestreamModel2:
       type: object
       additionalProperties: false
@@ -1559,18 +1569,6 @@ components:
           - 'null'
           description: Enable or disable restreaming to this endpoint
           default: true
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
     GeoCascadeModel3:
       type: object
       additionalProperties: false
@@ -1587,7 +1585,7 @@ components:
           description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
           items:
             type: string
-    SuccessResponseDisableTokensV1:
+    SuccessResponsePublishTokenV1:
       type: object
       additionalProperties: false
       required:
@@ -1599,17 +1597,166 @@ components:
           default: success
           minLength: 1
         data:
-          $ref: '#/components/schemas/DisableTokens'
-    FailedToken:
+          $ref: '#/components/schemas/PublishTokenResponseV1'
+    IntegrationIds:
+      type: string
+      description: ''
+      x-enumNames:
+      - None
+      - Maestro
+      - Passthru
+      - Internal
+      enum:
+      - None
+      - Maestro
+      - Passthru
+      - Internal
+    DisableTokens:
       type: object
       additionalProperties: false
       properties:
-        tokenId:
-          type: integer
-        errorMessage:
+        successfulTokens:
+          type:
+          - array
+          - 'null'
+          items:
+            type: integer
+        failedTokens:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FailedToken'
+    PublishTokenResponseV1:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
           type:
           - string
           - 'null'
+          deprecated: true
+          x-deprecatedMessage: use Label
+        subscribeRequiresAuth:
+          type: boolean
+          description: Flag to require authentication to subscribe to the specified streams. Default is false.
+        record:
+          type: boolean
+          description: Flag to allow this publish token to be allowed to record the specified streams. Default is false.
+        clip:
+          type: boolean
+          description: 'Flag to allow this publish token to enable live clipping on specified streams. Default is false.
+
+            This flag cannot be set to true when the `record` flag is enabled.'
+        multisource:
+          type: boolean
+          description: Flag to indicate if the multi source capability is enabled for this publish token. Default is true.
+        enableThumbnails:
+          type: boolean
+          description: Flag to receive webhook notifications for thumbnails for the specified streams. Default is false. See documentation https://optiview.dolby.com/docs/millicast/webhooks/thumbnail/. This flag only controls automated time-triggered thumbnails on loop, not on-demand thumbnails.
+        lowLatencyRtmp:
+          type: boolean
+          description: Flag to indicate if low latency RTMP is enabled for this publish token. Default is true.
+        enableUTCInsertion:
+          type:
+          - boolean
+          - 'null'
+          description: Flag to indicate if UTC timestamp insertion is enabled for this publish token. Null means the account default is used.
+        integrationId:
+          description: The identifier of the integration.
+          oneOf:
+          - $ref: '#/components/schemas/IntegrationIds'
+        displaySrtPassphrase:
+          type: boolean
+          description: Flag to display passphrase encryption settings in the dashboard as well as returning the SRT passphrase in response to this API call. Default is false.
+        srtPassphrase:
+          type:
+          - string
+          - 'null'
+          description: The SRT passphrase.
+        drm:
+          type: boolean
+        geoCascade:
+          description: The geo cascading settings.
+          oneOf:
+          - $ref: '#/components/schemas/GeoCascadeModel2'
+        restream:
+          type:
+          - array
+          - 'null'
+          description: A list of endpoints where to restream the stream to.
+          items:
+            $ref: '#/components/schemas/RestreamModel2'
+        priority:
+          type:
+          - integer
+          - 'null'
+          description: Default priority of this publish token.
+          format: int32
+        encoderProfileId:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the encoder profile.
+        id:
+          type: integer
+          description: Identifier of the token.
+        label:
+          type: string
+          description: Friendly name of token.
+        token:
+          type: string
+          description: Actual token.
+        addedOn:
+          type: string
+          description: Date when the token was created.
+          format: date-time
+        expiresOn:
+          type:
+          - string
+          - 'null'
+          description: The token expiration date.
+          format: date-time
+        isActive:
+          type: boolean
+          description: Flag to indicate if the token is active or not.
+        streams:
+          type: array
+          description: A list of stream names associated with the token.
+          items:
+            $ref: '#/components/schemas/TokenStreamNameModel'
+        allowedOrigins:
+          type: array
+          description: A list of allowed origins for the token.
+          items:
+            type: string
+        allowedIpAddresses:
+          type: array
+          description: A list of allowed IP addresses for the token.
+          items:
+            type: string
+        bindIpsOnUsage:
+          type:
+          - integer
+          - 'null'
+          description: The number of IPs to bind on usage.
+        originCluster:
+          type: string
+          description: Default cluster for the token.
+        effectiveSettings:
+          description: Token effective settings for properties that use account default settings. Value for each property will either be token or account level settings.
+          oneOf:
+          - $ref: '#/components/schemas/TokenEffectiveSettings'
+        allowedCountries:
+          type: array
+          description: Specify the ISO 3166-1 two letter country codes to explicitly allow viewer to watch the stream from. If the viewer's location does not match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of allowedCountries or deniedCountries should be specified. If the specified streams require authentication, the list of allowed countries can be overridden by the subscribe token.
+          items:
+            type: string
+        deniedCountries:
+          type: array
+          description: Specify the ISO 3166-1 two letter country codes to explicitly deny viewer to watch the stream from. If the viewer's location does match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of allowedCountries or deniedCountries should be specified. If the specified streams require authentication, the list of denied countries can be overridden by the subscribe token.
+          items:
+            type: string
     TokenEffectiveSettings:
       type: object
       additionalProperties: false
@@ -1637,61 +1784,31 @@ components:
           type:
           - boolean
           - 'null'
-    DisableTokens:
+    FailedToken:
       type: object
       additionalProperties: false
       properties:
-        successfulTokens:
+        tokenId:
+          type: integer
+        errorMessage:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            type: integer
-        failedTokens:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/FailedToken'
-    SuccessResponsePublishTokenV1:
+    CreateStreamNameModel:
       type: object
       additionalProperties: false
       required:
-      - status
-      - data
+      - streamName
       properties:
-        status:
+        streamName:
           type: string
-          default: success
+          description: Name of the stream this token can access.
+          maxLength: 128
           minLength: 1
-        data:
-          $ref: '#/components/schemas/PublishTokenResponseV1'
-    IntegrationIds:
-      type: string
-      description: ''
-      x-enumNames:
-      - None
-      - Maestro
-      - Passthru
-      - Internal
-      enum:
-      - None
-      - Maestro
-      - Passthru
-      - Internal
-    SuccessResponseGetActiveTokenV1:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/TokenIdWrapper'
+        isRegex:
+          type: boolean
+          description: Set to true if the name of the stream is a regular expression.
+          default: false
     CreatePublishTokenV1:
       type: object
       additionalProperties: false
@@ -1836,20 +1953,7 @@ components:
           description: Optional. Specify the ISO 3166-1 two letter country codes to explicitly deny viewer to watch the stream from. If the viewer's location does match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of allowedCountries or deniedCountries should be specified.If the specified streams require authentication, the list of denied countries can be overridden by the subscribe token.
           items:
             type: string
-    ListFilterBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - None
-      - TokenName
-      - StreamName
-      - TokenOrStreamName
-      enum:
-      - None
-      - TokenName
-      - StreamName
-      - TokenOrStreamName
-    SuccessResponseBoolean:
+    SuccessResponseDisableTokensV1:
       type: object
       additionalProperties: false
       required:
@@ -1861,22 +1965,63 @@ components:
           default: success
           minLength: 1
         data:
-          type: boolean
-    CreateStreamNameModel:
+          $ref: '#/components/schemas/DisableTokens'
+    ListSortBy2:
+      type: string
+      description: ''
+      x-enumNames:
+      - Name
+      - AddedOn
+      enum:
+      - Name
+      - AddedOn
+    SuccessResponseListPublishTokenV1:
       type: object
       additionalProperties: false
       required:
-      - streamName
+      - status
+      - data
       properties:
-        streamName:
+        status:
           type: string
-          description: Name of the stream this token can access.
-          maxLength: 128
+          default: success
           minLength: 1
-        isRegex:
-          type: boolean
-          description: Set to true if the name of the stream is a regular expression.
-          default: false
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublishTokenResponseV1'
+    DisableActiveTokenModel:
+      type: object
+      additionalProperties: false
+      required:
+      - tokenIds
+      properties:
+        tokenIds:
+          type: array
+          description: The list of identifiers for the tokens to disable.
+          minItems: 1
+          items:
+            type: integer
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
     GeoCascadeModel2:
       type: object
       additionalProperties: false
@@ -1893,6 +2038,32 @@ components:
           description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
           items:
             type: string
+    SuccessResponseBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
+    ListFilterBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - None
+      - TokenName
+      - StreamName
+      - TokenOrStreamName
+      enum:
+      - None
+      - TokenName
+      - StreamName
+      - TokenOrStreamName
     UpdatePublishTokenV1:
       type: object
       additionalProperties: false
@@ -2033,39 +2204,19 @@ components:
           - 'null'
           items:
             type: string
-    DisableActiveTokenModel:
-      type: object
-      additionalProperties: false
-      required:
-      - tokenIds
-      properties:
-        tokenIds:
-          type: array
-          description: The list of identifiers for the tokens to disable.
-          minItems: 1
-          items:
-            type: integer
-    ErrorResponse:
+    FailResponse:
       type: object
       additionalProperties: false
       required:
       - status
-      - message
+      - data
       properties:
         status:
           type: string
-          default: error
+          default: fail
           minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
         data: {}
-    SuccessResponseListPublishTokenV1:
+    SuccessResponseGetActiveTokenV1:
       type: object
       additionalProperties: false
       required:
@@ -2077,148 +2228,7 @@ components:
           default: success
           minLength: 1
         data:
-          type: array
-          items:
-            $ref: '#/components/schemas/PublishTokenResponseV1'
-    PublishTokenResponseV1:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          deprecated: true
-          x-deprecatedMessage: use Label
-        subscribeRequiresAuth:
-          type: boolean
-          description: Flag to require authentication to subscribe to the specified streams. Default is false.
-        record:
-          type: boolean
-          description: Flag to allow this publish token to be allowed to record the specified streams. Default is false.
-        clip:
-          type: boolean
-          description: 'Flag to allow this publish token to enable live clipping on specified streams. Default is false.
-
-            This flag cannot be set to true when the `record` flag is enabled.'
-        multisource:
-          type: boolean
-          description: Flag to indicate if the multi source capability is enabled for this publish token. Default is true.
-        enableThumbnails:
-          type: boolean
-          description: Flag to receive webhook notifications for thumbnails for the specified streams. Default is false. See documentation https://optiview.dolby.com/docs/millicast/webhooks/thumbnail/. This flag only controls automated time-triggered thumbnails on loop, not on-demand thumbnails.
-        lowLatencyRtmp:
-          type: boolean
-          description: Flag to indicate if low latency RTMP is enabled for this publish token. Default is true.
-        enableUTCInsertion:
-          type:
-          - boolean
-          - 'null'
-          description: Flag to indicate if UTC timestamp insertion is enabled for this publish token. Null means the account default is used.
-        integrationId:
-          description: The identifier of the integration.
-          oneOf:
-          - $ref: '#/components/schemas/IntegrationIds'
-        displaySrtPassphrase:
-          type: boolean
-          description: Flag to display passphrase encryption settings in the dashboard as well as returning the SRT passphrase in response to this API call. Default is false.
-        srtPassphrase:
-          type:
-          - string
-          - 'null'
-          description: The SRT passphrase.
-        drm:
-          type: boolean
-        geoCascade:
-          description: The geo cascading settings.
-          oneOf:
-          - $ref: '#/components/schemas/GeoCascadeModel2'
-        restream:
-          type:
-          - array
-          - 'null'
-          description: A list of endpoints where to restream the stream to.
-          items:
-            $ref: '#/components/schemas/RestreamModel2'
-        priority:
-          type:
-          - integer
-          - 'null'
-          description: Default priority of this publish token.
-          format: int32
-        encoderProfileId:
-          type:
-          - string
-          - 'null'
-          description: The identifier of the encoder profile.
-        id:
-          type: integer
-          description: Identifier of the token.
-        label:
-          type: string
-          description: Friendly name of token.
-        token:
-          type: string
-          description: Actual token.
-        addedOn:
-          type: string
-          description: Date when the token was created.
-          format: date-time
-        expiresOn:
-          type:
-          - string
-          - 'null'
-          description: The token expiration date.
-          format: date-time
-        isActive:
-          type: boolean
-          description: Flag to indicate if the token is active or not.
-        streams:
-          type: array
-          description: A list of stream names associated with the token.
-          items:
-            $ref: '#/components/schemas/TokenStreamNameModel'
-        allowedOrigins:
-          type: array
-          description: A list of allowed origins for the token.
-          items:
-            type: string
-        allowedIpAddresses:
-          type: array
-          description: A list of allowed IP addresses for the token.
-          items:
-            type: string
-        bindIpsOnUsage:
-          type:
-          - integer
-          - 'null'
-          description: The number of IPs to bind on usage.
-        originCluster:
-          type: string
-          description: Default cluster for the token.
-        effectiveSettings:
-          description: Token effective settings for properties that use account default settings. Value for each property will either be token or account level settings.
-          oneOf:
-          - $ref: '#/components/schemas/TokenEffectiveSettings'
-        allowedCountries:
-          type: array
-          description: Specify the ISO 3166-1 two letter country codes to explicitly allow viewer to watch the stream from. If the viewer's location does not match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of allowedCountries or deniedCountries should be specified. If the specified streams require authentication, the list of allowed countries can be overridden by the subscribe token.
-          items:
-            type: string
-        deniedCountries:
-          type: array
-          description: Specify the ISO 3166-1 two letter country codes to explicitly deny viewer to watch the stream from. If the viewer's location does match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of allowedCountries or deniedCountries should be specified. If the specified streams require authentication, the list of denied countries can be overridden by the subscribe token.
-          items:
-            type: string
-    ListSortBy2:
-      type: string
-      description: ''
-      x-enumNames:
-      - Name
-      - AddedOn
-      enum:
-      - Name
-      - AddedOn
+          $ref: '#/components/schemas/TokenIdWrapper'
     TokenIdWrapper:
       type: object
       additionalProperties: false
@@ -2229,16 +2239,6 @@ components:
           - 'null'
           items:
             type: integer
-    TokenStreamNameModel:
-      type: object
-      additionalProperties: false
-      properties:
-        streamName:
-          type: string
-          description: The name of the stream.
-        isRegex:
-          type: boolean
-          description: Flag indicating whether the provided name is a regular expression.
   securitySchemes:
     API_Secret:
       type: http

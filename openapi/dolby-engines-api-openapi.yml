@@ -979,6 +979,109 @@ paths:
                 $ref: '#/components/schemas/PaginatedEngineRunResult'
 components:
   schemas:
+    EngineRun:
+      type: object
+      properties:
+        engineId:
+          type: string
+          description: Engine ID
+        start:
+          type: string
+          description: Run start timestamp
+        end:
+          type: string
+          description: Run end timestamp
+        config:
+          type: object
+          properties:
+            ingest:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: Ingest type used
+                url:
+                  type: string
+                  description: Ingest URL used
+              required:
+              - type
+            abrLadderId:
+              type: string
+              description: ABR ladder ID used
+            drm:
+              type: boolean
+              description: Whether DRM was enabled
+          required:
+          - ingest
+          - abrLadderId
+          - drm
+          description: Run configuration
+        startType:
+          type: string
+          description: How the run was started
+        startId:
+          type: string
+          description: ID of the entity who did the start action
+        stopType:
+          type: string
+          description: How the run was stopped
+        stopId:
+          type: string
+          description: ID of entity who did the stop action
+      required:
+      - engineId
+      - start
+      - config
+      - startType
+      - startId
+    PaginatedEngineRunResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EngineRun'
+          description: List of engine runs
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
+    EngineRunObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/EngineRun'
+          - description: Engine run object
+      required:
+      - data
+    Restream:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: Unique restream ID
+        url:
+          type: string
+          pattern: '^(rtmp|rtmps|srt):'
+          description: Restream destination URL
+      required:
+      - id
+      - url
+      additionalProperties: false
     EngineObjectResult:
       type: object
       properties:
@@ -1381,21 +1484,6 @@ components:
           description: Engine object
       required:
       - data
-    Restream:
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 1
-          description: Unique restream ID
-        url:
-          type: string
-          pattern: '^(rtmp|rtmps|srt):'
-          description: Restream destination URL
-      required:
-      - id
-      - url
-      additionalProperties: false
     PaginatedEngineResult:
       type: object
       properties:
@@ -1798,94 +1886,6 @@ components:
             - status
             - outputs
           description: List of engines
-        pagination:
-          type: object
-          properties:
-            hasMore:
-              type: boolean
-              description: Whether more results are available
-            cursor:
-              type: string
-              description: Cursor for the next page of results
-          required:
-          - hasMore
-          - cursor
-          description: Pagination info
-      required:
-      - data
-      - pagination
-    EngineRunObjectResult:
-      type: object
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/EngineRun'
-          - description: Engine run object
-      required:
-      - data
-    EngineRun:
-      type: object
-      properties:
-        engineId:
-          type: string
-          description: Engine ID
-        start:
-          type: string
-          description: Run start timestamp
-        end:
-          type: string
-          description: Run end timestamp
-        config:
-          type: object
-          properties:
-            ingest:
-              type: object
-              properties:
-                type:
-                  type: string
-                  description: Ingest type used
-                url:
-                  type: string
-                  description: Ingest URL used
-              required:
-              - type
-            abrLadderId:
-              type: string
-              description: ABR ladder ID used
-            drm:
-              type: boolean
-              description: Whether DRM was enabled
-          required:
-          - ingest
-          - abrLadderId
-          - drm
-          description: Run configuration
-        startType:
-          type: string
-          description: How the run was started
-        startId:
-          type: string
-          description: ID of the entity who did the start action
-        stopType:
-          type: string
-          description: How the run was stopped
-        stopId:
-          type: string
-          description: ID of entity who did the stop action
-      required:
-      - engineId
-      - start
-      - config
-      - startType
-      - startId
-    PaginatedEngineRunResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/EngineRun'
-          description: List of engine runs
         pagination:
           type: object
           properties:

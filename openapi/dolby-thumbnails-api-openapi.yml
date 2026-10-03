@@ -59,6 +59,31 @@ paths:
       - API_Secret: []
 components:
   schemas:
+    SuccessResponseBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
     TriggerThumbnailRequest:
       type: object
       additionalProperties: false
@@ -92,31 +117,6 @@ components:
           - integer
           - 'null'
           format: int32
-        data: {}
-    SuccessResponseBoolean:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: boolean
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
         data: {}
   securitySchemes:
     API_Secret:

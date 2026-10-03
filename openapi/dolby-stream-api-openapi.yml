@@ -189,15 +189,13 @@ paths:
         source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/stream/reprioritize')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\n    \"tokenId\":0\n    \"updatePriority\":100\n}\nres = http.post(uri, data.to_json, headers)\nputs res.body"
 components:
   schemas:
-    StopStreamRequest:
+    ReprioritizeStreamResponse:
       type: object
       additionalProperties: false
-      required:
-      - streamId
       properties:
-        streamId:
-          type: string
-          minLength: 1
+        stoppingLevel:
+          oneOf:
+          - $ref: '#/components/schemas/StreamStoppingLevel'
     ReprioritizeStreamRequest:
       type: object
       additionalProperties: false
@@ -213,19 +211,6 @@ components:
         updatePriority:
           type: integer
           format: int32
-    SuccessResponseOfReprioritizeStreamResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/ReprioritizeStreamResponse'
     FailResponse:
       type: object
       additionalProperties: false
@@ -238,19 +223,6 @@ components:
           default: fail
           minLength: 1
         data: {}
-    SuccessStopStreamResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/LevelStreamStopped'
     StreamStoppingLevel:
       type: string
       description: ''
@@ -268,13 +240,6 @@ components:
       - Server
       - Token
       - None
-    ReprioritizeStreamResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        stoppingLevel:
-          oneOf:
-          - $ref: '#/components/schemas/StreamStoppingLevel'
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -302,6 +267,41 @@ components:
         stoppingLevel:
           oneOf:
           - $ref: '#/components/schemas/StreamStoppingLevel'
+    SuccessResponseOfReprioritizeStreamResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/ReprioritizeStreamResponse'
+    StopStreamRequest:
+      type: object
+      additionalProperties: false
+      required:
+      - streamId
+      properties:
+        streamId:
+          type: string
+          minLength: 1
+    SuccessStopStreamResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/LevelStreamStopped'
   securitySchemes:
     API_Secret:
       type: http

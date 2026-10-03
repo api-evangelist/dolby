@@ -555,6 +555,66 @@ paths:
       - API_Secret: []
 components:
   schemas:
+    RecordDownloadUrl2:
+      type: object
+      additionalProperties: false
+      properties:
+        downloadUrl:
+          type: string
+        downloadExpiresOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    RecordFileUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        totalBytes:
+          type: integer
+          description: Total storage usage reported in bytes
+          format: uint64
+    ListSortBy3:
+      type: string
+      description: ''
+      x-enumNames:
+      - RecordedOn
+      - StreamName
+      - Token
+      enum:
+      - RecordedOn
+      - StreamName
+      - Token
+    RecordFileModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: integer
+        tokenId:
+          type:
+          - integer
+          - 'null'
+        token:
+          type: string
+        streamName:
+          type: string
+        recordedOn:
+          type: string
+          format: date-time
+        removedOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        status:
+          $ref: '#/components/schemas/MediaAssetStatus2'
+        metadata:
+          oneOf:
+          - $ref: '#/components/schemas/RecordMetadata'
+        download:
+          oneOf:
+          - $ref: '#/components/schemas/RecordDownloadUrl2'
     ListRecordFileModel:
       type: object
       additionalProperties: false
@@ -582,6 +642,167 @@ components:
         metadata:
           oneOf:
           - $ref: '#/components/schemas/RecordMetadata'
+    SuccessListRecordFileModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListRecordFileModel'
+    MediaAssetStatus2:
+      type: string
+      description: ''
+      x-enumNames:
+      - Started
+      - Transcode
+      - InProgress
+      - Deleted
+      - Invalid
+      - Expiring
+      - Complete
+      - Deleting
+      - Error
+      enum:
+      - Started
+      - Transcode
+      - InProgress
+      - Deleted
+      - Invalid
+      - Expiring
+      - Complete
+      - Deleting
+      - Error
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessResponseBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
+    SuccessRecordFileModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordFileModel'
+    SuccessRecordFileUsageModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordFileUsage'
+    RecordMetadata:
+      type: object
+      additionalProperties: false
+      required:
+      - tracks
+      - thumbnails
+      properties:
+        format:
+          type: string
+        sizes:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: integer
+            format: uint64
+        duration:
+          type: integer
+          description: Duration of this asset, in seconds.
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordMediaTrack'
+        thumbnails:
+          type: array
+          description: The list of thumbnails.
+          items:
+            type: string
+        fileCount:
+          type:
+          - integer
+          - 'null'
+          description: The number of files.
+    RemoveRecordFilesModel:
+      type: object
+      additionalProperties: false
+      required:
+      - recordFileIds
+      properties:
+        recordFileIds:
+          type: array
+          minItems: 1
+          items:
+            type: integer
+    RecordFileBillableUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        gigabyteHours:
+          type: integer
+          description: Measured as binary gigabytes (1024^3) per hour
+          format: uint64
     SuccessRecordFileBillableUsageModel:
       type: object
       additionalProperties: false
@@ -646,227 +867,6 @@ components:
       - Complete
       - Deleting
       - Error
-    RemoveRecordFilesModel:
-      type: object
-      additionalProperties: false
-      required:
-      - recordFileIds
-      properties:
-        recordFileIds:
-          type: array
-          minItems: 1
-          items:
-            type: integer
-    RecordMetadata:
-      type: object
-      additionalProperties: false
-      required:
-      - tracks
-      - thumbnails
-      properties:
-        format:
-          type: string
-        sizes:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: integer
-            format: uint64
-        duration:
-          type: integer
-          description: Duration of this asset, in seconds.
-        tracks:
-          type: array
-          items:
-            $ref: '#/components/schemas/RecordMediaTrack'
-        thumbnails:
-          type: array
-          description: The list of thumbnails.
-          items:
-            type: string
-        fileCount:
-          type:
-          - integer
-          - 'null'
-          description: The number of files.
-    SuccessResponseBoolean:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: boolean
-    SuccessListRecordFileModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ListRecordFileModel'
-    RecordFileModel:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: integer
-        tokenId:
-          type:
-          - integer
-          - 'null'
-        token:
-          type: string
-        streamName:
-          type: string
-        recordedOn:
-          type: string
-          format: date-time
-        removedOn:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        status:
-          $ref: '#/components/schemas/MediaAssetStatus2'
-        metadata:
-          oneOf:
-          - $ref: '#/components/schemas/RecordMetadata'
-        download:
-          oneOf:
-          - $ref: '#/components/schemas/RecordDownloadUrl2'
-    ListSortBy3:
-      type: string
-      description: ''
-      x-enumNames:
-      - RecordedOn
-      - StreamName
-      - Token
-      enum:
-      - RecordedOn
-      - StreamName
-      - Token
-    RecordFileBillableUsage:
-      type: object
-      additionalProperties: false
-      properties:
-        gigabyteHours:
-          type: integer
-          description: Measured as binary gigabytes (1024^3) per hour
-          format: uint64
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    SuccessRecordFileModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/RecordFileModel'
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    RecordFileUsage:
-      type: object
-      additionalProperties: false
-      properties:
-        totalBytes:
-          type: integer
-          description: Total storage usage reported in bytes
-          format: uint64
-    MediaAssetStatus2:
-      type: string
-      description: ''
-      x-enumNames:
-      - Started
-      - Transcode
-      - InProgress
-      - Deleted
-      - Invalid
-      - Expiring
-      - Complete
-      - Deleting
-      - Error
-      enum:
-      - Started
-      - Transcode
-      - InProgress
-      - Deleted
-      - Invalid
-      - Expiring
-      - Complete
-      - Deleting
-      - Error
-    RecordDownloadUrl2:
-      type: object
-      additionalProperties: false
-      properties:
-        downloadUrl:
-          type: string
-        downloadExpiresOn:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    SuccessRecordFileUsageModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/RecordFileUsage'
   securitySchemes:
     API_Secret:
       type: http

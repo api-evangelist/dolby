@@ -155,6 +155,15 @@ paths:
           description: Empty response
 components:
   schemas:
+    SchedulerObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Scheduler'
+          - description: Scheduler object
+      required:
+      - data
     CreateSchedulerBody:
       type: object
       properties:
@@ -227,15 +236,6 @@ components:
       required:
       - data
       - pagination
-    SchedulerObjectResult:
-      type: object
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/Scheduler'
-          - description: Scheduler object
-      required:
-      - data
     Scheduler:
       type: object
       properties:

@@ -2110,6 +2110,55 @@ paths:
     - url: https://api.millicast.com
 components:
   schemas:
+    ViewerRecordModelV1:
+      type: object
+      additionalProperties: false
+      properties:
+        startTime:
+          type: string
+          description: Start time of connection
+          format: date-time
+        endTime:
+          type:
+          - string
+          - 'null'
+          description: Expected null for ongoing connections
+          format: date-time
+        clientId:
+          type: string
+          description: Unique id of client connection
+        clusterId:
+          type: string
+          description: ClusterId used by connection
+        country:
+          type: string
+          description: ISO 3166-1 two letter country code
+        customViewerData:
+          type:
+          - string
+          - 'null'
+          description: Custom data associated with viewer
+        duration:
+          type: integer
+          description: Duration of connection in seconds
+        bytes:
+          type: integer
+          description: Total bytes sent/received for connection
+          format: uint64
+        ipAddress:
+          type: string
+          description: Ip address of connection
+        streamName:
+          type: string
+          description: Stream name
+        trackingId:
+          type:
+          - string
+          - 'null'
+          description: tracking id
+        userAgent:
+          type: string
+          description: Useragent of connection
     GetRecordsModel:
       type: object
       additionalProperties: false
@@ -2166,55 +2215,6 @@ components:
       - GreaterThan
       - LessThanOrEqualTo
       - LessThan
-    ViewerRecordModelV1:
-      type: object
-      additionalProperties: false
-      properties:
-        startTime:
-          type: string
-          description: Start time of connection
-          format: date-time
-        endTime:
-          type:
-          - string
-          - 'null'
-          description: Expected null for ongoing connections
-          format: date-time
-        clientId:
-          type: string
-          description: Unique id of client connection
-        clusterId:
-          type: string
-          description: ClusterId used by connection
-        country:
-          type: string
-          description: ISO 3166-1 two letter country code
-        customViewerData:
-          type:
-          - string
-          - 'null'
-          description: Custom data associated with viewer
-        duration:
-          type: integer
-          description: Duration of connection in seconds
-        bytes:
-          type: integer
-          description: Total bytes sent/received for connection
-          format: uint64
-        ipAddress:
-          type: string
-          description: Ip address of connection
-        streamName:
-          type: string
-          description: Stream name
-        trackingId:
-          type:
-          - string
-          - 'null'
-          description: tracking id
-        userAgent:
-          type: string
-          description: Useragent of connection
     RecordSearchType:
       type: string
       description: ''
@@ -2226,7 +2226,19 @@ components:
       - Completed
       - Ongoing
       - Ongoing_Completed
-    StreamGeoTotalAnalyticModel:
+    ClipSeriesResult:
+      type: object
+      additionalProperties: false
+      properties:
+        series:
+          type:
+          - object
+          - 'null'
+          description: Sparse dictionary of UTC date (yyyy-MM-dd) to clip minutes. Days with no clip activity are omitted.
+          additionalProperties:
+            type: integer
+            format: int64
+    AccountGeoSeriesAnalyticModel:
       type: object
       additionalProperties: false
       properties:
@@ -2235,236 +2247,9 @@ components:
           additionalProperties:
             type: object
             additionalProperties:
-              $ref: '#/components/schemas/BaseStreamDataModel'
+              $ref: '#/components/schemas/BaseStreamDataWithViewsModel'
               x-additionalPropertiesName: CountryCode
-            x-additionalPropertiesName: StreamName
-    BaseBandwidthModel:
-      type: object
-      additionalProperties: false
-      properties:
-        bytesOut:
-          type: integer
-          description: Output bytes.
-          format: int64
-        bytesIn:
-          type: integer
-          description: Input bytes.
-          format: int64
-    StreamGeoSeriesAnalyticModel:
-      type: object
-      additionalProperties: false
-      properties:
-        geo:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              type: object
-              additionalProperties:
-                $ref: '#/components/schemas/BaseStreamDataWithViewsModel'
-                x-additionalPropertiesName: CountryCode
-              x-additionalPropertiesName: Time
-            x-additionalPropertiesName: StreamName
-    BaseStreamDataWithViewsModel:
-      type: object
-      additionalProperties: false
-      properties:
-        publishDuration:
-          type: integer
-          format: int64
-        viewDuration:
-          type: integer
-          format: int64
-        bytesOut:
-          type: integer
-          description: Output bytes.
-          format: int64
-        bytesIn:
-          type: integer
-          description: Input bytes.
-          format: int64
-        publishes:
-          type: integer
-          format: int64
-        views:
-          type: integer
-          format: int64
-    SuccessTranscoderTotalMinutes:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/TranscoderTotalAnalyticsResponse'
-    SuccessClipSeriesResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/ClipSeriesResult'
-    SuccessAccountGeoSeriesAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/AccountGeoSeriesAnalyticModel'
-    SuccessAccountBandwidthSeriesAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/BandwidthSeriesAnalyticModel'
-    MediaAssetBillableUsage:
-      type: object
-      additionalProperties: false
-      properties:
-        gigabyteHours:
-          type: integer
-          description: Measured as binary gigabytes (1024^3) per hour
-          format: uint64
-        recordings:
-          type: integer
-          description: Billable storage usage of recordings measured as binary gigabytes (1024^3) per hour
-          format: uint64
-        clips:
-          type: integer
-          description: Billable storage usage of clips measured as binary gigabytes (1024^3) per hour
-          format: uint64
-        timelines:
-          type: integer
-          description: Billable storage usage of timelines measured as binary gigabytes (1024^3) per hour
-          format: uint64
-        vod:
-          type: integer
-          description: Billable storage usage of VOD assets measured as binary gigabytes (1024^3) per hour
-          format: uint64
-    BandwidthSeriesAnalyticModel:
-      type: object
-      additionalProperties: false
-      properties:
-        bandwidth:
-          type: object
-          description: Total bandwidth (in bytes) egress and ingress for all traffic types.
-          additionalProperties:
-            $ref: '#/components/schemas/BaseBandwidthModel'
             x-additionalPropertiesName: Time
-        standardStream:
-          type: object
-          description: 'Traffic attributed to standard streaming broadcasts and playback.
-
-            '
-          additionalProperties:
-            $ref: '#/components/schemas/BaseBandwidthModel'
-            x-additionalPropertiesName: Time
-        restream:
-          type:
-          - object
-          - 'null'
-          description: Traffic attributed to use of re-streaming across multiple platforms.
-          additionalProperties:
-            $ref: '#/components/schemas/UsageWithDurationModel'
-            x-additionalPropertiesName: Time
-        geoCascade:
-          type:
-          - object
-          - 'null'
-          description: Traffic attributed to use of geo-cascading across multiple regions.
-          additionalProperties:
-            $ref: '#/components/schemas/BaseBandwidthModel'
-            x-additionalPropertiesName: Time
-    SuccessTrackingTotalForStreams:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/StreamTrackingTotalAnalyticModel'
-    DrmTotalUsageResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        license:
-          description: DRM license usage
-          oneOf:
-          - $ref: '#/components/schemas/LicenseUsageTotal'
-    SuccessAccountBandwidthTotalAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/BandwidthTotalAnalyticModel'
-    LicenseUsageSeries:
-      type: object
-      additionalProperties: false
-      properties:
-        totals:
-          description: Total license requests
-          oneOf:
-          - $ref: '#/components/schemas/UsagePerStatus'
-        details:
-          type:
-          - object
-          - 'null'
-          description: Daily license requests per DRM system
-          additionalProperties:
-            $ref: '#/components/schemas/DrmSchemaUsage'
-    SuccessTranscoderSeriesMinutes:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/TranscoderSeriesAnalyticsResponse'
     SuccessResponseOfMediaAssetUsage:
       type: object
       additionalProperties: false
@@ -2478,224 +2263,6 @@ components:
           minLength: 1
         data:
           $ref: '#/components/schemas/MediaAssetUsage'
-    SuccessAccountGeoTotalAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/GeoTotalAnalyticModel'
-    SuccessAccountGeoCountryAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/GeoCountryAnalyticModel'
-    DrmDetailedUsageResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        license:
-          description: DRM license usage
-          oneOf:
-          - $ref: '#/components/schemas/LicenseUsageSeries'
-    MediaAssetUsage:
-      type: object
-      additionalProperties: false
-      properties:
-        totalBytes:
-          type: integer
-          description: Total storage usage reported in bytes
-          format: uint64
-        recordings:
-          type: integer
-          description: Storage usage of recordings reported in bytes
-          format: uint64
-        clips:
-          type: integer
-          description: Storage usage of clips reported in bytes
-          format: uint64
-        timelines:
-          type: integer
-          description: Storage usage of timelines reported in bytes
-          format: uint64
-        vod:
-          type: integer
-          description: Storage usage of VOD assets reported in bytes
-          format: uint64
-    SuccessStreamsGeoCountryAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/GeoCountryAnalyticModel'
-            x-additionalPropertiesName: StreamName
-    SuccessStreamsGeoSeriesAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/StreamGeoSeriesAnalyticModel'
-    SuccessStreamsBandwidthTotalAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/BandwidthTotalAnalyticModel'
-            x-additionalPropertiesName: StreamName
-    SuccessSeriesBandwidthPerStreamForTrackingIds:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              type: array
-              items:
-                $ref: '#/components/schemas/TrackingIdTotalAnalyticModel'
-    TranscoderAnalyticsDetail:
-      type: object
-      additionalProperties: false
-      properties:
-        transcoderId:
-          type:
-          - string
-          - 'null'
-        minutesUsed:
-          type: integer
-          format: int64
-    SuccessStreamsBandwidthSeriesAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/BandwidthSeriesAnalyticModel'
-            x-additionalPropertiesName: StreamName
-    AccountGeoSeriesAnalyticModel:
-      type: object
-      additionalProperties: false
-      properties:
-        geo:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              $ref: '#/components/schemas/BaseStreamDataWithViewsModel'
-              x-additionalPropertiesName: CountryCode
-            x-additionalPropertiesName: Time
-    GeoCountryAnalyticModel:
-      type: object
-      additionalProperties: false
-      properties:
-        geo:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/BaseGeoDataModel'
-            x-additionalPropertiesName: CountryCode
-    SuccessTrackingSeriesForStreams:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties:
-              type: array
-              items:
-                $ref: '#/components/schemas/StreamTrackingTotalAnalyticModel'
-    SuccessTotalBandwidthPerStreamForTrackingIds:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/TrackingIdTotalAnalyticModel'
-    LicenseUsageTotal:
-      type: object
-      additionalProperties: false
-      properties:
-        totals:
-          description: Total license requests
-          oneOf:
-          - $ref: '#/components/schemas/UsagePerStatus'
-        details:
-          description: License requests per DRM system
-          oneOf:
-          - $ref: '#/components/schemas/DrmSchemaUsage'
     BandwidthTotalAnalyticModel:
       type: object
       additionalProperties: false
@@ -2720,10 +2287,16 @@ components:
           description: Traffic attributed to use of geo-cascading across multiple regions.
           oneOf:
           - $ref: '#/components/schemas/BaseBandwidthModel'
-    UsageWithDurationModel:
+    BaseStreamDataWithViewsModel:
       type: object
       additionalProperties: false
       properties:
+        publishDuration:
+          type: integer
+          format: int64
+        viewDuration:
+          type: integer
+          format: int64
         bytesOut:
           type: integer
           description: Output bytes.
@@ -2732,159 +2305,22 @@ components:
           type: integer
           description: Input bytes.
           format: int64
-        secondsUsed:
-          type: integer
-          description: Usage duration in seconds.
-          format: int64
-    ClipSeriesResult:
-      type: object
-      additionalProperties: false
-      properties:
-        series:
-          type:
-          - object
-          - 'null'
-          description: Sparse dictionary of UTC date (yyyy-MM-dd) to clip minutes. Days with no clip activity are omitted.
-          additionalProperties:
-            type: integer
-            format: int64
-    TranscoderTotalAnalyticsResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        streamAccountId:
-          type:
-          - string
-          - 'null'
-          description: The account we have queried for.
-        startDate:
-          type: string
-          description: The start date of the query.
-          format: date-time
-        endDate:
-          type: string
-          description: The end date of the query.
-          format: date-time
-        transcoderMinutesUsed:
-          type: integer
-          description: The total transcoder minutes used between the two dates.
-          format: int64
-    UsagePerStatus:
-      type: object
-      additionalProperties: false
-      properties:
-        ok:
-          type: integer
-          description: Successful license delivery
-        fail:
-          type: integer
-          description: Failed license delivery due to an error
-        denied:
-          type: integer
-          description: Denied license delivery (Not authorized)
-    DrmSchemaUsage:
-      type: object
-      additionalProperties: false
-      properties:
-        playReady:
-          description: License request status for PlayReady
-          oneOf:
-          - $ref: '#/components/schemas/UsagePerStatus'
-        widevine:
-          description: License request status for Widevine
-          oneOf:
-          - $ref: '#/components/schemas/UsagePerStatus'
-        fairPlay:
-          description: License request status for FairPlay
-          oneOf:
-          - $ref: '#/components/schemas/UsagePerStatus'
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    GeoTotalAnalyticModel:
-      type: object
-      additionalProperties: false
-      properties:
-        geo:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/BaseStreamDataModel'
-            x-additionalPropertiesName: CountryCode
-    SuccessStreamsGeoTotalAnalyticModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/StreamGeoTotalAnalyticModel'
-    StreamsAnalyticsResolution:
-      type: string
-      description: ''
-      x-enumNames:
-      - Hour
-      - Day
-      enum:
-      - Hour
-      - Day
-    TrackingIdTotalAnalyticModel:
-      type: object
-      additionalProperties: false
-      properties:
-        bytesOut:
+        publishes:
           type: integer
           format: int64
-        bytesIn:
+        views:
           type: integer
           format: int64
-        standardStream:
-          description: Traffic attributed to standard streaming broadcasts and playback.
-          oneOf:
-          - $ref: '#/components/schemas/BaseBandwidthModel2'
-        restream:
-          description: Traffic attributed to use of re-streaming across multiple platforms.
-          oneOf:
-          - $ref: '#/components/schemas/UsageWithDurationModel2'
-        geoCascade:
-          description: Traffic attributed to use of geo-cascading across multiple regions.
-          oneOf:
-          - $ref: '#/components/schemas/BaseBandwidthModel2'
-        streamName:
-          type:
-          - string
-          - 'null'
-    BaseBandwidthModel2:
+    BaseGeoDataModel:
       type: object
       additionalProperties: false
       properties:
-        bytesOut:
+        bytes:
           type: integer
-          format: int64
-        bytesIn:
+          format: uint64
+        views:
           type: integer
-          format: int64
+          format: uint64
     SuccessStorageSeriesResponse:
       type: object
       additionalProperties: false
@@ -2898,7 +2334,7 @@ components:
           minLength: 1
         data:
           $ref: '#/components/schemas/StorageSeriesResult'
-    SuccessResponseOfMediaAssetBillableUsage:
+    SuccessAccountBandwidthSeriesAnalyticModel:
       type: object
       additionalProperties: false
       required:
@@ -2910,31 +2346,108 @@ components:
           default: success
           minLength: 1
         data:
-          $ref: '#/components/schemas/MediaAssetBillableUsage'
-    AnalyticsResolution:
+          $ref: '#/components/schemas/BandwidthSeriesAnalyticModel'
+    StreamsAnalyticsResolution:
       type: string
       description: ''
       x-enumNames:
       - Hour
       - Day
-      - Month
       enum:
       - Hour
       - Day
-      - Month
-    UsageWithDurationModel2:
+    StreamGeoSeriesAnalyticModel:
       type: object
       additionalProperties: false
       properties:
-        bytesOut:
-          type: integer
-          format: int64
-        bytesIn:
-          type: integer
-          format: int64
-        duration:
-          type: integer
-          format: int64
+        geo:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: object
+              additionalProperties:
+                $ref: '#/components/schemas/BaseStreamDataWithViewsModel'
+                x-additionalPropertiesName: CountryCode
+              x-additionalPropertiesName: Time
+            x-additionalPropertiesName: StreamName
+    SuccessTotalBandwidthPerStreamForTrackingIds:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/TrackingIdTotalAnalyticModel'
+    SuccessTrackingTotalForStreams:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/StreamTrackingTotalAnalyticModel'
+    StreamGeoTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        geo:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              $ref: '#/components/schemas/BaseStreamDataModel'
+              x-additionalPropertiesName: CountryCode
+            x-additionalPropertiesName: StreamName
+    StorageSeriesResult:
+      type: object
+      additionalProperties: false
+      properties:
+        series:
+          type:
+          - object
+          - 'null'
+          description: Sparse dictionary of UTC date (yyyy-MM-dd) to storage GB-hours (byte-hours / 1,000,000,000). Days with no storage data are omitted.
+          additionalProperties:
+            type: number
+            format: double
+    SuccessSeriesBandwidthPerStreamForTrackingIds:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/TrackingIdTotalAnalyticModel'
     BaseStreamDataModel:
       type: object
       additionalProperties: false
@@ -2979,7 +2492,7 @@ components:
           type:
           - string
           - 'null'
-    FailResponse:
+    SuccessAccountGeoCountryAnalyticModel:
       type: object
       additionalProperties: false
       required:
@@ -2988,31 +2501,303 @@ components:
       properties:
         status:
           type: string
-          default: fail
+          default: success
           minLength: 1
-        data: {}
-    StorageSeriesResult:
+        data:
+          $ref: '#/components/schemas/GeoCountryAnalyticModel'
+    UsagePerStatus:
       type: object
       additionalProperties: false
       properties:
-        series:
+        ok:
+          type: integer
+          description: Successful license delivery
+        fail:
+          type: integer
+          description: Failed license delivery due to an error
+        denied:
+          type: integer
+          description: Denied license delivery (Not authorized)
+    SuccessTrackingSeriesForStreams:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/StreamTrackingTotalAnalyticModel'
+    SuccessStreamsBandwidthTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/BandwidthTotalAnalyticModel'
+            x-additionalPropertiesName: StreamName
+    MediaAssetUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        totalBytes:
+          type: integer
+          description: Total storage usage reported in bytes
+          format: uint64
+        recordings:
+          type: integer
+          description: Storage usage of recordings reported in bytes
+          format: uint64
+        clips:
+          type: integer
+          description: Storage usage of clips reported in bytes
+          format: uint64
+        timelines:
+          type: integer
+          description: Storage usage of timelines reported in bytes
+          format: uint64
+        vod:
+          type: integer
+          description: Storage usage of VOD assets reported in bytes
+          format: uint64
+    BandwidthSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bandwidth:
+          type: object
+          description: Total bandwidth (in bytes) egress and ingress for all traffic types.
+          additionalProperties:
+            $ref: '#/components/schemas/BaseBandwidthModel'
+            x-additionalPropertiesName: Time
+        standardStream:
+          type: object
+          description: 'Traffic attributed to standard streaming broadcasts and playback.
+
+            '
+          additionalProperties:
+            $ref: '#/components/schemas/BaseBandwidthModel'
+            x-additionalPropertiesName: Time
+        restream:
           type:
           - object
           - 'null'
-          description: Sparse dictionary of UTC date (yyyy-MM-dd) to storage GB-hours (byte-hours / 1,000,000,000). Days with no storage data are omitted.
+          description: Traffic attributed to use of re-streaming across multiple platforms.
           additionalProperties:
-            type: number
-            format: double
-    BaseGeoDataModel:
+            $ref: '#/components/schemas/UsageWithDurationModel'
+            x-additionalPropertiesName: Time
+        geoCascade:
+          type:
+          - object
+          - 'null'
+          description: Traffic attributed to use of geo-cascading across multiple regions.
+          additionalProperties:
+            $ref: '#/components/schemas/BaseBandwidthModel'
+            x-additionalPropertiesName: Time
+    SuccessTranscoderTotalMinutes:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderTotalAnalyticsResponse'
+    GeoTotalAnalyticModel:
       type: object
       additionalProperties: false
       properties:
-        bytes:
+        geo:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/BaseStreamDataModel'
+            x-additionalPropertiesName: CountryCode
+    TranscoderTotalAnalyticsResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        streamAccountId:
+          type:
+          - string
+          - 'null'
+          description: The account we have queried for.
+        startDate:
+          type: string
+          description: The start date of the query.
+          format: date-time
+        endDate:
+          type: string
+          description: The end date of the query.
+          format: date-time
+        transcoderMinutesUsed:
           type: integer
-          format: uint64
-        views:
+          description: The total transcoder minutes used between the two dates.
+          format: int64
+    BaseBandwidthModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
           type: integer
+          format: int64
+        bytesIn:
+          type: integer
+          format: int64
+    SuccessAccountBandwidthTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/BandwidthTotalAnalyticModel'
+    SuccessStreamsGeoCountryAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/GeoCountryAnalyticModel'
+            x-additionalPropertiesName: StreamName
+    MediaAssetBillableUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        gigabyteHours:
+          type: integer
+          description: Measured as binary gigabytes (1024^3) per hour
           format: uint64
+        recordings:
+          type: integer
+          description: Billable storage usage of recordings measured as binary gigabytes (1024^3) per hour
+          format: uint64
+        clips:
+          type: integer
+          description: Billable storage usage of clips measured as binary gigabytes (1024^3) per hour
+          format: uint64
+        timelines:
+          type: integer
+          description: Billable storage usage of timelines measured as binary gigabytes (1024^3) per hour
+          format: uint64
+        vod:
+          type: integer
+          description: Billable storage usage of VOD assets measured as binary gigabytes (1024^3) per hour
+          format: uint64
+    SuccessResponseOfMediaAssetBillableUsage:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/MediaAssetBillableUsage'
+    SuccessAccountGeoSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/AccountGeoSeriesAnalyticModel'
+    BaseBandwidthModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          description: Output bytes.
+          format: int64
+        bytesIn:
+          type: integer
+          description: Input bytes.
+          format: int64
+    SuccessStreamsBandwidthSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/BandwidthSeriesAnalyticModel'
+            x-additionalPropertiesName: StreamName
+    UsageWithDurationModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          description: Output bytes.
+          format: int64
+        bytesIn:
+          type: integer
+          description: Input bytes.
+          format: int64
+        secondsUsed:
+          type: integer
+          description: Usage duration in seconds.
+          format: int64
+    AnalyticsResolution:
+      type: string
+      description: ''
+      x-enumNames:
+      - Hour
+      - Day
+      - Month
+      enum:
+      - Hour
+      - Day
+      - Month
     TranscoderSeriesAnalyticsResponse:
       type: object
       additionalProperties: false
@@ -3031,6 +2816,221 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/TranscoderAnalyticsDetail'
+    DrmDetailedUsageResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        license:
+          description: DRM license usage
+          oneOf:
+          - $ref: '#/components/schemas/LicenseUsageSeries'
+    GeoCountryAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        geo:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/BaseGeoDataModel'
+            x-additionalPropertiesName: CountryCode
+    TrackingIdTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          format: int64
+        bytesIn:
+          type: integer
+          format: int64
+        standardStream:
+          description: Traffic attributed to standard streaming broadcasts and playback.
+          oneOf:
+          - $ref: '#/components/schemas/BaseBandwidthModel2'
+        restream:
+          description: Traffic attributed to use of re-streaming across multiple platforms.
+          oneOf:
+          - $ref: '#/components/schemas/UsageWithDurationModel2'
+        geoCascade:
+          description: Traffic attributed to use of geo-cascading across multiple regions.
+          oneOf:
+          - $ref: '#/components/schemas/BaseBandwidthModel2'
+        streamName:
+          type:
+          - string
+          - 'null'
+    SuccessTranscoderSeriesMinutes:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderSeriesAnalyticsResponse'
+    SuccessClipSeriesResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/ClipSeriesResult'
+    UsageWithDurationModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        bytesOut:
+          type: integer
+          format: int64
+        bytesIn:
+          type: integer
+          format: int64
+        duration:
+          type: integer
+          format: int64
+    LicenseUsageSeries:
+      type: object
+      additionalProperties: false
+      properties:
+        totals:
+          description: Total license requests
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+        details:
+          type:
+          - object
+          - 'null'
+          description: Daily license requests per DRM system
+          additionalProperties:
+            $ref: '#/components/schemas/DrmSchemaUsage'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessAccountGeoTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/GeoTotalAnalyticModel'
+    DrmTotalUsageResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        license:
+          description: DRM license usage
+          oneOf:
+          - $ref: '#/components/schemas/LicenseUsageTotal'
+    LicenseUsageTotal:
+      type: object
+      additionalProperties: false
+      properties:
+        totals:
+          description: Total license requests
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+        details:
+          description: License requests per DRM system
+          oneOf:
+          - $ref: '#/components/schemas/DrmSchemaUsage'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    DrmSchemaUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        playReady:
+          description: License request status for PlayReady
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+        widevine:
+          description: License request status for Widevine
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+        fairPlay:
+          description: License request status for FairPlay
+          oneOf:
+          - $ref: '#/components/schemas/UsagePerStatus'
+    SuccessStreamsGeoSeriesAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/StreamGeoSeriesAnalyticModel'
+    TranscoderAnalyticsDetail:
+      type: object
+      additionalProperties: false
+      properties:
+        transcoderId:
+          type:
+          - string
+          - 'null'
+        minutesUsed:
+          type: integer
+          format: int64
+    SuccessStreamsGeoTotalAnalyticModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/StreamGeoTotalAnalyticModel'
   securitySchemes:
     API_Secret:
       type: http

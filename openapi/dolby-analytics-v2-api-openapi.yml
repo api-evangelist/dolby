@@ -69,6 +69,65 @@ paths:
       - API_Secret: []
 components:
   schemas:
+    ViewerRecordModel:
+      type: object
+      additionalProperties: false
+      properties:
+        startTime:
+          type: string
+          description: Start time of connection
+          format: date-time
+        endTime:
+          type:
+          - string
+          - 'null'
+          description: Expected null for ongoing connections
+          format: date-time
+        clientId:
+          type: string
+          description: Unique id of client connection
+        clusterId:
+          type: string
+          description: ClusterId used by connection
+        country:
+          type: string
+          description: ISO 3166-1 two letter country code
+        customViewerData:
+          type:
+          - string
+          - 'null'
+          description: Custom data associated with viewer
+        duration:
+          type: integer
+          description: Duration of connection in seconds
+        bytes:
+          type: integer
+          description: Total bytes sent/received for connection
+          format: uint64
+        ipAddress:
+          type: string
+          description: Ip address of connection
+        streamName:
+          type: string
+          description: Stream name
+        trackingId:
+          type:
+          - string
+          - 'null'
+          description: tracking id
+        userAgent:
+          type: string
+          description: Useragent of connection
+        recordId:
+          type: integer
+          description: Database record ID
+          format: uint64
+        previousRecordId:
+          type:
+          - integer
+          - 'null'
+          description: Previous record ID if this is a reactivation
+          format: uint64
     GetRecordsV2Model:
       type: object
       additionalProperties: false
@@ -132,65 +191,6 @@ components:
           description: List of trackingIds to only include in response. NULL is allowed here to include records with no trackingId specified. Mutually exclusive with StreamNames
           items:
             type: string
-    ViewerRecordModel:
-      type: object
-      additionalProperties: false
-      properties:
-        startTime:
-          type: string
-          description: Start time of connection
-          format: date-time
-        endTime:
-          type:
-          - string
-          - 'null'
-          description: Expected null for ongoing connections
-          format: date-time
-        clientId:
-          type: string
-          description: Unique id of client connection
-        clusterId:
-          type: string
-          description: ClusterId used by connection
-        country:
-          type: string
-          description: ISO 3166-1 two letter country code
-        customViewerData:
-          type:
-          - string
-          - 'null'
-          description: Custom data associated with viewer
-        duration:
-          type: integer
-          description: Duration of connection in seconds
-        bytes:
-          type: integer
-          description: Total bytes sent/received for connection
-          format: uint64
-        ipAddress:
-          type: string
-          description: Ip address of connection
-        streamName:
-          type: string
-          description: Stream name
-        trackingId:
-          type:
-          - string
-          - 'null'
-          description: tracking id
-        userAgent:
-          type: string
-          description: Useragent of connection
-        recordId:
-          type: integer
-          description: Database record ID
-          format: uint64
-        previousRecordId:
-          type:
-          - integer
-          - 'null'
-          description: Previous record ID if this is a reactivation
-          format: uint64
     DateTimeOperator:
       type: string
       description: ''

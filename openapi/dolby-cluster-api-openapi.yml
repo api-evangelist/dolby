@@ -150,18 +150,80 @@ paths:
       - API_Secret: []
 components:
   schemas:
-    ClustersInfoModel:
+    SuccessClusterInfoModel:
       type: object
       additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/ClustersInfoModel'
+    LocationModel:
+      type: object
+      additionalProperties: false
+      properties:
+        city:
+          type:
+          - string
+          - 'null'
+          description: City for cluster
+        region:
+          type:
+          - string
+          - 'null'
+          description: Region for cluster
+        country:
+          type:
+          - string
+          - 'null'
+          description: Country for cluster
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    UpdateClusterInfoModel:
+      type: object
+      additionalProperties: false
+      required:
+      - defaultCluster
       properties:
         defaultCluster:
           type: string
           description: Used as cluster when not explicitly specified during Token creation.
-        availableClusters:
-          type: array
-          description: List of available clusters.
-          items:
-            $ref: '#/components/schemas/ClusterModel'
+          minLength: 1
     ClusterModel:
       type: object
       additionalProperties: false
@@ -186,35 +248,18 @@ components:
           description: The features supported in this cluster.
           oneOf:
           - $ref: '#/components/schemas/ClustersFeaturesModel'
-    UpdateClusterInfoModel:
+    ClustersInfoModel:
       type: object
       additionalProperties: false
-      required:
-      - defaultCluster
       properties:
         defaultCluster:
           type: string
           description: Used as cluster when not explicitly specified during Token creation.
-          minLength: 1
-    LocationModel:
-      type: object
-      additionalProperties: false
-      properties:
-        city:
-          type:
-          - string
-          - 'null'
-          description: City for cluster
-        region:
-          type:
-          - string
-          - 'null'
-          description: Region for cluster
-        country:
-          type:
-          - string
-          - 'null'
-          description: Country for cluster
+        availableClusters:
+          type: array
+          description: List of available clusters.
+          items:
+            $ref: '#/components/schemas/ClusterModel'
     ClustersFeaturesModel:
       type: object
       additionalProperties: false
@@ -222,51 +267,6 @@ components:
         transcoding:
           type: boolean
           description: Indicates whether the Transcoder feature is supported in the corresponding cluster.
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    SuccessClusterInfoModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/ClustersInfoModel'
   securitySchemes:
     API_Secret:
       type: http

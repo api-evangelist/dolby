@@ -780,6 +780,17 @@ paths:
       description: Base (for /v1 endpoints)
 components:
   schemas:
+    FeedStats:
+      type: object
+      additionalProperties: false
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        packetLoss:
+          type: number
+          description: Packet loss percentage over last five seconds
+          format: double
     FeedSummary:
       type: object
       additionalProperties: false
@@ -826,147 +837,23 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RestreamDetails'
-    PaginatedResponseOfStreamSummary:
+    RestreamDetails:
       type: object
       additionalProperties: false
       properties:
-        pagination:
-          oneOf:
-          - $ref: '#/components/schemas/PaginationData'
-        data:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/StreamSummary'
-    PaginationData:
-      type: object
-      additionalProperties: false
-      properties:
-        totalItems:
+        label:
+          type: string
+        index:
           type: integer
           format: int32
-        totalPages:
-          type: integer
-          format: int32
-        itemsOnPage:
-          type: integer
-          format: int32
-    StreamDetails:
-      type: object
-      additionalProperties: false
-      properties:
-        streamId:
+        url:
           type: string
-        streamName:
-          type: string
-        clusterId:
-          type: string
-        clusters:
+        active:
+          type: boolean
+        events:
           type: array
           items:
-            type: string
-        secureStream:
-          type: boolean
-        isRecordingAllowed:
-          type: boolean
-        multisource:
-          type: boolean
-        live:
-          type: boolean
-        startTime:
-          type: string
-          format: date-time
-        endTime:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        viewerCount:
-          type: integer
-          format: int64
-        hasRedundant:
-          type:
-          - boolean
-          - 'null'
-        restreaming:
-          type:
-          - boolean
-          - 'null'
-        feeds:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/FeedDetails'
-    SuccessListStreams:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/PaginatedResponseOfStreamSummary'
-    ListSortBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - StreamId
-      - Cluster
-      - StartTime
-      - Duration
-      - Live
-      - ViewerCount
-      - Restream
-      enum:
-      - StreamId
-      - Cluster
-      - StartTime
-      - Duration
-      - Live
-      - ViewerCount
-      - Restream
-    Resolution:
-      type: object
-      additionalProperties: false
-      properties:
-        height:
-          type: number
-          format: double
-        width:
-          type: number
-          format: double
-    SuccessStreamDetails:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/StreamDetails'
-    SuccessListStreamSummary:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/PaginatedResponseOfStreamBaseSummary'
+            $ref: '#/components/schemas/RestreamEvent'
     SuccessStreamSummary:
       type: object
       additionalProperties: false
@@ -980,41 +867,69 @@ components:
           minLength: 1
         data:
           $ref: '#/components/schemas/StreamBaseSummary'
-    TrackDetails:
+    PaginatedResponseOfStreamSummary:
       type: object
       additionalProperties: false
       properties:
-        trackId:
-          type: string
-        encodingDetails:
-          type: array
+        pagination:
+          oneOf:
+          - $ref: '#/components/schemas/PaginationData'
+        data:
+          type:
+          - array
+          - 'null'
           items:
-            $ref: '#/components/schemas/EncodingDetails'
-    EncodingDetails:
+            $ref: '#/components/schemas/StreamSummary'
+    EncodingStats:
       type: object
       additionalProperties: false
       properties:
-        encodingId:
+        timestamp:
           type: string
-        iFrameRate:
+          format: date-time
+        resolution:
+          oneOf:
+          - $ref: '#/components/schemas/Resolution'
+        bitRate:
+          $ref: '#/components/schemas/Bitrate'
+        videoCodec:
+          type: string
+        audioCodec:
+          type: string
+        frames:
+          type:
+          - number
+          - 'null'
+          format: decimal
+        rtt:
           type:
           - number
           - 'null'
           format: double
-        bFrameRate:
+        bufferTime:
           type:
           - number
           - 'null'
           format: double
-        pFrameRate:
+        bFrames:
           type:
           - number
           - 'null'
           format: double
-        encodingStats:
-          type: array
-          items:
-            $ref: '#/components/schemas/EncodingStats'
+    RestreamEvent:
+      type: object
+      additionalProperties: false
+      properties:
+        started:
+          type: string
+          format: date-time
+        ended:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        error:
+          type: string
     GeoClient:
       type: object
       additionalProperties: false
@@ -1036,40 +951,25 @@ components:
             type: string
         ip:
           type: string
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    RestreamEvent:
-      type: object
-      additionalProperties: false
-      properties:
-        started:
-          type: string
-          format: date-time
-        ended:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        error:
-          type: string
+    ListSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - StreamId
+      - Cluster
+      - StartTime
+      - Duration
+      - Live
+      - ViewerCount
+      - Restream
+      enum:
+      - StreamId
+      - Cluster
+      - StartTime
+      - Duration
+      - Live
+      - ViewerCount
+      - Restream
     StreamSummary:
       type: object
       additionalProperties: false
@@ -1117,121 +1017,89 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/FeedSummary'
-    EncodingStats:
+    EncodingDetails:
       type: object
       additionalProperties: false
       properties:
-        timestamp:
+        encodingId:
           type: string
-          format: date-time
-        resolution:
-          oneOf:
-          - $ref: '#/components/schemas/Resolution'
-        bitRate:
-          $ref: '#/components/schemas/Bitrate'
-        videoCodec:
-          type: string
-        audioCodec:
-          type: string
-        frames:
-          type:
-          - number
-          - 'null'
-          format: decimal
-        rtt:
+        iFrameRate:
           type:
           - number
           - 'null'
           format: double
-        bufferTime:
+        bFrameRate:
           type:
           - number
           - 'null'
           format: double
-        bFrames:
+        pFrameRate:
           type:
           - number
           - 'null'
           format: double
-    RestreamDetails:
-      type: object
-      additionalProperties: false
-      properties:
-        label:
-          type: string
-        index:
-          type: integer
-          format: int32
-        url:
-          type: string
-        active:
-          type: boolean
-        events:
+        encodingStats:
           type: array
           items:
-            $ref: '#/components/schemas/RestreamEvent'
-    StreamBaseSummary:
+            $ref: '#/components/schemas/EncodingStats'
+    TrackDetails:
       type: object
       additionalProperties: false
       properties:
-        streamId:
-          type:
-          - string
-          - 'null'
-          description: The identifier of the stream.
-        streamName:
-          type:
-          - string
-          - 'null'
-          description: The name of the stream.
-        clusterId:
-          type:
-          - string
-          - 'null'
-          description: The identifier of the cluster where the stream was first connected to.
-        clusters:
-          type:
-          - array
-          - 'null'
-          description: The list of clusters where the stream is published to.
+        trackId:
+          type: string
+        encodingDetails:
+          type: array
           items:
-            type: string
-        secureStream:
-          type: boolean
-          description: Flag indicating whether the stream is secured.
-        isRecordingAllowed:
-          type: boolean
-          description: Flag indicating whether recording is allowed for the stream.
-        multisource:
-          type: boolean
-          description: Flag indicating whether the stream allows multiple sources.
-        live:
-          type: boolean
-          description: Flag indicating whether the stream is live.
-        startTime:
+            $ref: '#/components/schemas/EncodingDetails'
+    SuccessListStreamSummary:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
           type: string
-          description: The time when the stream has started.
-          format: date-time
-        endTime:
-          type:
-          - string
-          - 'null'
-          description: The time when the stream has ended.
-          format: date-time
-        viewerCount:
-          type: integer
-          description: The number of viewers watching the stream.
-          format: int64
-    FeedStats:
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/PaginatedResponseOfStreamBaseSummary'
+    PaginationData:
       type: object
       additionalProperties: false
       properties:
-        timestamp:
+        totalItems:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+        itemsOnPage:
+          type: integer
+          format: int32
+    SuccessStreamDetails:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
           type: string
-          format: date-time
-        packetLoss:
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/StreamDetails'
+    Bitrate:
+      type: object
+      additionalProperties: false
+      properties:
+        audioBitrate:
           type: number
-          description: Packet loss percentage over last five seconds
+          format: double
+        videoBitrate:
+          type: number
           format: double
     FeedDetails:
       type: object
@@ -1296,16 +1164,147 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TrackDetails'
-    Bitrate:
+    StreamDetails:
       type: object
       additionalProperties: false
       properties:
-        audioBitrate:
+        streamId:
+          type: string
+        streamName:
+          type: string
+        clusterId:
+          type: string
+        clusters:
+          type: array
+          items:
+            type: string
+        secureStream:
+          type: boolean
+        isRecordingAllowed:
+          type: boolean
+        multisource:
+          type: boolean
+        live:
+          type: boolean
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        viewerCount:
+          type: integer
+          format: int64
+        hasRedundant:
+          type:
+          - boolean
+          - 'null'
+        restreaming:
+          type:
+          - boolean
+          - 'null'
+        feeds:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/FeedDetails'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    Resolution:
+      type: object
+      additionalProperties: false
+      properties:
+        height:
           type: number
           format: double
-        videoBitrate:
+        width:
           type: number
           format: double
+    StreamBaseSummary:
+      type: object
+      additionalProperties: false
+      properties:
+        streamId:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the stream.
+        streamName:
+          type:
+          - string
+          - 'null'
+          description: The name of the stream.
+        clusterId:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the cluster where the stream was first connected to.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: The list of clusters where the stream is published to.
+          items:
+            type: string
+        secureStream:
+          type: boolean
+          description: Flag indicating whether the stream is secured.
+        isRecordingAllowed:
+          type: boolean
+          description: Flag indicating whether recording is allowed for the stream.
+        multisource:
+          type: boolean
+          description: Flag indicating whether the stream allows multiple sources.
+        live:
+          type: boolean
+          description: Flag indicating whether the stream is live.
+        startTime:
+          type: string
+          description: The time when the stream has started.
+          format: date-time
+        endTime:
+          type:
+          - string
+          - 'null'
+          description: The time when the stream has ended.
+          format: date-time
+        viewerCount:
+          type: integer
+          description: The number of viewers watching the stream.
+          format: int64
     PaginatedResponseOfStreamBaseSummary:
       type: object
       additionalProperties: false
@@ -1319,7 +1318,7 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/StreamBaseSummary'
-    FailResponse:
+    SuccessListStreams:
       type: object
       additionalProperties: false
       required:
@@ -1328,74 +1327,10 @@ components:
       properties:
         status:
           type: string
-          default: fail
+          default: success
           minLength: 1
-        data: {}
-    EngineRenditionMetricDataPoint:
-      type: object
-      properties:
-        time:
-          type: string
-          description: Timestamp in ISO 8601 format
-        framerate:
-          type: number
-          description: Framerate in fps
-        bitrate:
-          type: number
-          description: Bitrate in bps
-      required:
-      - time
-      - framerate
-      - bitrate
-    ChannelIngestsMonitoringData:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Channel ID
-        name:
-          type: string
-          description: Channel name
-        status:
-          type: string
-          description: Channel status derived from engine states
-        ingests:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngestMonitoringData'
-          description: List of ingests with detailed monitoring data
-      required:
-      - id
-      - name
-      - status
-      - ingests
-    EngineMonitoringResult:
-      type: object
-      properties:
         data:
-          $ref: '#/components/schemas/EngineMonitoringData'
-      required:
-      - data
-    ChannelMonitoringResult:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ChannelMonitoringData'
-      required:
-      - data
-    IngestMonitoringStatus:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Ingest ID
-        protocol:
-          type: string
-          description: Ingest protocol
-          example: srt-push
-      required:
-      - id
-      - protocol
+          $ref: '#/components/schemas/PaginatedResponseOfStreamSummary'
     EngineMonitoringData:
       type: object
       properties:
@@ -1413,40 +1348,6 @@ components:
       required:
       - id
       - status
-    ChannelMonitoringData:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Channel ID
-        name:
-          type: string
-          description: Channel name
-        status:
-          type: string
-          description: Channel status derived from engine states
-        ingests:
-          type: array
-          items:
-            $ref: '#/components/schemas/IngestMonitoringStatus'
-          description: List of ingests with status
-        engines:
-          type: array
-          items:
-            $ref: '#/components/schemas/EngineMonitoringStatus'
-          description: List of engines with status
-        distributions:
-          type: array
-          items:
-            $ref: '#/components/schemas/DistributionMonitoringStatus'
-          description: List of distributions with status
-      required:
-      - id
-      - name
-      - status
-      - ingests
-      - engines
-      - distributions
     IngestMetricDataPoint:
       type: object
       properties:
@@ -1485,6 +1386,18 @@ components:
       - rtt
       - bitrate
       - location
+    DistributionMonitoringStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Distribution ID
+        status:
+          type: string
+          description: Distribution status (enabled/disabled)
+      required:
+      - id
+      - status
     EngineMonitoringStatus:
       type: object
       properties:
@@ -1503,6 +1416,138 @@ components:
       required:
       - id
       - status
+    IngestMonitoringResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/IngestMonitoringData'
+      required:
+      - data
+    EngineMonitoringResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/EngineMonitoringData'
+      required:
+      - data
+    ChannelMonitoringResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ChannelMonitoringData'
+      required:
+      - data
+    MonitoringError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    ChannelIngestsMonitoringResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ChannelIngestsMonitoringData'
+      required:
+      - data
+    ChannelEnginesMonitoringData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Channel ID
+        name:
+          type: string
+          description: Channel name
+        status:
+          type: string
+          description: Channel status derived from engine states
+        engines:
+          type: array
+          items:
+            $ref: '#/components/schemas/EngineMonitoringData'
+          description: List of engines with detailed monitoring data
+      required:
+      - id
+      - name
+      - status
+      - engines
+    EngineRenditionData:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Rendition name
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/EngineRenditionMetricDataPoint'
+          description: Time-series metric data points
+      required:
+      - name
+      - metrics
+    EngineRenditionMetricDataPoint:
+      type: object
+      properties:
+        time:
+          type: string
+          description: Timestamp in ISO 8601 format
+        framerate:
+          type: number
+          description: Framerate in fps
+        bitrate:
+          type: number
+          description: Bitrate in bps
+      required:
+      - time
+      - framerate
+      - bitrate
+    IngestMonitoringStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Ingest ID
+        protocol:
+          type: string
+          description: Ingest protocol
+          example: srt-push
+      required:
+      - id
+      - protocol
+    ChannelEnginesMonitoringResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ChannelEnginesMonitoringData'
+      required:
+      - data
+    ChannelIngestsMonitoringData:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Channel ID
+        name:
+          type: string
+          description: Channel name
+        status:
+          type: string
+          description: Channel status derived from engine states
+        ingests:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestMonitoringData'
+          description: List of ingests with detailed monitoring data
+      required:
+      - id
+      - name
+      - status
+      - ingests
     IngestMonitoringData:
       type: object
       properties:
@@ -1531,40 +1576,7 @@ components:
       - id
       - status
       - protocol
-    ChannelIngestsMonitoringResult:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ChannelIngestsMonitoringData'
-      required:
-      - data
-    DistributionMonitoringStatus:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Distribution ID
-        status:
-          type: string
-          description: Distribution status (enabled/disabled)
-      required:
-      - id
-      - status
-    EngineRenditionData:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Rendition name
-        metrics:
-          type: array
-          items:
-            $ref: '#/components/schemas/EngineRenditionMetricDataPoint'
-          description: Time-series metric data points
-      required:
-      - name
-      - metrics
-    ChannelEnginesMonitoringData:
+    ChannelMonitoringData:
       type: object
       properties:
         id:
@@ -1576,40 +1588,28 @@ components:
         status:
           type: string
           description: Channel status derived from engine states
+        ingests:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestMonitoringStatus'
+          description: List of ingests with status
         engines:
           type: array
           items:
-            $ref: '#/components/schemas/EngineMonitoringData'
-          description: List of engines with detailed monitoring data
+            $ref: '#/components/schemas/EngineMonitoringStatus'
+          description: List of engines with status
+        distributions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistributionMonitoringStatus'
+          description: List of distributions with status
       required:
       - id
       - name
       - status
+      - ingests
       - engines
-    ChannelEnginesMonitoringResult:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ChannelEnginesMonitoringData'
-      required:
-      - data
-    MonitoringError:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    IngestMonitoringResult:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/IngestMonitoringData'
-      required:
-      - data
+      - distributions
   securitySchemes:
     API_Secret:
       type: http

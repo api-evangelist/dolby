@@ -372,169 +372,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    MonetizedStreamType:
-      enum:
-      - LIVE
-      - VOD
-      type: string
-    IAdBreakUpdate:
-      properties:
-        startDate:
-          type: string
-        endDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        duration:
-          type: number
-          format: double
-        source:
-          type: string
-        layout:
-          $ref: '#/components/schemas/MonetizedStreamLayout'
-        assetURI:
-          type: string
-        status:
-          $ref: '#/components/schemas/SignaledAdBreakStatus'
-        asset_key:
-          type: string
-        network_code:
-          type: string
-        backdropURI:
-          type: string
-        backdropURIGamProperties:
-          $ref: '#/components/schemas/IGamProperties'
-        startPts:
-          type: number
-          format: double
-        name:
-          type: string
-      type: object
-      additionalProperties: false
-    MonetizedStreamLayout:
-      enum:
-      - SINGLE
-      - DOUBLE
-      - LSHAPE_AD
-      - LSHAPE_CONTENT
-      type: string
-    ResourceType.MONETIZED_STREAM:
-      enum:
-      - monetized-stream
-      type: string
-    IMonetizedStreamApiResponse:
-      properties:
-        id:
-          type: string
-        state:
-          type: string
-          enum:
-          - created
-          - deleted
-        type:
-          $ref: '#/components/schemas/ResourceType.MONETIZED_STREAM'
-        payload:
-          $ref: '#/components/schemas/IMonetizedStream'
-      required:
-      - id
-      - state
-      - type
-      - payload
-      type: object
-      additionalProperties: false
-    IAdBreak:
-      properties:
-        id:
-          type: string
-        startDate:
-          type: string
-        endDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        duration:
-          type: number
-          format: double
-        source:
-          type: string
-        layout:
-          $ref: '#/components/schemas/MonetizedStreamLayout'
-        assetURI:
-          type: string
-        status:
-          $ref: '#/components/schemas/SignaledAdBreakStatus'
-        asset_key:
-          type: string
-        network_code:
-          type: string
-        backdropURI:
-          type: string
-        backdropURIGamProperties:
-          $ref: '#/components/schemas/IGamProperties'
-        startPts:
-          type: number
-          format: double
-        name:
-          type: string
-      required:
-      - id
-      - startDate
-      type: object
-      additionalProperties: false
-    IAdBreakApiResponse:
-      properties:
-        payload:
-          $ref: '#/components/schemas/IAdBreak'
-        type:
-          $ref: '#/components/schemas/ResourceType.AD_BREAK'
-        state:
-          type: string
-          enum:
-          - created
-          - deleted
-        id:
-          type: string
-      required:
-      - payload
-      - type
-      - state
-      - id
-      type: object
-    IMonetizedStream:
-      properties:
-        name:
-          type: string
-        version:
-          type: string
-        streamId:
-          type: string
-        streamType:
-          $ref: '#/components/schemas/MonetizedStreamType'
-        origin:
-          type: string
-        segmentOrigin:
-          type: string
-        layout:
-          $ref: '#/components/schemas/MonetizedStreamLayout'
-        assetKey:
-          type: string
-        networkCode:
-          type: string
-        originPath:
-          type: string
-        assetURI:
-          type: string
-        backdropURI:
-          type: string
-        backdropURIGamProperties:
-          $ref: '#/components/schemas/IGamProperties'
-      required:
-      - streamId
-      - layout
-      type: object
-      additionalProperties: false
     SignaledAdBreakStatus:
       enum:
       - new
@@ -544,30 +381,6 @@ components:
       - error
       - continuous
       type: string
-    IMonetizedStreamUpdate:
-      properties:
-        name:
-          type: string
-        version:
-          type: string
-        streamType:
-          $ref: '#/components/schemas/MonetizedStreamType'
-        origin:
-          type: string
-        segmentOrigin:
-          type: string
-        layout:
-          $ref: '#/components/schemas/MonetizedStreamLayout'
-        originPath:
-          type: string
-        assetURI:
-          type: string
-        backdropURI:
-          type: string
-        backdropURIGamProperties:
-          $ref: '#/components/schemas/IGamProperties'
-      type: object
-      additionalProperties: false
     IAdBreaksApiResponse:
       properties:
         payload:
@@ -589,6 +402,10 @@ components:
       - state
       - id
       type: object
+    OverlayTypes:
+      enum:
+      - image
+      type: string
     IOverlaysApiResponse:
       properties:
         id:
@@ -613,24 +430,24 @@ components:
       - payload
       type: object
       additionalProperties: false
-    IGamProperties:
+    IMonetizedStreamApiResponse:
       properties:
-        iu:
+        id:
           type: string
-        sz:
-          properties:
-            tv:
-              type: string
-            phone:
-              type: string
-            default:
-              type: string
-          required:
-          - default
-          type: object
+        state:
+          type: string
+          enum:
+          - created
+          - deleted
+        type:
+          $ref: '#/components/schemas/ResourceType.MONETIZED_STREAM'
+        payload:
+          $ref: '#/components/schemas/IMonetizedStream'
       required:
-      - iu
-      - sz
+      - id
+      - state
+      - type
+      - payload
       type: object
       additionalProperties: false
     IOverlay:
@@ -707,19 +524,168 @@ components:
       - size
       type: object
       additionalProperties: false
-    OverlayTypes:
-      enum:
-      - image
-      type: string
+    IAdBreak:
+      properties:
+        id:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        duration:
+          type: number
+          format: double
+        source:
+          type: string
+        layout:
+          $ref: '#/components/schemas/MonetizedStreamLayout'
+        assetURI:
+          type: string
+        status:
+          $ref: '#/components/schemas/SignaledAdBreakStatus'
+        asset_key:
+          type: string
+        network_code:
+          type: string
+        backdropURI:
+          type: string
+        backdropURIGamProperties:
+          $ref: '#/components/schemas/IGamProperties'
+        startPts:
+          type: number
+          format: double
+        name:
+          type: string
+      required:
+      - id
+      - startDate
+      type: object
+      additionalProperties: false
+    IAdBreakUpdate:
+      properties:
+        startDate:
+          type: string
+        endDate:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        duration:
+          type: number
+          format: double
+        source:
+          type: string
+        layout:
+          $ref: '#/components/schemas/MonetizedStreamLayout'
+        assetURI:
+          type: string
+        status:
+          $ref: '#/components/schemas/SignaledAdBreakStatus'
+        asset_key:
+          type: string
+        network_code:
+          type: string
+        backdropURI:
+          type: string
+        backdropURIGamProperties:
+          $ref: '#/components/schemas/IGamProperties'
+        startPts:
+          type: number
+          format: double
+        name:
+          type: string
+      type: object
+      additionalProperties: false
+    IMonetizedStream:
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        streamId:
+          type: string
+        streamType:
+          $ref: '#/components/schemas/MonetizedStreamType'
+        origin:
+          type: string
+        segmentOrigin:
+          type: string
+        layout:
+          $ref: '#/components/schemas/MonetizedStreamLayout'
+        assetKey:
+          type: string
+        networkCode:
+          type: string
+        originPath:
+          type: string
+        assetURI:
+          type: string
+        backdropURI:
+          type: string
+        backdropURIGamProperties:
+          $ref: '#/components/schemas/IGamProperties'
+      required:
+      - streamId
+      - layout
+      type: object
+      additionalProperties: false
     OverlayURITypes:
       enum:
       - png
       - svg
       type: string
-    ResourceType.AD_BREAK:
+    MonetizedStreamType:
       enum:
-      - adbreak
+      - LIVE
+      - VOD
       type: string
+    IGamProperties:
+      properties:
+        iu:
+          type: string
+        sz:
+          properties:
+            tv:
+              type: string
+            phone:
+              type: string
+            default:
+              type: string
+          required:
+          - default
+          type: object
+      required:
+      - iu
+      - sz
+      type: object
+      additionalProperties: false
+    IMonetizedStreamUpdate:
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        streamType:
+          $ref: '#/components/schemas/MonetizedStreamType'
+        origin:
+          type: string
+        segmentOrigin:
+          type: string
+        layout:
+          $ref: '#/components/schemas/MonetizedStreamLayout'
+        originPath:
+          type: string
+        assetURI:
+          type: string
+        backdropURI:
+          type: string
+        backdropURIGamProperties:
+          $ref: '#/components/schemas/IGamProperties'
+      type: object
+      additionalProperties: false
     IOverlayApiResponse:
       properties:
         id:
@@ -742,6 +708,40 @@ components:
       - payload
       type: object
       additionalProperties: false
+    ResourceType.MONETIZED_STREAM:
+      enum:
+      - monetized-stream
+      type: string
+    IAdBreakApiResponse:
+      properties:
+        payload:
+          $ref: '#/components/schemas/IAdBreak'
+        type:
+          $ref: '#/components/schemas/ResourceType.AD_BREAK'
+        state:
+          type: string
+          enum:
+          - created
+          - deleted
+        id:
+          type: string
+      required:
+      - payload
+      - type
+      - state
+      - id
+      type: object
+    ResourceType.AD_BREAK:
+      enum:
+      - adbreak
+      type: string
+    MonetizedStreamLayout:
+      enum:
+      - SINGLE
+      - DOUBLE
+      - LSHAPE_AD
+      - LSHAPE_CONTENT
+      type: string
   securitySchemes:
     apiKeyAuth:
       type: apiKey

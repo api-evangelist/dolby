@@ -157,22 +157,6 @@ paths:
         source: "curl -H \"Authorization: Bearer your_api_secret\" \\\n     -H \"Content-Type: application/json\" \\\n     https://director.millicast.com/api/director/subscribe \\\n     -d '{\"streamName\": \"my_insecure_stream\", \"streamAccountId\": \"abc123\"}'"
 components:
   schemas:
-    IceServerModel:
-      type: object
-      additionalProperties: false
-      properties:
-        urls:
-          type: array
-          items:
-            type: string
-        username:
-          type:
-          - string
-          - 'null'
-        credential:
-          type:
-          - string
-          - 'null'
     PublishStreamModel:
       type: object
       additionalProperties: false
@@ -186,33 +170,6 @@ components:
           type:
           - string
           - 'null'
-    SubscribeStreamModel:
-      type: object
-      additionalProperties: false
-      required:
-      - streamName
-      properties:
-        streamName:
-          type: string
-          minLength: 1
-        streamAccountId:
-          type:
-          - string
-          - 'null'
-          description: Required **only** for published streams which have `subscribeRequiresAuth=false`.
-    SuccessSubscribeDirectorResponseModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/DirectorResponseModel'
     DrmLicenseServers:
       type: object
       additionalProperties: false
@@ -226,6 +183,92 @@ components:
           - string
           - 'null'
         fairPlayCertUrl:
+          type:
+          - string
+          - 'null'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    PublishDirectorResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        wsUrl:
+          type: string
+          deprecated: true
+          x-deprecatedMessage: Use Urls property
+        urls:
+          type: array
+          items:
+            type: string
+        jwt:
+          type: string
+        iceServers:
+          type: array
+          items:
+            $ref: '#/components/schemas/IceServerModel'
+        streamAccountId:
+          type: string
+        drmObject:
+          oneOf:
+          - $ref: '#/components/schemas/DrmLicenseServers'
+        subscribeRequiresAuth:
+          type: boolean
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    SuccessSubscribeDirectorResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DirectorResponseModel'
+    IceServerModel:
+      type: object
+      additionalProperties: false
+      properties:
+        urls:
+          type: array
+          items:
+            type: string
+        username:
+          type:
+          - string
+          - 'null'
+        credential:
           type:
           - string
           - 'null'
@@ -265,63 +308,20 @@ components:
           minLength: 1
         data:
           $ref: '#/components/schemas/PublishDirectorResponseModel'
-    ErrorResponse:
+    SubscribeStreamModel:
       type: object
       additionalProperties: false
       required:
-      - status
-      - message
+      - streamName
       properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
+        streamName:
           type: string
           minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    PublishDirectorResponseModel:
-      type: object
-      additionalProperties: false
-      properties:
-        wsUrl:
-          type: string
-          deprecated: true
-          x-deprecatedMessage: Use Urls property
-        urls:
-          type: array
-          items:
-            type: string
-        jwt:
-          type: string
-        iceServers:
-          type: array
-          items:
-            $ref: '#/components/schemas/IceServerModel'
         streamAccountId:
-          type: string
-        drmObject:
-          oneOf:
-          - $ref: '#/components/schemas/DrmLicenseServers'
-        subscribeRequiresAuth:
-          type: boolean
+          type:
+          - string
+          - 'null'
+          description: Required **only** for published streams which have `subscribeRequiresAuth=false`.
   securitySchemes:
     Token:
       type: http

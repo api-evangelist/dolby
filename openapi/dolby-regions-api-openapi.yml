@@ -100,6 +100,47 @@ paths:
           description: Region not found or not available for your organization
 components:
   schemas:
+    RegionListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Unique identifier of the region
+              name:
+                type: string
+                description: Display name of the region
+              type:
+                type: string
+                enum:
+                - cloud
+                - onprem
+                description: Type of the region
+              supportedIngestTypes:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - srt-pull
+                  - rtmp-pull
+                  - srt-push
+                  - rtmp-push
+                  - rtsp-pull
+                  - ndi-pull
+                  - sdi-pull
+                description: Ingest types supported in this region (rtsp-pull, ndi-pull and sdi-pull are only available on on-prem regions; ndi-pull and sdi-pull additionally require the NDI/SDI capability on the region)
+            required:
+            - id
+            - name
+            - type
+            - supportedIngestTypes
+          description: List of regions
+      required:
+      - data
     SdiDeviceListResult:
       type: object
       properties:
@@ -110,34 +151,55 @@ components:
           description: List of SDI devices in the region
       required:
       - data
-    NdiSource:
+    RegionResult:
       type: object
       properties:
-        id:
-          type: string
-          description: Unique identifier of the NDI source
-        name:
-          type: string
-          description: Name of the NDI source
-        url:
-          type: string
-          description: Current URL of the NDI source
-        lastSeen:
-          type: string
-          description: Timestamp the NDI source was last seen
-        stale:
-          type: boolean
-          description: Whether the NDI source has not been seen recently and may no longer be available
-        inUse:
-          type: boolean
-          description: Whether the NDI source is already connected to a non-deleted ingest
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Unique identifier of the region
+            name:
+              type: string
+              description: Display name of the region
+            type:
+              type: string
+              enum:
+              - cloud
+              - onprem
+              description: Type of the region
+            supportedIngestTypes:
+              type: array
+              items:
+                type: string
+                enum:
+                - srt-pull
+                - rtmp-pull
+                - srt-push
+                - rtmp-push
+                - rtsp-pull
+                - ndi-pull
+                - sdi-pull
+              description: Ingest types supported in this region (rtsp-pull, ndi-pull and sdi-pull are only available on on-prem regions; ndi-pull and sdi-pull additionally require the NDI/SDI capability on the region)
+          required:
+          - id
+          - name
+          - type
+          - supportedIngestTypes
+          description: The requested region
       required:
-      - id
-      - name
-      - url
-      - lastSeen
-      - stale
-      - inUse
+      - data
+    NdiSourceListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NdiSource'
+          description: List of NDI sources in the region
+      required:
+      - data
     SdiDevice:
       type: object
       properties:
@@ -199,96 +261,34 @@ components:
       - driverVersion
       - available
       - profile
-    RegionListResult:
+    NdiSource:
       type: object
       properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                description: Unique identifier of the region
-              name:
-                type: string
-                description: Display name of the region
-              type:
-                type: string
-                enum:
-                - cloud
-                - onprem
-                description: Type of the region
-              supportedIngestTypes:
-                type: array
-                items:
-                  type: string
-                  enum:
-                  - srt-pull
-                  - rtmp-pull
-                  - srt-push
-                  - rtmp-push
-                  - rtsp-pull
-                  - ndi-pull
-                  - sdi-pull
-                description: Ingest types supported in this region (rtsp-pull, ndi-pull and sdi-pull are only available on on-prem regions; ndi-pull and sdi-pull additionally require the NDI/SDI capability on the region)
-            required:
-            - id
-            - name
-            - type
-            - supportedIngestTypes
-          description: List of regions
+        id:
+          type: string
+          description: Unique identifier of the NDI source
+        name:
+          type: string
+          description: Name of the NDI source
+        url:
+          type: string
+          description: Current URL of the NDI source
+        lastSeen:
+          type: string
+          description: Timestamp the NDI source was last seen
+        stale:
+          type: boolean
+          description: Whether the NDI source has not been seen recently and may no longer be available
+        inUse:
+          type: boolean
+          description: Whether the NDI source is already connected to a non-deleted ingest
       required:
-      - data
-    RegionResult:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            id:
-              type: string
-              description: Unique identifier of the region
-            name:
-              type: string
-              description: Display name of the region
-            type:
-              type: string
-              enum:
-              - cloud
-              - onprem
-              description: Type of the region
-            supportedIngestTypes:
-              type: array
-              items:
-                type: string
-                enum:
-                - srt-pull
-                - rtmp-pull
-                - srt-push
-                - rtmp-push
-                - rtsp-pull
-                - ndi-pull
-                - sdi-pull
-              description: Ingest types supported in this region (rtsp-pull, ndi-pull and sdi-pull are only available on on-prem regions; ndi-pull and sdi-pull additionally require the NDI/SDI capability on the region)
-          required:
-          - id
-          - name
-          - type
-          - supportedIngestTypes
-          description: The requested region
-      required:
-      - data
-    NdiSourceListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/NdiSource'
-          description: List of NDI sources in the region
-      required:
-      - data
+      - id
+      - name
+      - url
+      - lastSeen
+      - stale
+      - inUse
   securitySchemes:
     BasicAuth:
       type: http

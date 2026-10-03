@@ -46,22 +46,6 @@ paths:
       - Token: []
 components:
   schemas:
-    Meta:
-      type: object
-      additionalProperties: false
-      properties:
-        schema_version:
-          type:
-          - string
-          - 'null'
-        service:
-          type:
-          - string
-          - 'null'
-        config_id:
-          type:
-          - string
-          - 'null'
     Framerate:
       type: object
       additionalProperties: false
@@ -72,23 +56,6 @@ components:
         denominator:
           type: integer
           format: int32
-    AudioConfiguration:
-      type: object
-      additionalProperties: false
-      properties:
-        codec:
-          type:
-          - string
-          - 'null'
-        track_id:
-          type: integer
-          format: int32
-        channels:
-          type: integer
-          format: int32
-        settings:
-          oneOf:
-          - $ref: '#/components/schemas/AudioConfigurationSettings'
     AudioConfigurationSettings:
       type: object
       additionalProperties: false
@@ -96,6 +63,18 @@ components:
         bitrate:
           type: integer
           format: int32
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -116,6 +95,22 @@ components:
           - 'null'
           format: int32
         data: {}
+    IngestEndpoint:
+      type: object
+      additionalProperties: false
+      properties:
+        protocol:
+          type:
+          - string
+          - 'null'
+        url_template:
+          type:
+          - string
+          - 'null'
+        authentication:
+          type:
+          - string
+          - 'null'
     MultiTrackVideoConfigurationResponse:
       type: object
       additionalProperties: false
@@ -138,18 +133,6 @@ components:
         audio_configurations:
           oneOf:
           - $ref: '#/components/schemas/AudioConfigurations'
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
     EncoderConfigurationSettings:
       type: object
       additionalProperties: false
@@ -199,22 +182,6 @@ components:
           type:
           - string
           - 'null'
-    IngestEndpoint:
-      type: object
-      additionalProperties: false
-      properties:
-        protocol:
-          type:
-          - string
-          - 'null'
-        url_template:
-          type:
-          - string
-          - 'null'
-        authentication:
-          type:
-          - string
-          - 'null'
     AudioConfigurations:
       type: object
       additionalProperties: false
@@ -231,6 +198,39 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/AudioConfiguration'
+    Meta:
+      type: object
+      additionalProperties: false
+      properties:
+        schema_version:
+          type:
+          - string
+          - 'null'
+        service:
+          type:
+          - string
+          - 'null'
+        config_id:
+          type:
+          - string
+          - 'null'
+    AudioConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        codec:
+          type:
+          - string
+          - 'null'
+        track_id:
+          type: integer
+          format: int32
+        channels:
+          type: integer
+          format: int32
+        settings:
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurationSettings'
     EncoderConfiguration:
       type: object
       additionalProperties: false

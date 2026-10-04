@@ -198,33 +198,6 @@ paths:
         source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/v2/publish_token/100')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\"label\": \"new_label_name\", \"refreshToken\": true}\nres = http.put(uri, data.to_json, headers)\nputs res.body"
 components:
   schemas:
-    TokenStreamNameViewModel:
-      type: object
-      additionalProperties: false
-      required:
-      - streamName
-      properties:
-        streamName:
-          type: string
-          description: Name of the stream this token can access.
-          maxLength: 128
-          minLength: 1
-        isRegex:
-          type: boolean
-          description: Set to true if the name of the stream is a regular expression.
-          default: false
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
     UpdatePublishTokenV2:
       type: object
       additionalProperties: false
@@ -351,33 +324,34 @@ components:
           description: Optional. Specify the ISO 3166-1 two letter country codes to explicitly *deny* end-users to view from. If the end-user's location *does* match any of the specified countries they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of AllowedCountries or DeniedCountries should be specified.
           items:
             type: string
-    TokenEffectiveSettings:
+    TokenStreamNameViewModel:
       type: object
       additionalProperties: false
+      required:
+      - streamName
       properties:
-        originCluster:
-          type:
-          - string
-          - 'null'
-        allowedCountries:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        deniedCountries:
-          type:
-          - array
-          - 'null'
-          items:
-            type: string
-        geoCascade:
-          oneOf:
-          - $ref: '#/components/schemas/GeoCascadeModel2'
-        enableUTCInsertion:
-          type:
-          - boolean
-          - 'null'
+        streamName:
+          type: string
+          description: Name of the stream this token can access.
+          maxLength: 128
+          minLength: 1
+        isRegex:
+          type: boolean
+          description: Set to true if the name of the stream is a regular expression.
+          default: false
+    SuccessResponsePublishTokenV2:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/PublishTokenResponseV2'
     PublishTokenResponseV2:
       type: object
       additionalProperties: false
@@ -488,6 +462,49 @@ components:
           description: Specify the ISO 3166-1 two letter country codes to explicitly *deny* end-users to view from. If the end-user's location *does* match any of the specified countries they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a token will override account-wide rules. Only one of AllowedCountries or DeniedCountries should be specified.
           items:
             type: string
+    TokenEffectiveSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        originCluster:
+          type:
+          - string
+          - 'null'
+        allowedCountries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        deniedCountries:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        geoCascade:
+          oneOf:
+          - $ref: '#/components/schemas/GeoCascadeModel2'
+        enableUTCInsertion:
+          type:
+          - boolean
+          - 'null'
+    GeoCascadeModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -508,36 +525,7 @@ components:
           - 'null'
           format: int32
         data: {}
-    GeoCascadeModel2:
-      type: object
-      additionalProperties: false
-      properties:
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
-        clusters:
-          type:
-          - array
-          - 'null'
-          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
-          items:
-            type: string
-    IntegrationIds:
-      type: string
-      description: ''
-      x-enumNames:
-      - None
-      - Maestro
-      - Passthru
-      - Internal
-      enum:
-      - None
-      - Maestro
-      - Passthru
-      - Internal
-    SuccessResponsePublishTokenV2:
+    FailResponse:
       type: object
       additionalProperties: false
       required:
@@ -546,10 +534,9 @@ components:
       properties:
         status:
           type: string
-          default: success
+          default: fail
           minLength: 1
-        data:
-          $ref: '#/components/schemas/PublishTokenResponseV2'
+        data: {}
     RestreamModel:
       type: object
       additionalProperties: false
@@ -580,6 +567,19 @@ components:
           - boolean
           - 'null'
           description: Enable or disable restream endpoint
+    IntegrationIds:
+      type: string
+      description: ''
+      x-enumNames:
+      - None
+      - Maestro
+      - Passthru
+      - Internal
+      enum:
+      - None
+      - Maestro
+      - Passthru
+      - Internal
   securitySchemes:
     API_Secret:
       type: http

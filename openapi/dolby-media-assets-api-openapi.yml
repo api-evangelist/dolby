@@ -518,147 +518,15 @@ paths:
       - API_Secret: []
 components:
   schemas:
-    MediaAssetStatus:
+    MediaAssetTargetFormat:
       type: string
       description: ''
       x-enumNames:
-      - Processing
-      - Complete
-      - Error
-      - Deleting
-      - Deleted
+      - Mp4
+      - Hls
       enum:
-      - processing
-      - complete
-      - error
-      - deleting
-      - deleted
-    SuccessResponseOfListOfDownloadMediaAssetModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/DownloadMediaAssetModel'
-    RecordMetadata:
-      type: object
-      additionalProperties: false
-      required:
-      - tracks
-      - thumbnails
-      properties:
-        format:
-          type: string
-        sizes:
-          type:
-          - object
-          - 'null'
-          additionalProperties:
-            type: integer
-            format: uint64
-        duration:
-          type: integer
-          description: Duration of this asset, in seconds.
-        tracks:
-          type: array
-          items:
-            $ref: '#/components/schemas/RecordMediaTrack'
-        thumbnails:
-          type: array
-          description: The list of thumbnails.
-          items:
-            type: string
-        fileCount:
-          type:
-          - integer
-          - 'null'
-          description: The number of files.
-    UpdateStorageOptionsModel:
-      type: object
-      additionalProperties: false
-      properties:
-        objectPrefix:
-          type:
-          - string
-          - 'null'
-          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. Ignored when using Dolby.io's storage buckets. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
-          maxLength: 1000
-          minLength: 0
-        bucketName:
-          type:
-          - string
-          - 'null'
-          description: Name of bucket to upload clips to. Please ensure Dolby.io's service account is granted access.
-        bucketRegion:
-          type:
-          - string
-          - 'null'
-          description: Region of the specified bucket if using storage provider awsS3
-          maxLength: 32
-          minLength: 1
-    MediaAssetStorageResponseModel:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          description: Storage provider type
-          oneOf:
-          - $ref: '#/components/schemas/MediaAssetStorageType'
-        path:
-          type:
-          - string
-          - 'null'
-          description: 'Path to clip storage location. Available only for external storage configurations. '
-    DeleteMediaAssetsResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        itemsDeleted:
-          type: integer
-          description: The number of items deleted.
-          format: int32
-        errors:
-          type:
-          - array
-          - 'null'
-          description: A list of errors.
-          items:
-            $ref: '#/components/schemas/MediaAssetDeletionError'
-    MediaAssetDeletionError:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-          description: The identifier of the media asset.
-        error:
-          type:
-          - string
-          - 'null'
-          description: The error message.
-    SuccessResponseOfMediaAssetResponseModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/MediaAssetResponseModel'
+      - mp4
+      - hls
     UploadCredentialsResponseModel:
       type: object
       additionalProperties: false
@@ -698,89 +566,44 @@ components:
           - string
           - 'null'
           description: Prefix of S3 locaton to which content can be uploaded to
-    SuccessResponseOfListOfMediaAssetResponseModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MediaAssetResponseModel'
-    MediaAssetFeedSelectionModel:
+    DeleteMediaAssetsResponse:
       type: object
       additionalProperties: false
       properties:
-        tokenId:
-          type:
-          - integer
-          - 'null'
-          description: The identifier of the token.
-        streamName:
-          type:
-          - string
-          - 'null'
-          description: The stream name.
-        sourceId:
-          type:
-          - string
-          - 'null'
-          description: The source ID.
-        simulcastId:
-          type:
-          - string
-          - 'null'
-          description: The simulcast Id.
-        priority:
-          type:
-          - integer
-          - 'null'
-          description: The feed priority.
+        itemsDeleted:
+          type: integer
+          description: The number of items deleted.
           format: int32
-        channelId:
+        errors:
           type:
-          - string
+          - array
           - 'null'
-          description: The identifier of the channel.
-    UpdateMediaAssetModel:
+          description: A list of errors.
+          items:
+            $ref: '#/components/schemas/MediaAssetDeletionError'
+    UpdateStorageOptionsModel:
       type: object
       additionalProperties: false
       properties:
-        mediaDistributionId:
+        objectPrefix:
           type:
           - string
           - 'null'
-          description: ID of the media distribution used to authenticate viewing of this media asset. Updates may take up to an hour to take effect
-        customPath:
+          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. Ignored when using Dolby.io's storage buckets. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
+          maxLength: 1000
+          minLength: 0
+        bucketName:
           type:
           - string
           - 'null'
-          description: Customize a portion of the download url path.<br />As an example assets are returned in a url such as `https://cdn.optiview.dolby.com/vod/<orgId>/<mediaAssetId>/<fileName>`. <br />`customPath` will replace `mediaAssetId` in order for a more predictable path.
-          maxLength: 512
+          description: Name of bucket to upload clips to. Please ensure Dolby.io's service account is granted access.
+        bucketRegion:
+          type:
+          - string
+          - 'null'
+          description: Region of the specified bucket if using storage provider awsS3
+          maxLength: 32
           minLength: 1
-    RecordDownloadUrl:
-      type: object
-      additionalProperties: false
-      properties:
-        downloadUrl:
-          type:
-          - string
-          - 'null'
-        url:
-          type:
-          - string
-          - 'null'
-        downloadExpiresOn:
-          type:
-          - string
-          - 'null'
-          format: date-time
     MediaAssetResponseModel:
       type: object
       additionalProperties: false
@@ -858,7 +681,19 @@ components:
           - string
           - 'null'
           description: The eventual custom path.
-    SuccessResponseOfDownloadMediaAssetModel:
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessResponseOfUploadCredentialsResponseModel:
       type: object
       additionalProperties: false
       required:
@@ -870,7 +705,161 @@ components:
           default: success
           minLength: 1
         data:
-          $ref: '#/components/schemas/DownloadMediaAssetModel'
+          $ref: '#/components/schemas/UploadCredentialsResponseModel'
+    SuccessResponseOfListOfDownloadMediaAssetModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DownloadMediaAssetModel'
+    SuccessResponseOfListOfMediaAssetResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaAssetResponseModel'
+    ListMediaAssetSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - StartTime
+      - StopTime
+      - StreamName
+      - TokenId
+      - Created
+      enum:
+      - startTime
+      - stopTime
+      - streamName
+      - tokenId
+      - created
+    UpdateMediaAssetModel:
+      type: object
+      additionalProperties: false
+      properties:
+        mediaDistributionId:
+          type:
+          - string
+          - 'null'
+          description: ID of the media distribution used to authenticate viewing of this media asset. Updates may take up to an hour to take effect
+        customPath:
+          type:
+          - string
+          - 'null'
+          description: Customize a portion of the download url path.<br />As an example assets are returned in a url such as `https://cdn.optiview.dolby.com/vod/<orgId>/<mediaAssetId>/<fileName>`. <br />`customPath` will replace `mediaAssetId` in order for a more predictable path.
+          maxLength: 512
+          minLength: 1
+    SuccessResponseOfMediaAssetResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/MediaAssetResponseModel'
+    MediaAssetFeedSelectionModel:
+      type: object
+      additionalProperties: false
+      properties:
+        tokenId:
+          type:
+          - integer
+          - 'null'
+          description: The identifier of the token.
+        streamName:
+          type:
+          - string
+          - 'null'
+          description: The stream name.
+        sourceId:
+          type:
+          - string
+          - 'null'
+          description: The source ID.
+        simulcastId:
+          type:
+          - string
+          - 'null'
+          description: The simulcast Id.
+        priority:
+          type:
+          - integer
+          - 'null'
+          description: The feed priority.
+          format: int32
+        channelId:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the channel.
+    MediaAssetStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Processing
+      - Complete
+      - Error
+      - Deleting
+      - Deleted
+      enum:
+      - processing
+      - complete
+      - error
+      - deleting
+      - deleted
+    RecordDownloadUrl:
+      type: object
+      additionalProperties: false
+      properties:
+        downloadUrl:
+          type:
+          - string
+          - 'null'
+        url:
+          type:
+          - string
+          - 'null'
+        downloadExpiresOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    SuccessResponseOfDeleteMediaAssetsResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DeleteMediaAssetsResponse'
     RegisterMediaAssetModel:
       type: object
       additionalProperties: false
@@ -1001,21 +990,44 @@ components:
           description: Customize the download url path. Typically the download url has format `https://<domain>/<orgId>/<mediaAssetId>/<fileName>`. The customPath replaces the mediaAssetId so that the url looks like `https://<domain>/<orgId>/<customPath>/<fileName>`. The customPath must be unique
           maxLength: 512
           minLength: 1
-    ListMediaAssetSortBy:
+    MediaAssetDeletionError:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the media asset.
+        error:
+          type:
+          - string
+          - 'null'
+          description: The error message.
+    MediaAssetStorageType:
       type: string
       description: ''
       x-enumNames:
-      - StartTime
-      - StopTime
-      - StreamName
-      - TokenId
-      - Created
+      - Gcs
+      - AwsS3
+      - DolbyStorage
       enum:
-      - startTime
-      - stopTime
-      - streamName
-      - tokenId
-      - created
+      - gcs
+      - awsS3
+      - dolbyStorage
+    MediaAssetStorageResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          description: Storage provider type
+          oneOf:
+          - $ref: '#/components/schemas/MediaAssetStorageType'
+        path:
+          type:
+          - string
+          - 'null'
+          description: 'Path to clip storage location. Available only for external storage configurations. '
     RecordMediaTrack:
       type: object
       additionalProperties: false
@@ -1051,17 +1063,41 @@ components:
           - integer
           - 'null'
           format: int64
-    MediaAssetStorageType:
+    MediaAssetType:
       type: string
       description: ''
       x-enumNames:
-      - Gcs
-      - AwsS3
-      - DolbyStorage
+      - Recording
+      - Clip
+      - StorageValidation
+      - Timeline
+      - Vod
       enum:
-      - gcs
-      - awsS3
-      - dolbyStorage
+      - recording
+      - clip
+      - storageValidation
+      - timeline
+      - vod
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
     MediaAssetStorageModel:
       type: object
       additionalProperties: false
@@ -1085,60 +1121,39 @@ components:
           description: 'May be used in the following ways: <br />1. Optional. Override parameters of a storage profile specified via ProfileId <br />2. Required. Set parameters for a one-off storage configuration when Type is provided <br /> 3. Optional. Override parameters of the default storage profile if neither ProfileId or Type are provided'
           oneOf:
           - $ref: '#/components/schemas/UpdateStorageOptionsModel'
-    MediaAssetTargetFormat:
-      type: string
-      description: ''
-      x-enumNames:
-      - Mp4
-      - Hls
-      enum:
-      - mp4
-      - hls
-    SuccessResponseOfDeleteMediaAssetsResponse:
+    RecordMetadata:
       type: object
       additionalProperties: false
       required:
-      - status
-      - data
+      - tracks
+      - thumbnails
       properties:
-        status:
+        format:
           type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/DeleteMediaAssetsResponse'
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
+        sizes:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: integer
+            format: uint64
+        duration:
+          type: integer
+          description: Duration of this asset, in seconds.
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordMediaTrack'
+        thumbnails:
+          type: array
+          description: The list of thumbnails.
+          items:
+            type: string
+        fileCount:
           type:
           - integer
           - 'null'
-          format: int32
-        data: {}
+          description: The number of files.
     DownloadMediaAssetModel:
       type: object
       additionalProperties: false
@@ -1219,22 +1234,7 @@ components:
         download:
           oneOf:
           - $ref: '#/components/schemas/RecordDownloadUrl'
-    MediaAssetType:
-      type: string
-      description: ''
-      x-enumNames:
-      - Recording
-      - Clip
-      - StorageValidation
-      - Timeline
-      - Vod
-      enum:
-      - recording
-      - clip
-      - storageValidation
-      - timeline
-      - vod
-    SuccessResponseOfUploadCredentialsResponseModel:
+    SuccessResponseOfDownloadMediaAssetModel:
       type: object
       additionalProperties: false
       required:
@@ -1246,7 +1246,7 @@ components:
           default: success
           minLength: 1
         data:
-          $ref: '#/components/schemas/UploadCredentialsResponseModel'
+          $ref: '#/components/schemas/DownloadMediaAssetModel'
   securitySchemes:
     API_Secret:
       type: http

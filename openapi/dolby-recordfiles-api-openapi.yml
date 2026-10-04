@@ -566,25 +566,64 @@ components:
           - string
           - 'null'
           format: date-time
-    RecordFileUsage:
-      type: object
-      additionalProperties: false
-      properties:
-        totalBytes:
-          type: integer
-          description: Total storage usage reported in bytes
-          format: uint64
-    ListSortBy3:
+    MediaAssetStatus2:
       type: string
       description: ''
       x-enumNames:
-      - RecordedOn
-      - StreamName
-      - Token
+      - Started
+      - Transcode
+      - InProgress
+      - Deleted
+      - Invalid
+      - Expiring
+      - Complete
+      - Deleting
+      - Error
       enum:
-      - RecordedOn
-      - StreamName
-      - Token
+      - Started
+      - Transcode
+      - InProgress
+      - Deleted
+      - Invalid
+      - Expiring
+      - Complete
+      - Deleting
+      - Error
+    RecordMediaTrack:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+        codec:
+          type: string
+        bitrate:
+          type: integer
+        width:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        height:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        framerate:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        channels:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        samplerate:
+          type:
+          - integer
+          - 'null'
+          format: int64
     RecordFileModel:
       type: object
       additionalProperties: false
@@ -615,6 +654,101 @@ components:
         download:
           oneOf:
           - $ref: '#/components/schemas/RecordDownloadUrl2'
+    SuccessRecordFileUsageModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordFileUsage'
+    SuccessRecordFileModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordFileModel'
+    ListSortBy3:
+      type: string
+      description: ''
+      x-enumNames:
+      - RecordedOn
+      - StreamName
+      - Token
+      enum:
+      - RecordedOn
+      - StreamName
+      - Token
+    SuccessRecordFileBillableUsageModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordFileBillableUsage'
+    SuccessResponseBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
     ListRecordFileModel:
       type: object
       additionalProperties: false
@@ -657,100 +791,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ListRecordFileModel'
-    MediaAssetStatus2:
-      type: string
-      description: ''
-      x-enumNames:
-      - Started
-      - Transcode
-      - InProgress
-      - Deleted
-      - Invalid
-      - Expiring
-      - Complete
-      - Deleting
-      - Error
-      enum:
-      - Started
-      - Transcode
-      - InProgress
-      - Deleted
-      - Invalid
-      - Expiring
-      - Complete
-      - Deleting
-      - Error
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    SuccessResponseBoolean:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: boolean
-    SuccessRecordFileModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/RecordFileModel'
-    SuccessRecordFileUsageModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/RecordFileUsage'
     RecordMetadata:
       type: object
       additionalProperties: false
@@ -784,73 +824,6 @@ components:
           - integer
           - 'null'
           description: The number of files.
-    RemoveRecordFilesModel:
-      type: object
-      additionalProperties: false
-      required:
-      - recordFileIds
-      properties:
-        recordFileIds:
-          type: array
-          minItems: 1
-          items:
-            type: integer
-    RecordFileBillableUsage:
-      type: object
-      additionalProperties: false
-      properties:
-        gigabyteHours:
-          type: integer
-          description: Measured as binary gigabytes (1024^3) per hour
-          format: uint64
-    SuccessRecordFileBillableUsageModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/RecordFileBillableUsage'
-    RecordMediaTrack:
-      type: object
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-        codec:
-          type: string
-        bitrate:
-          type: integer
-        width:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        height:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        framerate:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        channels:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        samplerate:
-          type:
-          - integer
-          - 'null'
-          format: int64
     FilterByRecordFileStatus:
       type: string
       description: ''
@@ -867,6 +840,33 @@ components:
       - Complete
       - Deleting
       - Error
+    RecordFileBillableUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        gigabyteHours:
+          type: integer
+          description: Measured as binary gigabytes (1024^3) per hour
+          format: uint64
+    RecordFileUsage:
+      type: object
+      additionalProperties: false
+      properties:
+        totalBytes:
+          type: integer
+          description: Total storage usage reported in bytes
+          format: uint64
+    RemoveRecordFilesModel:
+      type: object
+      additionalProperties: false
+      required:
+      - recordFileIds
+      properties:
+        recordFileIds:
+          type: array
+          minItems: 1
+          items:
+            type: integer
   securitySchemes:
     API_Secret:
       type: http

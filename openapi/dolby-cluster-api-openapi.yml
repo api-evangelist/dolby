@@ -182,6 +182,28 @@ components:
           - string
           - 'null'
           description: Country for cluster
+    ClustersInfoModel:
+      type: object
+      additionalProperties: false
+      properties:
+        defaultCluster:
+          type: string
+          description: Used as cluster when not explicitly specified during Token creation.
+        availableClusters:
+          type: array
+          description: List of available clusters.
+          items:
+            $ref: '#/components/schemas/ClusterModel'
+    UpdateClusterInfoModel:
+      type: object
+      additionalProperties: false
+      required:
+      - defaultCluster
+      properties:
+        defaultCluster:
+          type: string
+          description: Used as cluster when not explicitly specified during Token creation.
+          minLength: 1
     FailResponse:
       type: object
       additionalProperties: false
@@ -214,16 +236,13 @@ components:
           - 'null'
           format: int32
         data: {}
-    UpdateClusterInfoModel:
+    ClustersFeaturesModel:
       type: object
       additionalProperties: false
-      required:
-      - defaultCluster
       properties:
-        defaultCluster:
-          type: string
-          description: Used as cluster when not explicitly specified during Token creation.
-          minLength: 1
+        transcoding:
+          type: boolean
+          description: Indicates whether the Transcoder feature is supported in the corresponding cluster.
     ClusterModel:
       type: object
       additionalProperties: false
@@ -248,25 +267,6 @@ components:
           description: The features supported in this cluster.
           oneOf:
           - $ref: '#/components/schemas/ClustersFeaturesModel'
-    ClustersInfoModel:
-      type: object
-      additionalProperties: false
-      properties:
-        defaultCluster:
-          type: string
-          description: Used as cluster when not explicitly specified during Token creation.
-        availableClusters:
-          type: array
-          description: List of available clusters.
-          items:
-            $ref: '#/components/schemas/ClusterModel'
-    ClustersFeaturesModel:
-      type: object
-      additionalProperties: false
-      properties:
-        transcoding:
-          type: boolean
-          description: Indicates whether the Transcoder feature is supported in the corresponding cluster.
   securitySchemes:
     API_Secret:
       type: http

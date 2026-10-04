@@ -155,87 +155,6 @@ paths:
           description: Empty response
 components:
   schemas:
-    SchedulerObjectResult:
-      type: object
-      properties:
-        data:
-          allOf:
-          - $ref: '#/components/schemas/Scheduler'
-          - description: Scheduler object
-      required:
-      - data
-    CreateSchedulerBody:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the scheduler
-        startDate:
-          type: string
-          pattern: ^\d{4}-\d{2}-\d{2}$
-          description: Start date (YYYY-MM-DD)
-        startTime:
-          type: string
-          pattern: ^\d{2}:\d{2}$
-          description: Start time (HH:mm)
-        timeZone:
-          type: string
-          description: IANA time zone (e.g. "UTC", "Europe/Brussels")
-        endDate:
-          type: string
-          pattern: ^\d{4}-\d{2}-\d{2}$
-          description: End date (YYYY-MM-DD)
-        endTime:
-          type: string
-          pattern: ^\d{2}:\d{2}$
-          description: End time (HH:mm)
-        recurrence:
-          type: string
-          description: RRULE recurrence string
-        channelIds:
-          type: array
-          items:
-            type: string
-          minItems: 1
-          description: Channel IDs (deprecated, use channels instead). All engines of each channel are scheduled.
-        channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/SchedulerChannelSelection'
-          minItems: 1
-          description: Channels with optional engine selection. Use instead of channelIds.
-        enabled:
-          type: boolean
-          description: Whether the scheduler is enabled
-      required:
-      - name
-      - startDate
-      - startTime
-      additionalProperties: false
-    PaginatedSchedulerResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Scheduler'
-          description: List of schedulers
-        pagination:
-          type: object
-          properties:
-            hasMore:
-              type: boolean
-              description: Whether more results are available
-            cursor:
-              type: string
-              description: Cursor for the next page of results
-          required:
-          - hasMore
-          - cursor
-          description: Pagination info
-      required:
-      - data
-      - pagination
     Scheduler:
       type: object
       properties:
@@ -293,6 +212,63 @@ components:
       - timeZone
       - channelIds
       - channels
+    SchedulerObjectResult:
+      type: object
+      properties:
+        data:
+          allOf:
+          - $ref: '#/components/schemas/Scheduler'
+          - description: Scheduler object
+      required:
+      - data
+    CreateSchedulerBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the scheduler
+        startDate:
+          type: string
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          description: Start date (YYYY-MM-DD)
+        startTime:
+          type: string
+          pattern: ^\d{2}:\d{2}$
+          description: Start time (HH:mm)
+        timeZone:
+          type: string
+          description: IANA time zone (e.g. "UTC", "Europe/Brussels")
+        endDate:
+          type: string
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          description: End date (YYYY-MM-DD)
+        endTime:
+          type: string
+          pattern: ^\d{2}:\d{2}$
+          description: End time (HH:mm)
+        recurrence:
+          type: string
+          description: RRULE recurrence string
+        channelIds:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          description: Channel IDs (deprecated, use channels instead). All engines of each channel are scheduled.
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchedulerChannelSelection'
+          minItems: 1
+          description: Channels with optional engine selection. Use instead of channelIds.
+        enabled:
+          type: boolean
+          description: Whether the scheduler is enabled
+      required:
+      - name
+      - startDate
+      - startTime
+      additionalProperties: false
     SchedulerChannelSelection:
       type: object
       properties:
@@ -308,6 +284,30 @@ components:
       required:
       - channelId
       additionalProperties: false
+    PaginatedSchedulerResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Scheduler'
+          description: List of schedulers
+        pagination:
+          type: object
+          properties:
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+            cursor:
+              type: string
+              description: Cursor for the next page of results
+          required:
+          - hasMore
+          - cursor
+          description: Pagination info
+      required:
+      - data
+      - pagination
     UpdateSchedulerBody:
       type: object
       properties:

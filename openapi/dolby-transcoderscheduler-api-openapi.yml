@@ -567,6 +567,133 @@ paths:
       - API_Secret: []
 components:
   schemas:
+    DeleteTranscoderScheduleResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        scheduleId:
+          type: string
+        status:
+          $ref: '#/components/schemas/ScheduleStatus'
+    ScheduleStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Active
+      - Inactive
+      - Deleted
+      enum:
+      - Active
+      - Inactive
+      - Deleted
+    UpdateTranscoderScheduleRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Update display name for schedule.
+        start:
+          type:
+          - string
+          - 'null'
+          description: Update the time to start the schedule. If it's weekly, then we use the time from this as well and the first day to anchor the schedule.
+          format: date-time
+        stop:
+          type:
+          - string
+          - 'null'
+          description: Update the stop time of the schedule.
+          format: date-time
+        description:
+          type:
+          - string
+          - 'null'
+          description: Update the schedule description.
+        clientId:
+          type:
+          - string
+          - 'null'
+          description: Update the customers reference field.
+        recurring:
+          description: Update recurring schedule.
+          oneOf:
+          - $ref: '#/components/schemas/RecurringInfo'
+        transcoderIds:
+          type:
+          - array
+          - 'null'
+          description: Update all transcoder Ids for the schedule. This replaces all existing transcoder Ids for the schedule.
+          items:
+            type: string
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessResponseCreateTranscoderSchedule:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+    TranscoderScheduleType:
+      type: string
+      description: ''
+      x-enumNames:
+      - Start
+      - Stop
+      enum:
+      - Start
+      - Stop
+    SuccessResponseUpdateTranscoderSchedule:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+    DayOfWeek:
+      type: string
+      description: ''
+      x-enumNames:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      enum:
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
     TranscoderScheduleInfoResponse:
       type: object
       additionalProperties: false
@@ -617,18 +744,17 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/TranscoderScheduleExecutionResponse'
-    RecurringFrequency:
+    RecurringInfo:
       type: object
       additionalProperties: false
       properties:
-        interval:
-          $ref: '#/components/schemas/RecurringInterval'
-        daysOfWeek:
+        frequency:
+          $ref: '#/components/schemas/RecurringFrequency'
+        endDate:
           type:
-          - array
+          - string
           - 'null'
-          items:
-            $ref: '#/components/schemas/DayOfWeek'
+          format: date-time
     TranscoderScheduleExecutionResponse:
       type: object
       additionalProperties: false
@@ -644,119 +770,6 @@ components:
           type:
           - string
           - 'null'
-    ListTranscoderSchedulesSortBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - CreatedDate
-      enum:
-      - CreatedDate
-    RecurringInterval:
-      type: string
-      description: ''
-      x-enumNames:
-      - Daily
-      - Weekly
-      enum:
-      - Daily
-      - Weekly
-    SuccessResponseUpdateTranscoderSchedule:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
-    RecurringInfo:
-      type: object
-      additionalProperties: false
-      properties:
-        frequency:
-          $ref: '#/components/schemas/RecurringFrequency'
-        endDate:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    SuccessResponseDeleteTranscoderSchedule:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/DeleteTranscoderScheduleResponse'
-    TranscoderScheduleType:
-      type: string
-      description: ''
-      x-enumNames:
-      - Start
-      - Stop
-      enum:
-      - Start
-      - Stop
-    SuccessGetScheduleByScheduleId:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
-    ScheduleExecutionStatus:
-      type: string
-      description: ''
-      x-enumNames:
-      - Pending
-      - Running
-      - Completed
-      - NoAction
-      - UnexpectedError
-      - Deleted
-      - RemovedByScheduleUpdate
-      enum:
-      - Pending
-      - Running
-      - Completed
-      - NoAction
-      - UnexpectedError
-      - Deleted
-      - RemovedByScheduleUpdate
-    ScheduleStatus:
-      type: string
-      description: ''
-      x-enumNames:
-      - Active
-      - Inactive
-      - Deleted
-      enum:
-      - Active
-      - Inactive
-      - Deleted
-    DeleteTranscoderScheduleResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        scheduleId:
-          type: string
-        status:
-          $ref: '#/components/schemas/ScheduleStatus'
     SuccessGetSchedulesForSpecificTranscoder:
       type: object
       additionalProperties: false
@@ -772,37 +785,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
-    DayOfWeek:
-      type: string
-      description: ''
-      x-enumNames:
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-      - Saturday
-      enum:
-      - Sunday
-      - Monday
-      - Tuesday
-      - Wednesday
-      - Thursday
-      - Friday
-      - Saturday
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
     TranscoderCreateScheduleRequest:
       type: object
       additionalProperties: false
@@ -846,6 +828,94 @@ components:
           description: The Transcoder Ids to schedule for.
           items:
             type: string
+    SuccessResponseDeleteTranscoderSchedule:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/DeleteTranscoderScheduleResponse'
+    SuccessGetScheduleByScheduleId:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+    RecurringInterval:
+      type: string
+      description: ''
+      x-enumNames:
+      - Daily
+      - Weekly
+      enum:
+      - Daily
+      - Weekly
+    ScheduleMetadata:
+      type: object
+      additionalProperties: false
+      properties:
+        createdOn:
+          type: string
+          format: date-time
+        lastModifiedOn:
+          type:
+          - string
+          - 'null'
+          format: date-time
+    ScheduleExecutionStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Pending
+      - Running
+      - Completed
+      - NoAction
+      - UnexpectedError
+      - Deleted
+      - RemovedByScheduleUpdate
+      enum:
+      - Pending
+      - Running
+      - Completed
+      - NoAction
+      - UnexpectedError
+      - Deleted
+      - RemovedByScheduleUpdate
+    SuccessResponseListTranscoderSchedules:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+    ListTranscoderSchedulesSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - CreatedDate
+      enum:
+      - CreatedDate
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -866,88 +936,18 @@ components:
           - 'null'
           format: int32
         data: {}
-    ScheduleMetadata:
+    RecurringFrequency:
       type: object
       additionalProperties: false
       properties:
-        createdOn:
-          type: string
-          format: date-time
-        lastModifiedOn:
-          type:
-          - string
-          - 'null'
-          format: date-time
-    UpdateTranscoderScheduleRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: Update display name for schedule.
-        start:
-          type:
-          - string
-          - 'null'
-          description: Update the time to start the schedule. If it's weekly, then we use the time from this as well and the first day to anchor the schedule.
-          format: date-time
-        stop:
-          type:
-          - string
-          - 'null'
-          description: Update the stop time of the schedule.
-          format: date-time
-        description:
-          type:
-          - string
-          - 'null'
-          description: Update the schedule description.
-        clientId:
-          type:
-          - string
-          - 'null'
-          description: Update the customers reference field.
-        recurring:
-          description: Update recurring schedule.
-          oneOf:
-          - $ref: '#/components/schemas/RecurringInfo'
-        transcoderIds:
+        interval:
+          $ref: '#/components/schemas/RecurringInterval'
+        daysOfWeek:
           type:
           - array
           - 'null'
-          description: Update all transcoder Ids for the schedule. This replaces all existing transcoder Ids for the schedule.
           items:
-            type: string
-    SuccessResponseCreateTranscoderSchedule:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
-    SuccessResponseListTranscoderSchedules:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/TranscoderScheduleInfoResponse'
+            $ref: '#/components/schemas/DayOfWeek'
   securitySchemes:
     API_Secret:
       type: http

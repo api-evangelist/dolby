@@ -923,7 +923,7 @@ paths:
       - API_Secret: []
 components:
   schemas:
-    SuccessResponseTranscoderRecord:
+    FailResponse:
       type: object
       additionalProperties: false
       required:
@@ -932,11 +932,10 @@ components:
       properties:
         status:
           type: string
-          default: success
+          default: fail
           minLength: 1
-        data:
-          $ref: '#/components/schemas/RecordResponse'
-    SuccessResponseListTranscoderRecords:
+        data: {}
+    SuccessResponseListTranscoderInstances:
       type: object
       additionalProperties: false
       required:
@@ -950,7 +949,98 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/RecordResponse'
+            $ref: '#/components/schemas/InstanceResponse'
+    SuccessResponseTranscoderInstance:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/InstanceResponse'
+    InstanceStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+      - ActiveError
+      - ShutdownError
+      - DeletingError
+      enum:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+      - ActiveError
+      - ShutdownError
+      - DeletingError
+    ListProfileSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - Name
+      - Height
+      - FrameRate
+      enum:
+      - Name
+      - Height
+      - FrameRate
+    PublishUrlsResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        rtmp:
+          type: string
+        rtmps:
+          type: string
+        srt:
+          type: string
+    InstanceResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        transcoderId:
+          type: string
+          description: The unique identifier of the Transcoder.
+        id:
+          type: string
+          description: The unique identifier for this instance of the Transcoder.
+        publicIp:
+          type: string
+          description: The public IP address for the host that is processing the stream.
+        dnsName:
+          type: string
+          description: 'A DNS record for routing to the transcoder instance server(s). It follows the pattern: `dnsPrefix`-`accountId`.transcoder.millicast.com.'
+        createdOn:
+          type: string
+          description: A timestamp for when this Transcoder instance was created.
+          format: date-time
+        endedOn:
+          type:
+          - string
+          - 'null'
+          description: A timestamp for when this Transcoder instance was shutdown.
+          format: date-time
+        status:
+          description: The status for this Transcoder instance.
+          oneOf:
+          - $ref: '#/components/schemas/InstanceStatus'
     ProfileResponse:
       type: object
       additionalProperties: false
@@ -979,6 +1069,41 @@ components:
           description: The layers the Transcoder will produce for distribution. These values are pre-determined following the Millicast bitrate ladder as step-down layers from the overall Transcoder configuration.
           items:
             $ref: '#/components/schemas/TranscoderProfileLayer'
+    SuccessResponseListTranscoderProfiles:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProfileResponse'
+    ListTranscoderInstancesSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - CreatedDate
+      enum:
+      - CreatedDate
+    SuccessResponseTranscoderRecord:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/RecordResponse'
     CreateTranscoderRecord:
       type: object
       additionalProperties: false
@@ -1066,82 +1191,6 @@ components:
           description: The discrete ingest URLs for each broadcast protocol (RTMP, RTMPS, SRT).
           oneOf:
           - $ref: '#/components/schemas/PublishUrlsResponse'
-    PublishUrlsResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        rtmp:
-          type: string
-        rtmps:
-          type: string
-        srt:
-          type: string
-    ListProfileSortBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - Name
-      - Height
-      - FrameRate
-      enum:
-      - Name
-      - Height
-      - FrameRate
-    InstanceStatus:
-      type: string
-      description: ''
-      x-enumNames:
-      - Provisioning
-      - Active
-      - Error
-      - Shutdown
-      - Deleted
-      - ShuttingDown
-      - Deleting
-      - Queued
-      - ActiveError
-      - ShutdownError
-      - DeletingError
-      enum:
-      - Provisioning
-      - Active
-      - Error
-      - Shutdown
-      - Deleted
-      - ShuttingDown
-      - Deleting
-      - Queued
-      - ActiveError
-      - ShutdownError
-      - DeletingError
-    TranscoderStatus:
-      type: string
-      description: ''
-      x-enumNames:
-      - Provisioning
-      - Active
-      - Error
-      - Shutdown
-      - Deleted
-      - ShuttingDown
-      - Deleting
-      - Queued
-      enum:
-      - Provisioning
-      - Active
-      - Error
-      - Shutdown
-      - Deleted
-      - ShuttingDown
-      - Deleting
-      - Queued
-    ListTranscoderInstancesSortBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - CreatedDate
-      enum:
-      - CreatedDate
     ListTranscoderRecordsSortBy:
       type: string
       description: ''
@@ -1151,74 +1200,6 @@ components:
       enum:
       - CreatedDate
       - TranscoderName
-    UpdateTranscoder:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: Update display name for transcoder.
-        dnsPrefix:
-          type:
-          - string
-          - 'null'
-          description: Update DNS prefix for the transcoder publisher. Used to construct the DNS name which follows the format of `dnsPrefix`-`accountId`.transcoder.millicast.com.
-        cluster:
-          type:
-          - string
-          - 'null'
-          description: Update cluster that transcoder will be deployed to.
-        height:
-          type:
-          - integer
-          - 'null'
-          description: Update resolution of input stream specified in video height. New default profile will be selected unless specified.
-        frameRate:
-          type:
-          - number
-          - 'null'
-          description: Update frame rate of input stream. New default profile will be selected unless specified.
-          format: decimal
-        profile:
-          type:
-          - string
-          - 'null'
-          description: Specify a profile id to select the corresponding transcoder profile. You can retrieve all system pre-defined profile ids by calling the ’List Transcoder Profiles’ endpoint.
-        passThrough:
-          type:
-          - boolean
-          - 'null'
-          description: Update whether the top layer is passed through or transcoded.
-    SuccessResponseBoolean:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: boolean
-    SuccessResponseListTranscoderProfiles:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProfileResponse'
     TranscoderDisplayStatus:
       type: string
       description: ''
@@ -1240,6 +1221,60 @@ components:
       - ShuttingDown
       - Deleting
       - Queued
+    TranscoderStatus:
+      type: string
+      description: ''
+      x-enumNames:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+      enum:
+      - Provisioning
+      - Active
+      - Error
+      - Shutdown
+      - Deleted
+      - ShuttingDown
+      - Deleting
+      - Queued
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    SuccessResponseBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
     TranscoderProfileLayer:
       type: object
       additionalProperties: false
@@ -1282,7 +1317,7 @@ components:
           - boolean
           - 'null'
           description: Allow transrating of layer
-    SuccessResponseListTranscoderInstances:
+    SuccessResponseListTranscoderRecords:
       type: object
       additionalProperties: false
       required:
@@ -1296,82 +1331,47 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/InstanceResponse'
-    InstanceResponse:
+            $ref: '#/components/schemas/RecordResponse'
+    UpdateTranscoder:
       type: object
       additionalProperties: false
       properties:
-        transcoderId:
-          type: string
-          description: The unique identifier of the Transcoder.
-        id:
-          type: string
-          description: The unique identifier for this instance of the Transcoder.
-        publicIp:
-          type: string
-          description: The public IP address for the host that is processing the stream.
-        dnsName:
-          type: string
-          description: 'A DNS record for routing to the transcoder instance server(s). It follows the pattern: `dnsPrefix`-`accountId`.transcoder.millicast.com.'
-        createdOn:
-          type: string
-          description: A timestamp for when this Transcoder instance was created.
-          format: date-time
-        endedOn:
+        name:
           type:
           - string
           - 'null'
-          description: A timestamp for when this Transcoder instance was shutdown.
-          format: date-time
-        status:
-          description: The status for this Transcoder instance.
-          oneOf:
-          - $ref: '#/components/schemas/InstanceStatus'
-    SuccessResponseTranscoderInstance:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/InstanceResponse'
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
+          description: Update display name for transcoder.
+        dnsPrefix:
+          type:
+          - string
+          - 'null'
+          description: Update DNS prefix for the transcoder publisher. Used to construct the DNS name which follows the format of `dnsPrefix`-`accountId`.transcoder.millicast.com.
+        cluster:
+          type:
+          - string
+          - 'null'
+          description: Update cluster that transcoder will be deployed to.
+        height:
           type:
           - integer
           - 'null'
-          format: int32
-        data: {}
+          description: Update resolution of input stream specified in video height. New default profile will be selected unless specified.
+        frameRate:
+          type:
+          - number
+          - 'null'
+          description: Update frame rate of input stream. New default profile will be selected unless specified.
+          format: decimal
+        profile:
+          type:
+          - string
+          - 'null'
+          description: Specify a profile id to select the corresponding transcoder profile. You can retrieve all system pre-defined profile ids by calling the ’List Transcoder Profiles’ endpoint.
+        passThrough:
+          type:
+          - boolean
+          - 'null'
+          description: Update whether the top layer is passed through or transcoded.
   securitySchemes:
     API_Secret:
       type: http

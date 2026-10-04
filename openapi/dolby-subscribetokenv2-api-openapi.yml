@@ -236,18 +236,6 @@ components:
           description: The list of denied countries.
           items:
             type: string
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
     UpdateSubscribeTokenV2:
       type: object
       additionalProperties: false
@@ -314,65 +302,6 @@ components:
           description: The list of denied countries.
           items:
             type: string
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    SuccessResponseSubscribeTokenV2:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/SubscribeTokenResponseV2'
-    GeoCascadeModel2:
-      type: object
-      additionalProperties: false
-      properties:
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
-        clusters:
-          type:
-          - array
-          - 'null'
-          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
-          items:
-            type: string
-    TrackingInformation:
-      type: object
-      additionalProperties: false
-      properties:
-        trackingId:
-          type:
-          - string
-          - 'null'
-          description: Optional. Tracking identifier for Stream Syndication.
-          maxLength: 128
     TokenEffectiveSettings:
       type: object
       additionalProperties: false
@@ -400,6 +329,77 @@ components:
           type:
           - boolean
           - 'null'
+    GeoCascadeModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    SuccessResponseSubscribeTokenV2:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/SubscribeTokenResponseV2'
+    TrackingInformation:
+      type: object
+      additionalProperties: false
+      properties:
+        trackingId:
+          type:
+          - string
+          - 'null'
+          description: Optional. Tracking identifier for Stream Syndication.
+          maxLength: 128
   securitySchemes:
     API_Secret:
       type: http

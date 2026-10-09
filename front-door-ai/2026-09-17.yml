@@ -4,22 +4,24 @@
 front_door_ai:
   slug: dolby
   lexicon_version: '1.0'
-  probed_at: '2026-09-17'
-  host: optiview.dolby.com
-  final_host: optiview.dolby.com
+  probed_at: '2026-09-25'
+  host: www.dolby.com
+  final_host: www.dolby.com
   ownership: own
   owner: dolby
   shares_host_with: null
   inherited_from: null
+  alias_of: null
   verdict: silent
   score: 0
+  band: 1
+  band_label: silent
   host_score: 0
   density: 0.0
-  words: 977
+  words: 253
   tiers:
     agentic: 0
     core: 0
     model: 0
-  ambiguous: 5
-  top_terms:
-    intelligence: 5
+  ambiguous: 0
+  top_terms: null

@@ -1,22 +1,20 @@
-# Kin Score artifact — dolby — 2026-09-06T224210
+# Kin Score artifact — dolby — 2026-10-11T110117
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: dolby
-  schema_version: 0.19.0
-  scored_at: '2026-09-06'
-  run_ts: 2026-09-06T224210
-  composite: 64.9
-  band: strong
+  schema_version: 0.23.0
+  scored_at: '2026-10-11'
+  run_ts: 2026-10-11T110117
+  composite: 67.0
+  band: exemplar
   facets:
-    discoverability: 72.2
-    contract_quality: 60.3
-    governance: 4.5
+    discoverability: 69.6
+    contract_quality: 57.8
+    contract_governance: 4.5
     operational_transparency: 81.6
     developer_ergonomics: 73.2
-    commercial_clarity: 84.2
-    contract_governance: 4.5
-    access_clarity: 84.2
+    access_clarity: 77.6
   agent_readiness:
     score: 40.1
     band: agent-ready
@@ -41,12 +39,18 @@ kin_score:
       protected_resource_metadata: false
       dynamic_client_registration: false
       agentic_commerce: false
+  regulatory:
+    applies: true
+    regime: Horizontal (data, software, accessibility, platform)
+    regime_id: horizontal
+    score: 30.4
+    matched_via: fallback
   provenance:
     mcp: derived
     skills: derived
     conformance: derived
     contracts:
-      total: 7
+      total: 40
       derived: 0
       coverage: 0.0
-      callable: 71.4
+      callable: 80.0

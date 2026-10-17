@@ -117,35 +117,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PaginationDetails:
-      properties:
-        total_records:
-          type: number
-          format: double
-        current_page:
-          type: number
-          format: double
-        total_pages:
-          type: number
-          format: double
-        next_page:
-          type:
-          - number
-          - 'null'
-          format: double
-        prev_page:
-          type:
-          - number
-          - 'null'
-          format: double
-      required:
-      - total_records
-      - current_page
-      - total_pages
-      - next_page
-      - prev_page
-      type: object
-      additionalProperties: false
     IAdBreak:
       properties:
         id:
@@ -186,14 +157,54 @@ components:
       - startDate
       type: object
       additionalProperties: false
-    SignaledAdBreakStatus:
+    PaginationDetails:
+      properties:
+        total_records:
+          type: number
+          format: double
+        current_page:
+          type: number
+          format: double
+        total_pages:
+          type: number
+          format: double
+        next_page:
+          type:
+          - number
+          - 'null'
+          format: double
+        prev_page:
+          type:
+          - number
+          - 'null'
+          format: double
+      required:
+      - total_records
+      - current_page
+      - total_pages
+      - next_page
+      - prev_page
+      type: object
+      additionalProperties: false
+    AdbreakApiResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/IAdBreak'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/PaginationDetails'
+      required:
+      - data
+      - pagination
+      type: object
+      additionalProperties: false
+    MonetizedStreamLayout:
       enum:
-      - new
-      - future
-      - signaled
-      - finished
-      - error
-      - continuous
+      - SINGLE
+      - DOUBLE
+      - LSHAPE_AD
+      - LSHAPE_CONTENT
       type: string
     MonetizedStreamType:
       enum:
@@ -278,64 +289,6 @@ components:
       enum:
       - image
       type: string
-    MonetizedStreamLayout:
-      enum:
-      - SINGLE
-      - DOUBLE
-      - LSHAPE_AD
-      - LSHAPE_CONTENT
-      type: string
-    OverlayApiResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/IOverlay'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/PaginationDetails'
-      required:
-      - data
-      - pagination
-      type: object
-      additionalProperties: false
-    OverlayURITypes:
-      enum:
-      - png
-      - svg
-      type: string
-    IGamProperties:
-      properties:
-        iu:
-          type: string
-        sz:
-          properties:
-            tv:
-              type: string
-            phone:
-              type: string
-            default:
-              type: string
-          required:
-          - default
-          type: object
-      required:
-      - iu
-      - sz
-      type: object
-      additionalProperties: false
-    MonetizedStreamApiResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/IMonetizedStream'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/PaginationDetails'
-      required:
-      - data
-      - pagination
-      type: object
-      additionalProperties: false
     IMonetizedStream:
       properties:
         name:
@@ -369,11 +322,40 @@ components:
       - layout
       type: object
       additionalProperties: false
-    AdbreakApiResponse:
+    IGamProperties:
+      properties:
+        iu:
+          type: string
+        sz:
+          properties:
+            tv:
+              type: string
+            phone:
+              type: string
+            default:
+              type: string
+          required:
+          - default
+          type: object
+      required:
+      - iu
+      - sz
+      type: object
+      additionalProperties: false
+    SignaledAdBreakStatus:
+      enum:
+      - new
+      - future
+      - signaled
+      - finished
+      - error
+      - continuous
+      type: string
+    OverlayApiResponse:
       properties:
         data:
           items:
-            $ref: '#/components/schemas/IAdBreak'
+            $ref: '#/components/schemas/IOverlay'
           type: array
         pagination:
           $ref: '#/components/schemas/PaginationDetails'
@@ -382,6 +364,24 @@ components:
       - pagination
       type: object
       additionalProperties: false
+    MonetizedStreamApiResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/IMonetizedStream'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/PaginationDetails'
+      required:
+      - data
+      - pagination
+      type: object
+      additionalProperties: false
+    OverlayURITypes:
+      enum:
+      - png
+      - svg
+      type: string
   securitySchemes:
     apiKeyAuth:
       type: apiKey

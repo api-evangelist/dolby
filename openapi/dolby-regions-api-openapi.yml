@@ -100,47 +100,6 @@ paths:
           description: Region not found or not available for your organization
 components:
   schemas:
-    RegionListResult:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                description: Unique identifier of the region
-              name:
-                type: string
-                description: Display name of the region
-              type:
-                type: string
-                enum:
-                - cloud
-                - onprem
-                description: Type of the region
-              supportedIngestTypes:
-                type: array
-                items:
-                  type: string
-                  enum:
-                  - srt-pull
-                  - rtmp-pull
-                  - srt-push
-                  - rtmp-push
-                  - rtsp-pull
-                  - ndi-pull
-                  - sdi-pull
-                description: Ingest types supported in this region (rtsp-pull, ndi-pull and sdi-pull are only available on on-prem regions; ndi-pull and sdi-pull additionally require the NDI/SDI capability on the region)
-            required:
-            - id
-            - name
-            - type
-            - supportedIngestTypes
-          description: List of regions
-      required:
-      - data
     SdiDeviceListResult:
       type: object
       properties:
@@ -226,6 +185,47 @@ components:
           - type
           - supportedIngestTypes
           description: The requested region
+      required:
+      - data
+    RegionListResult:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Unique identifier of the region
+              name:
+                type: string
+                description: Display name of the region
+              type:
+                type: string
+                enum:
+                - cloud
+                - onprem
+                description: Type of the region
+              supportedIngestTypes:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - srt-pull
+                  - rtmp-pull
+                  - srt-push
+                  - rtmp-push
+                  - rtsp-pull
+                  - ndi-pull
+                  - sdi-pull
+                description: Ingest types supported in this region (rtsp-pull, ndi-pull and sdi-pull are only available on on-prem regions; ndi-pull and sdi-pull additionally require the NDI/SDI capability on the region)
+            required:
+            - id
+            - name
+            - type
+            - supportedIngestTypes
+          description: List of regions
       required:
       - data
     SdiDevice:

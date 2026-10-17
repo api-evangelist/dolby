@@ -46,22 +46,116 @@ paths:
       - Token: []
 components:
   schemas:
-    IngestEndpoint:
+    AudioConfiguration:
       type: object
       additionalProperties: false
       properties:
-        protocol:
+        codec:
           type:
           - string
           - 'null'
-        url_template:
+        track_id:
+          type: integer
+          format: int32
+        channels:
+          type: integer
+          format: int32
+        settings:
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurationSettings'
+    AudioConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type: integer
+          format: int32
+    MultiTrackVideoConfigurationResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        meta:
+          oneOf:
+          - $ref: '#/components/schemas/Meta'
+        ingest_endpoints:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/IngestEndpoint'
+        encoder_configurations:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/EncoderConfiguration'
+        audio_configurations:
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurations'
+    AudioConfigurations:
+      type: object
+      additionalProperties: false
+      properties:
+        live:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AudioConfiguration'
+        vod:
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/AudioConfiguration'
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    Meta:
+      type: object
+      additionalProperties: false
+      properties:
+        schema_version:
           type:
           - string
           - 'null'
-        authentication:
+        service:
           type:
           - string
           - 'null'
+        config_id:
+          type:
+          - string
+          - 'null'
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
     EncoderConfigurationSettings:
       type: object
       additionalProperties: false
@@ -111,107 +205,19 @@ components:
           type:
           - string
           - 'null'
-    AudioConfigurationSettings:
+    IngestEndpoint:
       type: object
       additionalProperties: false
       properties:
-        bitrate:
-          type: integer
-          format: int32
-    AudioConfiguration:
-      type: object
-      additionalProperties: false
-      properties:
-        codec:
+        protocol:
           type:
           - string
           - 'null'
-        track_id:
-          type: integer
-          format: int32
-        channels:
-          type: integer
-          format: int32
-        settings:
-          oneOf:
-          - $ref: '#/components/schemas/AudioConfigurationSettings'
-    MultiTrackVideoConfigurationResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        meta:
-          oneOf:
-          - $ref: '#/components/schemas/Meta'
-        ingest_endpoints:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/IngestEndpoint'
-        encoder_configurations:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/EncoderConfiguration'
-        audio_configurations:
-          oneOf:
-          - $ref: '#/components/schemas/AudioConfigurations'
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    Framerate:
-      type: object
-      additionalProperties: false
-      properties:
-        numerator:
-          type: integer
-          format: int32
-        denominator:
-          type: integer
-          format: int32
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    Meta:
-      type: object
-      additionalProperties: false
-      properties:
-        schema_version:
+        url_template:
           type:
           - string
           - 'null'
-        service:
-          type:
-          - string
-          - 'null'
-        config_id:
+        authentication:
           type:
           - string
           - 'null'
@@ -249,22 +255,16 @@ components:
         settings:
           oneOf:
           - $ref: '#/components/schemas/EncoderConfigurationSettings'
-    AudioConfigurations:
+    Framerate:
       type: object
       additionalProperties: false
       properties:
-        live:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AudioConfiguration'
-        vod:
-          type:
-          - array
-          - 'null'
-          items:
-            $ref: '#/components/schemas/AudioConfiguration'
+        numerator:
+          type: integer
+          format: int32
+        denominator:
+          type: integer
+          format: int32
   securitySchemes:
     Token:
       type: http

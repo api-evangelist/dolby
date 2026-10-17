@@ -925,7 +925,7 @@ paths:
       - API_Secret: []
 components:
   schemas:
-    SuccessResponseOfAccountInfoResponseModel:
+    SuccessAccountGeoCascade:
       type: object
       additionalProperties: false
       required:
@@ -937,45 +937,23 @@ components:
           default: success
           minLength: 1
         data:
-          $ref: '#/components/schemas/AccountInfoResponseModel'
-    SuccessResponseOfListOfStorageProfileResponseModel:
+          $ref: '#/components/schemas/GeoCascadeModel2'
+    GeoCascadeModel2:
       type: object
       additionalProperties: false
-      required:
-      - status
-      - data
       properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: array
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
           items:
-            $ref: '#/components/schemas/StorageProfileResponseModel'
-    UpdateStorageOptionsModel:
-      type: object
-      additionalProperties: false
-      properties:
-        objectPrefix:
-          type:
-          - string
-          - 'null'
-          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. Ignored when using Dolby.io's storage buckets. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
-          maxLength: 1000
-          minLength: 0
-        bucketName:
-          type:
-          - string
-          - 'null'
-          description: Name of bucket to upload clips to. Please ensure Dolby.io's service account is granted access.
-        bucketRegion:
-          type:
-          - string
-          - 'null'
-          description: Region of the specified bucket if using storage provider awsS3
-          maxLength: 32
-          minLength: 1
+            type: string
     FailResponse:
       type: object
       additionalProperties: false
@@ -988,6 +966,35 @@ components:
           default: fail
           minLength: 1
         data: {}
+    SuccessAccountGeoRestrictions:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/AccountGeoModel'
+    UpdateMediaAssetExpirationModel:
+      type: object
+      additionalProperties: false
+      properties:
+        timelines:
+          description: "Update account level expiration rule for timelines. Specified timespans must be non-zero.\n\n This limits the earliest permissible startTime when creating clips. Expiration rule updates take effect immediately, with then system cleaning up any timelines created prior to the expiration rule.\n\n By default, timelines expire after 1 day.\n\n Provide an empty json to clear settings."
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+        recordings:
+          description: "Update account level expiration rule for recordings. Specified timespans must be non-zero.\n\n Updates to the expiration rule are applied only to new recordings.\n\n By default, recordings do not expire unless this value is updated.\n\n Provide an empty json to clear settings."
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+        clips:
+          description: "Update account level expiration rule for clips. Specified timespans must be non-zero.\n\n Updates to the expiration rule are applied only to new clips. This account level default can be overridden for individual clips upon clip creation.\n\n By default, clip do not expire unless this value is updated or expiration is specified on creation.\n\n Provide an empty json to clear settings. "
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
     CreateStorageProfileModel:
       type: object
       additionalProperties: false
@@ -1020,75 +1027,6 @@ components:
           description: The storage options.
           oneOf:
           - $ref: '#/components/schemas/StorageOptionsModel'
-    UpdateAccountGeoModel:
-      type: object
-      additionalProperties: false
-      properties:
-        updateAllowedCountries:
-          type:
-          - array
-          - 'null'
-          description: Set the list of permitted countries as the account default when creating new tokens. List must be less than 768 characters.
-          items:
-            type: string
-        updateDeniedCountries:
-          type:
-          - array
-          - 'null'
-          description: Set the list of excluded countries as the account default when creating new tokens. List must be less than 768 characters.
-          items:
-            type: string
-    MediaAssetExpirationResponseModel:
-      type: object
-      additionalProperties: false
-      properties:
-        timelines:
-          description: 'Account level expiration rule for timelines. If custom rule is not set, by default, timelines expire after 1 day. '
-          oneOf:
-          - $ref: '#/components/schemas/TimeSpanModel'
-        recordings:
-          description: "Account level expiration rule for recordings.Expiration countdown begin upon recording creation (i.e. when [Create Media Asset](#operation/MediaAssets_CreateMediaAsset) the recording is stopped).\n\n If custom rule is not set, recordings never expire and this field will be empty. "
-          oneOf:
-          - $ref: '#/components/schemas/TimeSpanModel'
-        clips:
-          description: "Account level expiration rule for clips. Expiration countdown begin upon clip creation (i.e. when [Create Media Asset](#operation/MediaAssets_CreateMediaAsset) is invoke).\n\n If custom rule is not set, clips never expire by default and this field will be empty. Setting the `expiration` value on in the request body of [Create Media Asset](#operation/MediaAssets_CreateMediaAsset) overrides the rule configured here."
-          oneOf:
-          - $ref: '#/components/schemas/TimeSpanModel'
-    SuccessValidateRecordStorageResponse:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type:
-          - string
-          - 'null'
-        storage:
-          oneOf:
-          - $ref: '#/components/schemas/MediaAssetStorageResponseModel'
-    StorageOptionsModel:
-      type: object
-      additionalProperties: false
-      required:
-      - bucketName
-      properties:
-        objectPrefix:
-          type:
-          - string
-          - 'null'
-          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
-          maxLength: 1000
-          minLength: 0
-        bucketName:
-          type: string
-          description: Name of bucket to upload clips to. Please ensure Dolby.io's service account is granted access.
-          minLength: 1
-        bucketRegion:
-          type:
-          - string
-          - 'null'
-          description: 'Region of the specified bucket. Required when using storageType AwsS3 '
-          maxLength: 32
-          minLength: 1
     SuccessResponseOfMediaAssetExpirationResponseModel:
       type: object
       additionalProperties: false
@@ -1102,119 +1040,6 @@ components:
           minLength: 1
         data:
           $ref: '#/components/schemas/MediaAssetExpirationResponseModel'
-    ListStorageProfilesSortBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - Name
-      enum:
-      - name
-    AccountDistributionModel:
-      type: object
-      additionalProperties: false
-      required:
-      - geoCascade
-      properties:
-        geoCascade:
-          description: Controls if and which geographic clusters are included for regional content delivery
-          oneOf:
-          - $ref: '#/components/schemas/GeoCascadeModel'
-    GeoCascadeModel:
-      type: object
-      additionalProperties: false
-      required:
-      - isEnabled
-      properties:
-        isEnabled:
-          type: boolean
-          description: Enable or Disable geo cascade.
-        clusters:
-          type:
-          - array
-          - 'null'
-          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
-          items:
-            type: string
-    SuccessResponseOfAccountDistributionModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/AccountDistributionModel'
-    AccountGeoModel:
-      type: object
-      additionalProperties: false
-      properties:
-        allowedCountries:
-          type: array
-          items:
-            type: string
-        deniedCountries:
-          type: array
-          items:
-            type: string
-    SuccessAccountGeoCascade:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/GeoCascadeModel2'
-    SuccessResponseOfBoolean:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: boolean
-    UpdateMediaAssetExpirationModel:
-      type: object
-      additionalProperties: false
-      properties:
-        timelines:
-          description: "Update account level expiration rule for timelines. Specified timespans must be non-zero.\n\n This limits the earliest permissible startTime when creating clips. Expiration rule updates take effect immediately, with then system cleaning up any timelines created prior to the expiration rule.\n\n By default, timelines expire after 1 day.\n\n Provide an empty json to clear settings."
-          oneOf:
-          - $ref: '#/components/schemas/TimeSpanModel'
-        recordings:
-          description: "Update account level expiration rule for recordings. Specified timespans must be non-zero.\n\n Updates to the expiration rule are applied only to new recordings.\n\n By default, recordings do not expire unless this value is updated.\n\n Provide an empty json to clear settings."
-          oneOf:
-          - $ref: '#/components/schemas/TimeSpanModel'
-        clips:
-          description: "Update account level expiration rule for clips. Specified timespans must be non-zero.\n\n Updates to the expiration rule are applied only to new clips. This account level default can be overridden for individual clips upon clip creation.\n\n By default, clip do not expire unless this value is updated or expiration is specified on creation.\n\n Provide an empty json to clear settings. "
-          oneOf:
-          - $ref: '#/components/schemas/TimeSpanModel'
-    SuccessResponseOfSuccessValidateRecordStorageResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/SuccessValidateRecordStorageResponse'
     StorageProfileResponseModel:
       type: object
       additionalProperties: false
@@ -1242,28 +1067,26 @@ components:
           description: The options of this storage profile.
           oneOf:
           - $ref: '#/components/schemas/StorageOptionsModel'
-    MediaAssetStorageType:
+    SuccessResponseOfAccountDistributionModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/AccountDistributionModel'
+    ListStorageProfilesSortBy:
       type: string
       description: ''
       x-enumNames:
-      - Gcs
-      - AwsS3
-      - DolbyStorage
+      - Name
       enum:
-      - gcs
-      - awsS3
-      - dolbyStorage
-    TimeSpanModel:
-      type: object
-      additionalProperties: false
-      properties:
-        days:
-          type:
-          - integer
-          - 'null'
-          format: int32
-          maximum: 365.0
-          minimum: 1.0
+      - name
     MediaAssetStorageResponseModel:
       type: object
       additionalProperties: false
@@ -1277,31 +1100,7 @@ components:
           - string
           - 'null'
           description: 'Path to clip storage location. Available only for external storage configurations. '
-    AccountInfoResponseModel:
-      type: object
-      additionalProperties: false
-      properties:
-        accountId:
-          type:
-          - string
-          - 'null'
-    GeoCascadeModel2:
-      type: object
-      additionalProperties: false
-      properties:
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
-        clusters:
-          type:
-          - array
-          - 'null'
-          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
-          items:
-            type: string
-    SuccessResponseOfStorageProfileResponseModel:
+    SuccessResponseOfAccountInfoResponseModel:
       type: object
       additionalProperties: false
       required:
@@ -1313,7 +1112,7 @@ components:
           default: success
           minLength: 1
         data:
-          $ref: '#/components/schemas/StorageProfileResponseModel'
+          $ref: '#/components/schemas/AccountInfoResponseModel'
     ErrorResponse:
       type: object
       additionalProperties: false
@@ -1334,7 +1133,15 @@ components:
           - 'null'
           format: int32
         data: {}
-    SuccessAccountGeoRestrictions:
+    AccountInfoResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        accountId:
+          type:
+          - string
+          - 'null'
+    SuccessResponseOfListOfStorageProfileResponseModel:
       type: object
       additionalProperties: false
       required:
@@ -1346,7 +1153,156 @@ components:
           default: success
           minLength: 1
         data:
-          $ref: '#/components/schemas/AccountGeoModel'
+          type: array
+          items:
+            $ref: '#/components/schemas/StorageProfileResponseModel'
+    TimeSpanModel:
+      type: object
+      additionalProperties: false
+      properties:
+        days:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          maximum: 365.0
+          minimum: 1.0
+    SuccessResponseOfSuccessValidateRecordStorageResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/SuccessValidateRecordStorageResponse'
+    SuccessResponseOfStorageProfileResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/StorageProfileResponseModel'
+    StorageOptionsModel:
+      type: object
+      additionalProperties: false
+      required:
+      - bucketName
+      properties:
+        objectPrefix:
+          type:
+          - string
+          - 'null'
+          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
+          maxLength: 1000
+          minLength: 0
+        bucketName:
+          type: string
+          description: Name of bucket to upload clips to. Please ensure Dolby.io's service account is granted access.
+          minLength: 1
+        bucketRegion:
+          type:
+          - string
+          - 'null'
+          description: 'Region of the specified bucket. Required when using storageType AwsS3 '
+          maxLength: 32
+          minLength: 1
+    UpdateStorageOptionsModel:
+      type: object
+      additionalProperties: false
+      properties:
+        objectPrefix:
+          type:
+          - string
+          - 'null'
+          description: Optional. Prefix to object when stored in bucket i.e. `protocol`://`bucketName`/`objectPrefix`/`objectName.ext`. Ignored when using Dolby.io's storage buckets. `objectName` is either defined by a system assigned GUID or the user-specified `clipName`.
+          maxLength: 1000
+          minLength: 0
+        bucketName:
+          type:
+          - string
+          - 'null'
+          description: Name of bucket to upload clips to. Please ensure Dolby.io's service account is granted access.
+        bucketRegion:
+          type:
+          - string
+          - 'null'
+          description: Region of the specified bucket if using storage provider awsS3
+          maxLength: 32
+          minLength: 1
+    AccountGeoModel:
+      type: object
+      additionalProperties: false
+      properties:
+        allowedCountries:
+          type: array
+          items:
+            type: string
+        deniedCountries:
+          type: array
+          items:
+            type: string
+    SuccessValidateRecordStorageResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        storage:
+          oneOf:
+          - $ref: '#/components/schemas/MediaAssetStorageResponseModel'
+    MediaAssetStorageType:
+      type: string
+      description: ''
+      x-enumNames:
+      - Gcs
+      - AwsS3
+      - DolbyStorage
+      enum:
+      - gcs
+      - awsS3
+      - dolbyStorage
+    GeoCascadeModel:
+      type: object
+      additionalProperties: false
+      required:
+      - isEnabled
+      properties:
+        isEnabled:
+          type: boolean
+          description: Enable or Disable geo cascade.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
+    SuccessResponseOfBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
     UpdateStorageProfileModel:
       type: object
       additionalProperties: false
@@ -1375,6 +1331,16 @@ components:
           description: The storage options.
           oneOf:
           - $ref: '#/components/schemas/UpdateStorageOptionsModel'
+    AccountDistributionModel:
+      type: object
+      additionalProperties: false
+      required:
+      - geoCascade
+      properties:
+        geoCascade:
+          description: Controls if and which geographic clusters are included for regional content delivery
+          oneOf:
+          - $ref: '#/components/schemas/GeoCascadeModel'
     MediaAssetStorageModel:
       type: object
       additionalProperties: false
@@ -1398,6 +1364,40 @@ components:
           description: 'May be used in the following ways: <br />1. Optional. Override parameters of a storage profile specified via ProfileId <br />2. Required. Set parameters for a one-off storage configuration when Type is provided <br /> 3. Optional. Override parameters of the default storage profile if neither ProfileId or Type are provided'
           oneOf:
           - $ref: '#/components/schemas/UpdateStorageOptionsModel'
+    MediaAssetExpirationResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        timelines:
+          description: 'Account level expiration rule for timelines. If custom rule is not set, by default, timelines expire after 1 day. '
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+        recordings:
+          description: "Account level expiration rule for recordings.Expiration countdown begin upon recording creation (i.e. when [Create Media Asset](#operation/MediaAssets_CreateMediaAsset) the recording is stopped).\n\n If custom rule is not set, recordings never expire and this field will be empty. "
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+        clips:
+          description: "Account level expiration rule for clips. Expiration countdown begin upon clip creation (i.e. when [Create Media Asset](#operation/MediaAssets_CreateMediaAsset) is invoke).\n\n If custom rule is not set, clips never expire by default and this field will be empty. Setting the `expiration` value on in the request body of [Create Media Asset](#operation/MediaAssets_CreateMediaAsset) overrides the rule configured here."
+          oneOf:
+          - $ref: '#/components/schemas/TimeSpanModel'
+    UpdateAccountGeoModel:
+      type: object
+      additionalProperties: false
+      properties:
+        updateAllowedCountries:
+          type:
+          - array
+          - 'null'
+          description: Set the list of permitted countries as the account default when creating new tokens. List must be less than 768 characters.
+          items:
+            type: string
+        updateDeniedCountries:
+          type:
+          - array
+          - 'null'
+          description: Set the list of excluded countries as the account default when creating new tokens. List must be less than 768 characters.
+          items:
+            type: string
   securitySchemes:
     API_Secret:
       type: http

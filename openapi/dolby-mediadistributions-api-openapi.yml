@@ -346,6 +346,85 @@ paths:
       - API_Secret: []
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    Pagination:
+      type: object
+      additionalProperties: false
+      properties:
+        hasMore:
+          type: boolean
+        cursor:
+          type:
+          - string
+          - 'null'
+    MediaDistributionSecurityRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        keys:
+          type:
+          - array
+          - 'null'
+          description: Security keys that can be used to sign a JWT to authenticate media asset views. If no keys are provided the media distribution will be unsecured. This means any associated assets can be viewed without a token, and if a token is provided the signing key will not be validated. If a key is specified the media distribution will be secured and a valid token signed with one of the provided keys will be required to view associated media assets.
+          maxItems: 2
+          items:
+            $ref: '#/components/schemas/SecurityKeyRequestModel'
+    UpdateMediaDistribution:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: User-friendly name for the media distribution.
+          maxLength: 128
+          minLength: 1
+        default:
+          type:
+          - boolean
+          - 'null'
+          description: Set this as the default media distribution that will be associated with all future media assets created without an explicit mediaDistributionId set.
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    ListMediaDistributionsSortBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - CreatedAt
+      - Name
+      enum:
+      - createdAt
+      - name
     MediaDistributionResponseModel:
       type: object
       additionalProperties: false
@@ -371,21 +450,23 @@ components:
           description: Security settings for your media distribution.
           oneOf:
           - $ref: '#/components/schemas/MediaDistributionSecurityResponse'
-    SuccessResponseOfListOfSecurityKeyResponseModel:
+    SecurityKeyRequestModel:
       type: object
       additionalProperties: false
       required:
-      - status
-      - data
+      - key
       properties:
-        status:
-          type: string
-          default: success
+        name:
+          type:
+          - string
+          - 'null'
+          description: Name for the security key.
+          maxLength: 128
           minLength: 1
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/SecurityKeyResponseModel'
+        key:
+          type: string
+          maxLength: 4096
+          minLength: 32
     CreateMediaDistributionModel:
       type: object
       additionalProperties: false
@@ -404,6 +485,18 @@ components:
           description: Optional. Specify security settings for your media distribution.
           oneOf:
           - $ref: '#/components/schemas/MediaDistributionSecurityRequest'
+    SecurityKeyResponseModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
     SuccessResponseOfMediaDistributionResponseModel:
       type: object
       additionalProperties: false
@@ -417,49 +510,6 @@ components:
           minLength: 1
         data:
           $ref: '#/components/schemas/MediaDistributionResponseModel'
-    SecurityKeyRequestModel:
-      type: object
-      additionalProperties: false
-      required:
-      - key
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: Name for the security key.
-          maxLength: 128
-          minLength: 1
-        key:
-          type: string
-          maxLength: 4096
-          minLength: 32
-    Pagination:
-      type: object
-      additionalProperties: false
-      properties:
-        hasMore:
-          type: boolean
-        cursor:
-          type:
-          - string
-          - 'null'
-    UpdateMediaDistribution:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-          description: User-friendly name for the media distribution.
-          maxLength: 128
-          minLength: 1
-        default:
-          type:
-          - boolean
-          - 'null'
-          description: Set this as the default media distribution that will be associated with all future media assets created without an explicit mediaDistributionId set.
     MediaDistributionSecurityResponse:
       type: object
       additionalProperties: false
@@ -470,51 +520,6 @@ components:
           - 'null'
           items:
             $ref: '#/components/schemas/SecurityKeyResponseModel'
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    SuccessResponseOfSecurityKeyResponseModel:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          $ref: '#/components/schemas/SecurityKeyResponseModel'
     SuccessResponseOfPaginationResponseOfMediaDistributionResponseModel:
       type: object
       additionalProperties: false
@@ -528,6 +533,21 @@ components:
           minLength: 1
         data:
           $ref: '#/components/schemas/PaginationResponseOfMediaDistributionResponseModel'
+    SuccessResponseOfListOfSecurityKeyResponseModel:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityKeyResponseModel'
     PaginationResponseOfMediaDistributionResponseModel:
       type: object
       additionalProperties: false
@@ -541,39 +561,19 @@ components:
         pagination:
           oneOf:
           - $ref: '#/components/schemas/Pagination'
-    ListMediaDistributionsSortBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - CreatedAt
-      - Name
-      enum:
-      - createdAt
-      - name
-    SecurityKeyResponseModel:
+    SuccessResponseOfSecurityKeyResponseModel:
       type: object
       additionalProperties: false
+      required:
+      - status
+      - data
       properties:
-        id:
-          type:
-          - string
-          - 'null'
-        name:
-          type:
-          - string
-          - 'null'
-    MediaDistributionSecurityRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        keys:
-          type:
-          - array
-          - 'null'
-          description: Security keys that can be used to sign a JWT to authenticate media asset views. If no keys are provided the media distribution will be unsecured. This means any associated assets can be viewed without a token, and if a token is provided the signing key will not be validated. If a key is specified the media distribution will be secured and a valid token signed with one of the provided keys will be required to view associated media assets.
-          maxItems: 2
-          items:
-            $ref: '#/components/schemas/SecurityKeyRequestModel'
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          $ref: '#/components/schemas/SecurityKeyResponseModel'
   securitySchemes:
     API_Secret:
       type: http

@@ -32,6 +32,40 @@ paths:
       - API_Secret: []
 components:
   schemas:
+    AudioConfiguration:
+      type: object
+      additionalProperties: false
+      properties:
+        codec:
+          type:
+          - string
+          - 'null'
+          description: Audio codec.
+        settings:
+          description: Audio configuration settings.
+          oneOf:
+          - $ref: '#/components/schemas/AudioConfigurationSettings'
+    AudioConfigurationSettings:
+      type: object
+      additionalProperties: false
+      properties:
+        bitrate:
+          type:
+          - integer
+          - 'null'
+          description: Audio bitrate.
+          format: int32
+    AudioConfigurations:
+      type: object
+      additionalProperties: false
+      properties:
+        live:
+          type:
+          - array
+          - 'null'
+          description: List of live audio configurations.
+          items:
+            $ref: '#/components/schemas/AudioConfiguration'
     EncoderProfileModel:
       type: object
       additionalProperties: false
@@ -63,29 +97,21 @@ components:
           - 'null'
           description: Video bitrate.
           format: int32
-    AudioConfigurationSettings:
+    MultiTrackVideoConfiguration:
       type: object
       additionalProperties: false
       properties:
-        bitrate:
+        encoderConfigurations:
           type:
-          - integer
+          - array
           - 'null'
-          description: Audio bitrate.
-          format: int32
-    AudioConfiguration:
-      type: object
-      additionalProperties: false
-      properties:
-        codec:
-          type:
-          - string
-          - 'null'
-          description: Audio codec.
-        settings:
-          description: Audio configuration settings.
+          description: List of encoder configurations.
+          items:
+            $ref: '#/components/schemas/EncoderConfiguration'
+        audioConfigurations:
+          description: Audio configurations.
           oneOf:
-          - $ref: '#/components/schemas/AudioConfigurationSettings'
+          - $ref: '#/components/schemas/AudioConfigurations'
     EncoderConfiguration:
       type: object
       additionalProperties: false
@@ -113,32 +139,6 @@ components:
           description: Video settings.
           oneOf:
           - $ref: '#/components/schemas/EncoderConfigurationSettings'
-    MultiTrackVideoConfiguration:
-      type: object
-      additionalProperties: false
-      properties:
-        encoderConfigurations:
-          type:
-          - array
-          - 'null'
-          description: List of encoder configurations.
-          items:
-            $ref: '#/components/schemas/EncoderConfiguration'
-        audioConfigurations:
-          description: Audio configurations.
-          oneOf:
-          - $ref: '#/components/schemas/AudioConfigurations'
-    AudioConfigurations:
-      type: object
-      additionalProperties: false
-      properties:
-        live:
-          type:
-          - array
-          - 'null'
-          description: List of live audio configurations.
-          items:
-            $ref: '#/components/schemas/AudioConfiguration'
   securitySchemes:
     API_Secret:
       type: http

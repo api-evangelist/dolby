@@ -150,6 +150,81 @@ paths:
       - API_Secret: []
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    ClustersInfoModel:
+      type: object
+      additionalProperties: false
+      properties:
+        defaultCluster:
+          type: string
+          description: Used as cluster when not explicitly specified during Token creation.
+        availableClusters:
+          type: array
+          description: List of available clusters.
+          items:
+            $ref: '#/components/schemas/ClusterModel'
+    ClustersFeaturesModel:
+      type: object
+      additionalProperties: false
+      properties:
+        transcoding:
+          type: boolean
+          description: Indicates whether the Transcoder feature is supported in the corresponding cluster.
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    ClusterModel:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: Unique identifier of cluster.
+        name:
+          type: string
+          description: Display name.
+        rtmp:
+          type: string
+          description: RTMP publish domain for cluster.
+        srt:
+          type: string
+          description: Srt publish domain for cluster.
+        location:
+          description: Physical location of the cluster.
+          oneOf:
+          - $ref: '#/components/schemas/LocationModel'
+        features:
+          description: The features supported in this cluster.
+          oneOf:
+          - $ref: '#/components/schemas/ClustersFeaturesModel'
     SuccessClusterInfoModel:
       type: object
       additionalProperties: false
@@ -182,18 +257,6 @@ components:
           - string
           - 'null'
           description: Country for cluster
-    ClustersInfoModel:
-      type: object
-      additionalProperties: false
-      properties:
-        defaultCluster:
-          type: string
-          description: Used as cluster when not explicitly specified during Token creation.
-        availableClusters:
-          type: array
-          description: List of available clusters.
-          items:
-            $ref: '#/components/schemas/ClusterModel'
     UpdateClusterInfoModel:
       type: object
       additionalProperties: false
@@ -204,69 +267,6 @@ components:
           type: string
           description: Used as cluster when not explicitly specified during Token creation.
           minLength: 1
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    ClustersFeaturesModel:
-      type: object
-      additionalProperties: false
-      properties:
-        transcoding:
-          type: boolean
-          description: Indicates whether the Transcoder feature is supported in the corresponding cluster.
-    ClusterModel:
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          type: string
-          description: Unique identifier of cluster.
-        name:
-          type: string
-          description: Display name.
-        rtmp:
-          type: string
-          description: RTMP publish domain for cluster.
-        srt:
-          type: string
-          description: Srt publish domain for cluster.
-        location:
-          description: Physical location of the cluster.
-          oneOf:
-          - $ref: '#/components/schemas/LocationModel'
-        features:
-          description: The features supported in this cluster.
-          oneOf:
-          - $ref: '#/components/schemas/ClustersFeaturesModel'
   securitySchemes:
     API_Secret:
       type: http

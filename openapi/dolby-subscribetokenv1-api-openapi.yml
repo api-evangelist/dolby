@@ -872,74 +872,6 @@ paths:
         source: "require 'net/http'\nrequire 'uri'\nrequire 'json'\n\nuri = URI('https://api.millicast.com/api/subscribe_token')\nheaders = {\n  'Authorization': 'Bearer your_api_secret',\n  'Content-Type': 'application/json'\n}\nhttp = Net::HTTP.new(uri.host, uri.port)\nhttp.use_ssl = true\n\ndata = {\"label\": \"simple_token\", \"streams\": [{\"streamName\": \"stream1\"}]}\nres = http.post(uri, data.to_json, headers)\nputs res.body"
 components:
   schemas:
-    CreateSubscribeTokenV1:
-      type: object
-      additionalProperties: false
-      required:
-      - label
-      - streams
-      properties:
-        tracking:
-          description: Optional. Tracking Information for the Stream Syndication capability. See documentation https://optiview.dolby.com/docs/millicast/distribution/syndication/.
-          oneOf:
-          - $ref: '#/components/schemas/TrackingInformation'
-        label:
-          type: string
-          description: Name for the token that is used to display in the dashboard.
-          maxLength: 128
-          minLength: 1
-        expires:
-          type:
-          - integer
-          - 'null'
-          description: Optional. Number of seconds until the token expires. If not specified, the token never expires (default).
-          format: int32
-          maximum: 2147483647.0
-          minimum: 1.0
-        streams:
-          type: array
-          description: A list of streams.
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/CreateStreamNameModel'
-        allowedOrigins:
-          type:
-          - array
-          - 'null'
-          description: 'Optional. If specified only the domains in list will be allowed in requests to Director API with token. Wildcard subdomains are also allowed, e.g.: "*.demo.com". When unspecified (empty list) there are no domain restrictions. '
-          items:
-            type: string
-        allowedIpAddresses:
-          type:
-          - array
-          - 'null'
-          description: Optional. May specify multiple IPv4 addresses or CIDR notated network blocks. If specified, the token will only be usable from those IP addresses. Not currently supported with RTMP.
-          items:
-            type: string
-        bindIpsOnUsage:
-          type:
-          - integer
-          - 'null'
-          description: Optional. If specified will bind the token to the first X IP addresses used with token in requests to Director API, thus restricting the token to those IP addresses without being known beforehand. Mutually exclusive with allowedIpAddresses option. Not currently supported with RTMP.
-        originCluster:
-          type:
-          - string
-          - 'null'
-          description: Optional. Cluster to route specified streams to. Default is the account's default cluster.
-        allowedCountries:
-          type:
-          - array
-          - 'null'
-          description: Optional. Specify the ISO 3166-1 two letter country codes to explicitly allow viewer to watch the stream from. If the viewer's location does not match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a subscribe token will override publish token and account-wide rules. Only one of allowedCountries or deniedCountries should be specified.
-          items:
-            type: string
-        deniedCountries:
-          type:
-          - array
-          - 'null'
-          description: Optional. Specify the ISO 3166-1 two letter country codes to explicitly deny viewer to watch the stream from. If the viewer's location does match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a subscribe token will override publish token and account-wide rules. Only one of allowedCountries or deniedCountries should be specified.
-          items:
-            type: string
     SuccessResponseListSubscribeTokenV1:
       type: object
       additionalProperties: false
@@ -955,16 +887,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SubscribeTokenResponseV1'
-    TokenStreamNameModel:
+    TrackingInformation:
       type: object
       additionalProperties: false
       properties:
-        streamName:
-          type: string
-          description: The name of the stream.
-        isRegex:
-          type: boolean
-          description: Flag indicating whether the provided name is a regular expression.
+        trackingId:
+          type:
+          - string
+          - 'null'
+          description: Optional. Tracking identifier for Stream Syndication.
+          maxLength: 128
     UpdateSubscribeTokenV1:
       type: object
       additionalProperties: false
@@ -1037,6 +969,182 @@ components:
           - 'null'
           items:
             type: string
+    GeoCascadeModel2:
+      type: object
+      additionalProperties: false
+      properties:
+        isEnabled:
+          type:
+          - boolean
+          - 'null'
+          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
+        clusters:
+          type:
+          - array
+          - 'null'
+          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
+          items:
+            type: string
+    FailResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: fail
+          minLength: 1
+        data: {}
+    TokenStreamNameModel:
+      type: object
+      additionalProperties: false
+      properties:
+        streamName:
+          type: string
+          description: The name of the stream.
+        isRegex:
+          type: boolean
+          description: Flag indicating whether the provided name is a regular expression.
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - message
+      properties:
+        status:
+          type: string
+          default: error
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+        code:
+          type:
+          - integer
+          - 'null'
+          format: int32
+        data: {}
+    CreateSubscribeTokenV1:
+      type: object
+      additionalProperties: false
+      required:
+      - label
+      - streams
+      properties:
+        tracking:
+          description: Optional. Tracking Information for the Stream Syndication capability. See documentation https://optiview.dolby.com/docs/millicast/distribution/syndication/.
+          oneOf:
+          - $ref: '#/components/schemas/TrackingInformation'
+        label:
+          type: string
+          description: Name for the token that is used to display in the dashboard.
+          maxLength: 128
+          minLength: 1
+        expires:
+          type:
+          - integer
+          - 'null'
+          description: Optional. Number of seconds until the token expires. If not specified, the token never expires (default).
+          format: int32
+          maximum: 2147483647.0
+          minimum: 1.0
+        streams:
+          type: array
+          description: A list of streams.
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CreateStreamNameModel'
+        allowedOrigins:
+          type:
+          - array
+          - 'null'
+          description: 'Optional. If specified only the domains in list will be allowed in requests to Director API with token. Wildcard subdomains are also allowed, e.g.: "*.demo.com". When unspecified (empty list) there are no domain restrictions. '
+          items:
+            type: string
+        allowedIpAddresses:
+          type:
+          - array
+          - 'null'
+          description: Optional. May specify multiple IPv4 addresses or CIDR notated network blocks. If specified, the token will only be usable from those IP addresses. Not currently supported with RTMP.
+          items:
+            type: string
+        bindIpsOnUsage:
+          type:
+          - integer
+          - 'null'
+          description: Optional. If specified will bind the token to the first X IP addresses used with token in requests to Director API, thus restricting the token to those IP addresses without being known beforehand. Mutually exclusive with allowedIpAddresses option. Not currently supported with RTMP.
+        originCluster:
+          type:
+          - string
+          - 'null'
+          description: Optional. Cluster to route specified streams to. Default is the account's default cluster.
+        allowedCountries:
+          type:
+          - array
+          - 'null'
+          description: Optional. Specify the ISO 3166-1 two letter country codes to explicitly allow viewer to watch the stream from. If the viewer's location does not match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a subscribe token will override publish token and account-wide rules. Only one of allowedCountries or deniedCountries should be specified.
+          items:
+            type: string
+        deniedCountries:
+          type:
+          - array
+          - 'null'
+          description: Optional. Specify the ISO 3166-1 two letter country codes to explicitly deny viewer to watch the stream from. If the viewer's location does match any of the specified countries, they will be blocked from viewing stream, else they will be allowed to view stream. This geo-fencing rule works in concert with the IP and domain restrictions as well. Specifying geo restriction rules in a subscribe token will override publish token and account-wide rules. Only one of allowedCountries or deniedCountries should be specified.
+          items:
+            type: string
+    CreateStreamNameModel:
+      type: object
+      additionalProperties: false
+      required:
+      - streamName
+      properties:
+        streamName:
+          type: string
+          description: Name of the stream this token can access.
+          maxLength: 128
+          minLength: 1
+        isRegex:
+          type: boolean
+          description: Set to true if the name of the stream is a regular expression.
+          default: false
+    ListSortBy2:
+      type: string
+      description: ''
+      x-enumNames:
+      - Name
+      - AddedOn
+      enum:
+      - Name
+      - AddedOn
+    SuccessResponseBoolean:
+      type: object
+      additionalProperties: false
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          default: success
+          minLength: 1
+        data:
+          type: boolean
+    ListFilterBy:
+      type: string
+      description: ''
+      x-enumNames:
+      - None
+      - TokenName
+      - StreamName
+      - TokenOrStreamName
+      enum:
+      - None
+      - TokenName
+      - StreamName
+      - TokenOrStreamName
     SuccessResponseSubscribeTokenV1:
       type: object
       additionalProperties: false
@@ -1123,19 +1231,6 @@ components:
           description: The list of denied countries.
           items:
             type: string
-    SuccessResponseBoolean:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: success
-          minLength: 1
-        data:
-          type: boolean
     TokenEffectiveSettings:
       type: object
       additionalProperties: false
@@ -1163,101 +1258,6 @@ components:
           type:
           - boolean
           - 'null'
-    FailResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - data
-      properties:
-        status:
-          type: string
-          default: fail
-          minLength: 1
-        data: {}
-    ErrorResponse:
-      type: object
-      additionalProperties: false
-      required:
-      - status
-      - message
-      properties:
-        status:
-          type: string
-          default: error
-          minLength: 1
-        message:
-          type: string
-          minLength: 1
-        code:
-          type:
-          - integer
-          - 'null'
-          format: int32
-        data: {}
-    GeoCascadeModel2:
-      type: object
-      additionalProperties: false
-      properties:
-        isEnabled:
-          type:
-          - boolean
-          - 'null'
-          description: Enable or Disable geo cascade. Defaults to Account settings if unset.
-        clusters:
-          type:
-          - array
-          - 'null'
-          description: List of cluster IDs to geo cascade publish stream. List cannot be empty when IsEnabled is true. List is ignored when IsEnabled is set to false. Defaults to '["all"]' if unset.
-          items:
-            type: string
-    CreateStreamNameModel:
-      type: object
-      additionalProperties: false
-      required:
-      - streamName
-      properties:
-        streamName:
-          type: string
-          description: Name of the stream this token can access.
-          maxLength: 128
-          minLength: 1
-        isRegex:
-          type: boolean
-          description: Set to true if the name of the stream is a regular expression.
-          default: false
-    ListFilterBy:
-      type: string
-      description: ''
-      x-enumNames:
-      - None
-      - TokenName
-      - StreamName
-      - TokenOrStreamName
-      enum:
-      - None
-      - TokenName
-      - StreamName
-      - TokenOrStreamName
-    ListSortBy2:
-      type: string
-      description: ''
-      x-enumNames:
-      - Name
-      - AddedOn
-      enum:
-      - Name
-      - AddedOn
-    TrackingInformation:
-      type: object
-      additionalProperties: false
-      properties:
-        trackingId:
-          type:
-          - string
-          - 'null'
-          description: Optional. Tracking identifier for Stream Syndication.
-          maxLength: 128
   securitySchemes:
     API_Secret:
       type: http

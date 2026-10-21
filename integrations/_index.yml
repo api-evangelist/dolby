@@ -250,3 +250,27 @@
     detected: '2026-10-20'
   status: not-a-workflow
   arazzo: null
+- slug: dolby-dpp-digital-production-partnership
+  label: DPP (Digital Production Partnership)
+  partner_name: DPP (Digital Production Partnership)
+  category: media supply-chain industry body
+  type: register
+  channel: standard-directory
+  evidence: https://www.thedpp.com/members-directory
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: DPP members directory (thedpp.com/members-directory)
+    standard: DPP
+    spec_file: null
+    role: dpp-member
+    registered_name: Dolby
+    register_id: https://www.thedpp.com/members-directory
+    matched_domain: dolby.com
+    matched_by: domain
+    signal_note: 'participation only: a listing on the register, never counted'
+    detected_by: sweep-film-media-identifiers-eidr.py
+    detected: '2026-10-21'
+    dpp_category: technology
+  status: not-a-workflow
+  arazzo: null

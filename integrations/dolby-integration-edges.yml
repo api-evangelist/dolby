@@ -176,6 +176,73 @@ edges:
     detected: '2026-10-18'
   detected_by: sweep-official-sdks.py
   first_seen: '2026-10-18'
+- partner_name: ATSC (Advanced Television Systems Committee)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://www.atsc.org/members/
+  category: broadcast television standards body membership
+  contract_reference:
+    register: ATSC members (atsc.org/members/)
+    standard: ATSC 3.0
+    spec_file: null
+    role: atsc-member
+    registered_name: Dolby Laboratories, Inc.
+    matched_domain: dolby.com
+    matched_by: domain
+    signal_note: 'participation only: standards-body membership (the page does not mark voting / observer class)'
+    detected_by: sweep-broadcast-tv.py
+    detected: '2026-10-20'
+  detected_by: sweep-broadcast-tv.py
+  first_seen: '2026-10-20'
+- partner_name: HbbTV Association
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://www.hbbtv.org/membership/#members
+  category: hybrid broadcast broadband TV standards body membership
+  contract_reference:
+    register: HbbTV Association members (hbbtv.org/membership/#members)
+    standard: HbbTV (ETSI TS 102 796)
+    spec_file: null
+    role: hbbtv-member
+    registered_name: Dolby
+    matched_domain: dolby.com
+    matched_by: domain
+    signal_note: 'participation only: association membership'
+    detected_by: sweep-broadcast-tv.py
+    detected: '2026-10-20'
+  detected_by: sweep-broadcast-tv.py
+  first_seen: '2026-10-20'
+- partner_name: DVB Project
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://dvb.org/about/members/dolby-laboratories/
+  category: digital video broadcasting consortium membership
+  contract_reference:
+    register: DVB Project members (dvb.org/membership/, vtm-members data/members.json)
+    standard: DVB
+    spec_file: null
+    role: dvb-member
+    registered_name: Dolby Laboratories
+    register_id: https://dvb.org/about/members/dolby-laboratories/
+    matched_domain: dolby.com
+    matched_by: domain
+    signal_note: 'participation only: consortium membership'
+    detected_by: sweep-broadcast-tv.py
+    detected: '2026-10-20'
+  detected_by: sweep-broadcast-tv.py
+  first_seen: '2026-10-20'
 generated: '2026-10-18'
 method: searched
 source:
@@ -191,3 +258,10 @@ checked:
 - https://repo1.maven.org/maven2
 - https://rubygems.org/api/v1
 - https://www.svta.org/svta-member-companies-list/
+- https://dvb.org/membership/
+- https://www.atsc.org/members/
+- https://www.atsc.org/nextgen-tv/deployments/
+- https://www.hbbtv.org/membership/
+- https://www.hbbtv.org/resource-library/
+- https://www.hbbtv.org/wp-content/uploads/2022/06/List-of-Test-Suite-Licensees-06-2022.pdf
+- https://www.watchnextgentv.com/shop/receivers/

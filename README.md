@@ -1,4 +1,4 @@
-# Dolby (dolby)
+# Dolby
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,61 +64,199 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Dolby Laboratories is a leading technology company specializing in audio and video. The Dolby developer platform (dolby.io / Dolby OptiView) provides APIs and SDKs for media processing, real-time streaming, video playback, and ad delivery. Dolby is responsible for technologies including Dolby Atmos, Dolby Vision, and Dolby Digital, as well as developer-facing services for communications, conferencing, and media applications.
+Dolby Laboratories is an audio and video technology company whose developer platform, Dolby OptiView, is the merged surface of the original dolby.io platform, THEO Technologies (THEOplayer, THEOlive, THEOads) and Millicast. It ships publicly documented REST APIs for real-time WebRTC streaming, live channel orchestration, video playback, server-guided ad insertion and just-in-time ad conformance, alongside player SDKs for web, mobile, smart TV, Roku, React Native and Flutter. Dolby is also responsible for Dolby Atmos, Dolby Vision and Dolby Digital.
 
-**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/dolby/refs/heads/main/apis.yml)
+**Areas:** Audio · Video · Streaming · Media · Real-Time · WebRTC · Advertising · Video Player · Live Streaming · Broadcasting
 
-## Scope
+## Dolby on APIs.io
 
-- **Type:** Index
-- **Position:** Consumer
-- **Access:** 3rd-Party
+Everything profiled for Dolby is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/dolby/](https://apis.io/providers/dolby/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (41)
 
-- Audio
-- Video
-- Streaming
-- Media
-- Real-Time
+- [Dolby OptiView Player](https://apis.io/apis/dolby/optiview-player/) — Cross-platform video playback (formerly THEOplayer) for web, Android/Fire TV, iOS/tvOS, Roku, React Native and Flutter, with DRM, ad and analytics…
+- [Dolby ABR Ladders API](https://apis.io/apis/dolby/dolby-abr-ladders-api/) — The ABR Ladders API from Dolby — 1 operation(s) for abr ladders.
+- [Dolby Account API](https://apis.io/apis/dolby/dolby-account-api/) — The Account API from Dolby — 9 operation(s) for account.
+- [Dolby Ad Engine API](https://apis.io/apis/dolby/dolby-ad-engine-api/) — The Ad Engine API from Dolby — 7 operation(s) for ad engine.
+- [Dolby Analytics API](https://apis.io/apis/dolby/dolby-analytics-api/) — Viewer connection analytics records
+- [Dolby Analytics V2 API](https://apis.io/apis/dolby/dolby-analytics-v2-api/) — Viewer connection analytics records, including reconnection history
+- [Dolby Beta API](https://apis.io/apis/dolby/dolby-beta-api/) — The Beta API from Dolby — 10 operation(s) for beta.
+- [Dolby Channels API](https://apis.io/apis/dolby/dolby-channels-api/) — The Channels API from Dolby — 44 operation(s) for channels.
+- [Dolby Cloud Preview API](https://apis.io/apis/dolby/dolby-cloud-preview-api/) — The Cloud Preview API from Dolby — 5 operation(s) for cloud preview.
+- [Dolby Cluster API](https://apis.io/apis/dolby/dolby-cluster-api/) — The Cluster API from Dolby — 1 operation(s) for cluster.
+- [Dolby Custom Endpoints API](https://apis.io/apis/dolby/dolby-custom-endpoints-api/) — The Custom Endpoints API from Dolby — 2 operation(s) for custom endpoints.
+- [Dolby Director API](https://apis.io/apis/dolby/dolby-director-api/) — The Director API from Dolby — 2 operation(s) for director.
+- [Dolby Distributions API](https://apis.io/apis/dolby/dolby-distributions-api/) — The Distributions API from Dolby — 13 operation(s) for distributions.
+- [Dolby Drm Licence API](https://apis.io/apis/dolby/dolby-drmlicence-api/) — The DrmLicence API from Dolby — 2 operation(s) for drmlicence.
+- [Dolby Encoder Profile API](https://apis.io/apis/dolby/dolby-encoderprofile-api/) — The EncoderProfile API from Dolby — 1 operation(s) for encoderprofile.
+- [Dolby Engines API](https://apis.io/apis/dolby/dolby-engines-api/) — The Engines API from Dolby — 6 operation(s) for engines.
+- [Dolby Image API](https://apis.io/apis/dolby/dolby-image-api/) — The Image API from Dolby — 1 operation(s) for image.
+- [Dolby Ingests API](https://apis.io/apis/dolby/dolby-ingests-api/) — The Ingests API from Dolby — 3 operation(s) for ingests.
+- [Dolby Media Info API](https://apis.io/apis/dolby/dolby-media-info-api/) — The Media Info API from Dolby — 1 operation(s) for media info.
+- [Dolby Media Distributions API](https://apis.io/apis/dolby/dolby-mediadistributions-api/) — The MediaDistributions API from Dolby — 4 operation(s) for mediadistributions.
+- [Dolby Monetized Stream API](https://apis.io/apis/dolby/dolby-monetized-stream-api/) — The Monetized-Stream API from Dolby — 7 operation(s) for monetized-stream.
+- [Dolby Monetized Stream V2 API](https://apis.io/apis/dolby/dolby-monetized-stream-v2-api/) — The Monetized-Stream-V2 API from Dolby — 3 operation(s) for monetized-stream-v2.
+- [Dolby Monitoring API](https://apis.io/apis/dolby/dolby-monitoring-api/) — The Monitoring API from Dolby — 9 operation(s) for monitoring.
+- [Dolby Multi Track Video API](https://apis.io/apis/dolby/dolby-multitrackvideo-api/) — The MultiTrackVideo API from Dolby — 1 operation(s) for multitrackvideo.
+- [Dolby Organizations API](https://apis.io/apis/dolby/dolby-organizations-api/) — The Organizations API from Dolby — 3 operation(s) for organizations.
+- [Dolby Publish Token V1 API](https://apis.io/apis/dolby/dolby-publishtokenv1-api/) — The PublishTokenV1 API from Dolby — 9 operation(s) for publishtokenv1.
+- [Dolby Publish Token V2 API](https://apis.io/apis/dolby/dolby-publishtokenv2-api/) — The PublishTokenV2 API from Dolby — 1 operation(s) for publishtokenv2.
+- [Dolby Record Files API](https://apis.io/apis/dolby/dolby-recordfiles-api/) — The RecordFiles API from Dolby — 8 operation(s) for recordfiles.
+- [Dolby Regions API](https://apis.io/apis/dolby/dolby-regions-api/) — The Regions API from Dolby — 4 operation(s) for regions.
+- [Dolby Schedulers API](https://apis.io/apis/dolby/dolby-schedulers-api/) — The Schedulers API from Dolby — 2 operation(s) for schedulers.
+- [Dolby Stream API](https://apis.io/apis/dolby/dolby-stream-api/) — The Stream API from Dolby — 3 operation(s) for stream.
+- [Dolby Subscribe Token V1 API](https://apis.io/apis/dolby/dolby-subscribetokenv1-api/) — The SubscribeTokenV1 API from Dolby — 4 operation(s) for subscribetokenv1.
+- [Dolby Subscribe Token V2 API](https://apis.io/apis/dolby/dolby-subscribetokenv2-api/) — The SubscribeTokenV2 API from Dolby — 1 operation(s) for subscribetokenv2.
+- [Dolby Templates API](https://apis.io/apis/dolby/dolby-templates-api/) — The Templates API from Dolby — 2 operation(s) for templates.
+- [Dolby Thumbnails API](https://apis.io/apis/dolby/dolby-thumbnails-api/) — The Thumbnails API from Dolby — 1 operation(s) for thumbnails.
+- [Dolby Transcoder API](https://apis.io/apis/dolby/dolby-transcoder-api/) — The Transcoder API from Dolby — 7 operation(s) for transcoder.
+- [Dolby Transcoder Scheduler API](https://apis.io/apis/dolby/dolby-transcoderscheduler-api/) — The TranscoderScheduler API from Dolby — 4 operation(s) for transcoderscheduler.
+- [Dolby Webhooks API](https://apis.io/apis/dolby/dolby-webhooks-api/) — The Webhooks API from Dolby — 8 operation(s) for webhooks.
+- [Dolby Whep API](https://apis.io/apis/dolby/dolby-whep-api/) — The Whep API from Dolby — 1 operation(s) for whep.
+- [Dolby Whip API](https://apis.io/apis/dolby/dolby-whip-api/) — The Whip API from Dolby — 1 operation(s) for whip.
+- [Dolby Media Assets API](https://apis.io/apis/dolby/dolby-media-assets-api/) — The Media Assets API from Dolby — 5 operation(s) for media assets.
 
-## Timestamps
+### Published properties
 
-- **Created:** 2025-03-01
-- **Modified:** 2026-04-28
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### AsyncAPI (1)
 
-### Dolby OptiView Player
-Cutting-edge video playback experiences across web, mobile, and connected devices.
-- [Documentation](https://optiview.dolby.com/docs/player/)
+Event-driven and webhook contracts.
 
-### Dolby OptiView Live
-Live streaming solution with consistent playback across audience sizes, with low-latency ingest and global delivery.
-- [Documentation](https://optiview.dolby.com/docs/live/)
+- [Dolby Webhooks](https://apis.io/asyncapis/dolby/dolby-webhooks/)
 
-### Dolby Real-time Streaming (Millicast)
-Sub-second, interactive-latency streaming for two-way audio and video at scale.
-- [Documentation](https://optiview.dolby.com/docs/real-time/)
-- [Legacy Millicast Docs](https://docs.millicast.com)
+#### MCP servers (1)
 
-### Dolby OptiView Ads
-Ad delivery platform for high-quality video advertising experiences.
-- [Documentation](https://optiview.dolby.com/docs/ads/)
+Model Context Protocol servers that expose the API to agents.
 
-### Dolby OptiView Ad Engine
-Serverless conformance service that transforms ads to match content specifications.
-- [Documentation](https://optiview.dolby.com/docs/ad-engine/)
+- [dolby-mcp.yml](https://apis.io/servers/dolby/dolby-mcp-yml/)
 
-## Common Properties
+#### Overlays (44)
 
-- [Dolby.io](https://dolby.io)
-- [OptiView Documentation](https://optiview.dolby.com/docs/)
-- [Dolby Corporate](https://www.dolby.com)
-- [Developer Portal](https://dolby.io/developers/)
+OpenAPI overlays, including conversational phrasing for each operation.
 
-## Maintainers
+- [Dolby Abr Ladders Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-abr-ladders-api-phrasing-overlay/)
+- [Dolby Account Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-account-api-phrasing-overlay/)
+- [Dolby Ad Engine Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-ad-engine-api-phrasing-overlay/)
+- [Dolby Analytics Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-analytics-api-phrasing-overlay/)
+- [Dolby Analytics V2 Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-analytics-v2-api-phrasing-overlay/)
+- [Dolby Beta Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-beta-api-phrasing-overlay/)
+- [Dolby Channels Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-channels-api-phrasing-overlay/)
+- [Dolby Cloud Preview Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-cloud-preview-api-phrasing-overlay/)
+- [Dolby Cluster Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-cluster-api-phrasing-overlay/)
+- [Dolby Custom Endpoints Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-custom-endpoints-api-phrasing-overlay/)
+- [Dolby Director Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-director-api-phrasing-overlay/)
+- [Dolby Distributions Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-distributions-api-phrasing-overlay/)
+- [Dolby Drmlicence Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-drmlicence-api-phrasing-overlay/)
+- [Dolby Encoderprofile Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-encoderprofile-api-phrasing-overlay/)
+- [Dolby Engines Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-engines-api-phrasing-overlay/)
+- [Dolby Image Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-image-api-phrasing-overlay/)
+- [Dolby Ingests Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-ingests-api-phrasing-overlay/)
+- [Dolby Media Assets Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-media-assets-api-phrasing-overlay/)
+- [Dolby Media Info Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-media-info-api-phrasing-overlay/)
+- [Dolby Mediadistributions Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-mediadistributions-api-phrasing-overlay/)
+- [Dolby Millicast Api Overlay](https://apis.io/overlays/dolby/dolby-millicast-api-overlay/)
+- [Dolby Monetized Stream Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-monetized-stream-api-phrasing-overlay/)
+- [Dolby Monetized Stream V2 Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-monetized-stream-v2-api-phrasing-overlay/)
+- [Dolby Monitoring Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-monitoring-api-phrasing-overlay/)
+- [Dolby Multitrackvideo Api Phrasing Overlay](https://apis.io/overlays/dolby/dolby-multitrackvideo-api-phrasing-overlay/)
+- …and 19 more published on APIs.io
 
-**FN:** Kin Lane
+#### Security (3)
 
-**Email:** kin@apievangelist.com
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Dolby Authentication](https://apis.io/security/dolby/dolby-authentication/)
+- [Dolby Domain Security](https://apis.io/security/dolby/dolby-domain-security/)
+- [Dolby Vulnerability Disclosure](https://apis.io/security/dolby/dolby-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Dolby Plans Pricing](https://apis.io/plans/dolby/dolby-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Dolby Rate Limits](https://apis.io/rate-limits/dolby/dolby-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Dolby Finops](https://apis.io/finops/dolby/dolby-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.dolby.com)
+- [Documentation](https://optiview.dolby.com/docs/)
+- [Getting started](https://optiview.dolby.com/docs/theolive/api/full-example/)
+- [API reference](https://optiview.dolby.com/docs/millicast/api/millicast-api/)
+- [Pricing](https://optiview.dolby.com/plans/)
+- [Support](https://support.dolby.io/hc/en-au)
+- [Changelog](https://optiview.dolby.com/docs/millicast/changelog/changelog-rest-apis/)
+- [Blog](https://optiview.dolby.com/resources/blog/)
+- [Terms of service](https://optiview.dolby.com/policies/terms-of-service/)
+- [Privacy policy](https://optiview.dolby.com/policies/privacy-policy/)
+- [GitHub](https://github.com/THEOplayer)
+- [Status](https://status.dolby.io)
+
+## API Evangelist rating
+
+**Kin Score 65.5** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 69.6 |
+| Contract quality | 57.8 |
+| Contract governance | 4.5 |
+| Operational transparency | 81.6 |
+| Developer ergonomics | 73.2 |
+| Access clarity | 69.7 |
+
+**Agent readiness 41.7** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | yes |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | partial |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 30.4** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/dolby/](https://apis.io/providers/dolby/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Dolby: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/dolby/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).

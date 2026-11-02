@@ -1,0 +1,128 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Dolby
+providerId: dolby
+generated: '2026-09-06'
+method: searched
+source: https://optiview.dolby.com/plans/
+created: '2026-05-04'
+modified: '2026-09-06'
+tags:
+  - Audio
+  - Video
+  - Streaming
+  - Media
+  - Real-Time
+supersedes: >-
+  A scaffold written by the 2026-05-04 bulk sweep that invented a Free / Professional /
+  Enterprise ladder with 1,000 and 100,000 request quotas and 10/100/1000 rpm limits. Dolby
+  publishes none of that. It has been replaced entirely by what the pricing page actually says.
+plan_count: 3
+description: >-
+  Dolby OptiView publishes three named plans - Streaming, Playback and Advertising - which can be
+  bought standalone or bundled. ALL THREE ARE "Custom pricing" with a "Request pricing" call to
+  action. No price, no currency, no billing period, no included quota, no overage rate and no
+  per-tier limit is published anywhere on the site. There is no free tier and no self-serve
+  signup: every path to the API goes through a contact form.
+public_pricing: false
+free_tier: false
+self_serve: false
+currency: null
+billing_period: null
+plans:
+  - id: dolby-optiview-streaming
+    name: Streaming
+    type: enterprise
+    price: custom
+    currency: null
+    billing_period: null
+    quota: null
+    overage: null
+    cta: Request pricing
+    cta_url: https://optiview.dolby.com/contact/
+    covers:
+      - Dolby OptiView Real-time Streaming (Millicast)
+      - Dolby OptiView Live
+    elements:
+      - Real-time interaction
+      - Effortless global scalability
+      - Configurable low latency
+      - Synchronized metadata
+      - Premium tools & features
+  - id: dolby-optiview-playback
+    name: Playback
+    type: enterprise
+    price: custom
+    currency: null
+    billing_period: null
+    quota: null
+    overage: null
+    cta: Request pricing
+    cta_url: https://optiview.dolby.com/contact/
+    covers:
+      - Dolby OptiView Player
+    elements:
+      - Optimized for every platform
+      - Seamless ad experiences
+      - React Native and Flutter support
+      - Customizable player UI
+      - Ads, analytics and DRM connectors
+  - id: dolby-optiview-advertising
+    name: Advertising
+    type: enterprise
+    price: custom
+    currency: null
+    billing_period: null
+    quota: null
+    overage: null
+    cta: Request pricing
+    cta_url: https://optiview.dolby.com/contact/
+    covers:
+      - Dolby OptiView Ads
+      - Dolby OptiView Ad Engine
+    elements:
+      - Innovative ad formats
+      - Optimal inventory use
+      - Increased scalability
+      - Enhanced ad analytics & insights
+      - Personalized ad experiences
+support_commitments:
+  note: >-
+    The pricing page names three commercial commitments that are not tied to a tier - priority
+    support, "assigned account representatives for a guaranteed response time", and access to
+    Dolby engineers. No response-time number and no SLA document is published.
+evidence:
+  - url: https://optiview.dolby.com/plans/
+    status: 200
+    note: >-
+      https://optiview.dolby.com/pricing and https://dolby.io/pricing/ both 301 here. Read
+      2026-09-06.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - negotiated
+  units: []
+  plans:
+  - name: Streaming
+    access: enterprise
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Playback
+    access: enterprise
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
+  - name: Advertising
+    access: enterprise
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []

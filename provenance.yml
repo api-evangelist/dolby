@@ -38,6 +38,9 @@ artifacts:
   front-door-ai/2026-09-17.yml:
     method: unknown
     evidence: no authorship recorded
+  heartbeat/2026-11-02.yml:
+    method: unknown
+    evidence: no authorship recorded
   integrations/_index.yml:
     method: generated
     evidence: carries an API Evangelist house phrase
@@ -47,7 +50,7 @@ artifacts:
   kin/checks-2026-10-23T222754.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
-  kin/checks-2026-10-31T095417.yml:
+  kin/checks-2026-11-02T082323.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-23T000603.yml:
@@ -102,6 +105,15 @@ artifacts:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-10-31T095417.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-01T171331.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-01T200237.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-02T082323.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   lifecycle/dolby-lifecycle.yml:
@@ -420,11 +432,17 @@ artifacts:
   packages/dolby-packages.yml:
     method: searched
     evidence: declared in the artifact
+  patterns/dolby-patterns.yml:
+    method: derived
+    evidence: declared in the artifact
   plans/dolby-plans-pricing.yml:
     method: searched
     evidence: declared in the artifact
   rate-limits/dolby-rate-limits.yml:
     method: searched
+    evidence: declared in the artifact
+  rules/dolby-rules.yml:
+    method: generated
     evidence: declared in the artifact
   security/dolby-domain-security.yml:
     method: unknown
@@ -445,6 +463,9 @@ artifacts:
     method: generated
     evidence: declared in the artifact
   skills/dolby-wire-webhooks.md:
+    method: generated
+    evidence: declared in the artifact
+  sla/dolby-sla.yml:
     method: generated
     evidence: declared in the artifact
   well-known/dolby-security.txt:
